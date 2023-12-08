@@ -4,6 +4,7 @@ function bindEvents (){
     document.getElementById("login_button").addEventListener("click", loginProcedure);
 }
 
+
 function loginProcedure (){
 
     //recupero valori inseriti nel form

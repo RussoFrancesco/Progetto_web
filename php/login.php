@@ -38,4 +38,5 @@ if ($table == "users") {
         echo "Statement preparation error: " . mysqli_error($conn);
     }
 }
+
 ?>
