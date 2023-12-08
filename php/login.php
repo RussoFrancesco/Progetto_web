@@ -37,7 +37,5 @@ if ($table == "users") {
     } else {
         echo "Statement preparation error: " . mysqli_error($conn);
     }
-} else {
-    echo "Table not found";
 }
 ?>
