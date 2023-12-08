@@ -32,6 +32,17 @@ repeatPassword.addEventListener('input', function(event) {
     }
 });
 
+passwordInput.addEventListener('input', function(event) {
+    const passw = event.target.value;
+    const mainPassword = repeatPassword.value;
+
+    if (passw !== mainPassword) {
+        repeatPassword.style.border = '2px solid red';
+    } else {
+        repeatPassword.style.border = '1px solid #d1d3e2';
+    }
+});
+
 function validatePassword(password, repeatPass) {
     return password == repeatPass;
 }
