@@ -1,47 +1,42 @@
 <?php
-
-//METHOD e Path inseriti
+// Verifica il metodo e il percorso inseriti
 $method = $_SERVER['REQUEST_METHOD'];
-$request = explode('/', trim($_SERVER['PATH_INFO'],'/'));
+$request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 
-//connesione al db 
-$conn=new mysqli ("localhost","utenti","utenti","web");
-mysqli_set_charset($conn,'utf8');
+// Connessione al database
+$conn = mysqli_connect("localhost", "utenti", "utenti", "web");
+mysqli_set_charset($conn, 'utf8');
 
+// Recupera la tabella dal percorso
+$table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
 
+if ($table == "users") {
+    $email = mysqli_real_escape_string($conn, array_shift($request));
+    $password = mysqli_real_escape_string($conn, array_shift($request));
 
-// retrieve the table from the path
-$table = preg_replace('/[^a-z0-9_]+/i','',array_shift($request));
-
-if ($table=="users") {
-
-    $email=$_GET['email'];
-    $password=$_GET['password'];
-
+    // Prepared statement
+    $query = "SELECT nome, cognome FROM users WHERE email=? AND psswrd=?";
+    $stmt = mysqli_prepare($conn, $query);
     
-    echo $email." ".$password;
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "ss", $email, $password);
+        mysqli_stmt_execute($stmt);
+        
+        $res = mysqli_stmt_get_result($stmt);
+        
+        $num_rows = mysqli_num_rows($res);
 
-    //Prepared statement
-    $stmt = $mysqli->prepare("SELECT nome,cognome FROM users WHERE email =? AND password =?");
-    $stmt->bind_param("ss", $email, $password);
-    $stmt->execute();
-
-    // Ottieni il risultato
-    $result = $stmt->get_result();
-
-    // Ottieni il numero di righe restituite
-    $num_rows = $result->num_rows;
-
-    if ($num_rows == 1) {
-        $row=$result->fetch_assoc();
-        $nome=$row['nome'];
-        $cognome=$row['cognome'];
-        echo "OK";
+        if ($num_rows == 1) {
+            $row = mysqli_fetch_array($res);
+            $nome = $row['nome'];
+            $cognome = $row['cognome'];
+            echo "OK";
+        } else {
+            echo "ERROR";
+        }
+    } else {
+        echo "Statement preparation error: " . mysqli_error($conn);
     }
-    else{
-        echo "ERROR";    }
 }
-
-
 
 ?>

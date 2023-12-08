@@ -4,7 +4,5 @@ $last_name=$_POST['LastName'];
 $email=$_POST['Email'];
 $password=$_POST['Password'];
 
-echo "<p>".$first_name."</p>";
-
 
 ?>
