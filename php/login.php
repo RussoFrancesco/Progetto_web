@@ -1,4 +1,5 @@
 <?php
+
 // Verifica il metodo e il percorso inseriti
 $method = $_SERVER['REQUEST_METHOD'];
 $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));

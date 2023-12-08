@@ -22,6 +22,7 @@ function loginProcedure (){
         }
 
     }
+    
 
     req.open("get","php/login.php/users/"+email+"/"+password+"/",false);
 
