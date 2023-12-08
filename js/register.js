@@ -46,14 +46,12 @@ function validateForm(){
   
     if (!isEmailValid || !isPasswordValid) {
       // Se l'email o le password non sono valide, ricarica la pagina
-      alert('Compilare i campi in modo corretto')
-      return false;
+      alert('Compilare i campi in modo corretto');
     } else {
       // Se sia l'email che le password sono valide, fai qualcosa (es. invio del form)
       // In questo caso, la validazione è passata e puoi procedere
       console.log('form corretto');
       form.submit();
-      return true;
       // ... altri processi o invio del form ...
     }
   };
