@@ -22,7 +22,8 @@
 
 </head>
 
-<body class="bg-gradient-primary" onload="document.register.email.focus()">
+
+<body class="bg-gradient-primary">
 
     <div class="container">
 
@@ -36,7 +37,7 @@
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
                             </div>
-                            <form class="user" name="register" method="POST" action="php/register.php" onsubmit="event.preventDefault(); validateForm();">
+                            <form class="user" id="register" method="POST" action="php/register.php">
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
                                         <input type="text" class="form-control form-control-user" name="FirstName" id="FirstName"
@@ -67,7 +68,7 @@
                                             id="RepeatPassword" placeholder="Repeat Password" required>
                                     </div>
                                 </div>
-                                <input type="submit" id="submit" value="Register Account" class="btn btn-primary btn-user btn-block">
+                                <input type="button" id="form_invio" value="Register Account" class="btn btn-primary btn-user btn-block" onclick="validateForm();">
                                 <hr>
                                 <a href="index.html" class="btn btn-google btn-user btn-block">
                                     <i class="fab fa-google fa-fw"></i> Register with Google
