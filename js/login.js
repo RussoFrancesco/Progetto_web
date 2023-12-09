@@ -12,15 +12,15 @@ function loginProcedure (){
     var password=document.getElementById("password").value;
 
     password=email.substring(0,5)+password;
-
     password=sha256(password);
 
 
     var req=new XMLHttpRequest();
-    console.log("req");
+    //console.log("req");
     req.onload=function () {
         
-        if(req.status==200 && this.responseText== "OK"){
+    if(req.status==200 && this.responseText!= "ERROR"){
+            
             window.location.href="index.html";
         }
         else{
