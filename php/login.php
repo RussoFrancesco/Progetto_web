@@ -1,12 +1,12 @@
 <?php
+// Connessione al database
+include 'conn.php';
 
 // Verifica il metodo e il percorso inseriti
 $method = $_SERVER['REQUEST_METHOD'];
 $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 
-// Connessione al database
-$conn = mysqli_connect("localhost", "utenti", "utenti", "web");
-mysqli_set_charset($conn, 'utf8');
+
 
 // Recupera la tabella dal percorso
 $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
