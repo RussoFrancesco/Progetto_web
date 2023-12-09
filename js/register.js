@@ -54,16 +54,39 @@ function validateForm(){
   
     const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(password, repeatPass);
+    const hash_pass= sha256(email.substring(0,5)+password);
+
   
     if (!isEmailValid || !isPasswordValid) {
       // Se l'email o le password non sono valide, ricarica la pagina
       alert('Compilare i campi in modo corretto');
     } else {
-      // Se sia l'email che le password sono valide, fai qualcosa (es. invio del form)
-      // In questo caso, la validazione è passata e puoi procedere
-      console.log('form corretto');
-      form.submit();
-      // ... altri processi o invio del form ...
+
+      var data={};
+      data.nome = document.getElementById("FirstName").value;
+      data.cognome = document.getElementById("LastName").value;
+      data.telefono = document.getElementById("Phone").value;
+      data.email = email;
+      data.pswrd = hash_pass;
+      var JSONdata = JSON.stringify(data);
+
+      var req = new XMLHttpRequest();
+      req.onload = function(){
+      if(req.status==200 && this.responseText== "OK"){
+          window.location.href="index.html";
+      }
+      else{
+          var divElement = document.getElementById("messaggio_errore");
+          // Aggiunta delle classi al div
+          divElement.className = "alert alert-danger";
+          divElement.innerHTML="Utente non inserito";
+      }
+      }
+      
+      req.open("post", "php/register.php/users/",true);
+
+      req.send(JSONdata);
+      
     }
   };
 
