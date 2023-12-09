@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 
 // Verifica il metodo e il percorso inseriti
 $method = $_SERVER['REQUEST_METHOD'];
@@ -16,7 +18,7 @@ if ($table == "users") {
     $password = mysqli_real_escape_string($conn, array_shift($request));
 
     // Prepared statement
-    $query = "SELECT nome, cognome FROM users WHERE email=? AND psswrd=?";
+    $query = "SELECT nome, cognome FROM users WHERE email=? AND pswrd=?";
     $stmt = mysqli_prepare($conn, $query);
     
     if ($stmt) {
@@ -31,6 +33,9 @@ if ($table == "users") {
             $row = mysqli_fetch_array($res);
             $nome = $row['nome'];
             $cognome = $row['cognome'];
+
+            $_SESSION['logged_in'] = true;
+
             echo "OK";
         } else {
             echo "ERROR";
