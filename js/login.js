@@ -11,7 +11,10 @@ function loginProcedure (){
     var email=document.getElementById("email").value;
     var password=document.getElementById("password").value;
 
-    console.log("Email: "+email+", password "+password);
+    password=email.substring(0,5)+password;
+
+    password=sha256(password);
+
 
     var req=new XMLHttpRequest();
     console.log("req");
@@ -31,10 +34,13 @@ function loginProcedure (){
     }
     
 
-    req.open("get","php/login.php/users/"+email+"/"+password+"/",false);
+    req.open("get","php/login.php/users/"+email+"/"+password+"/",true);
 
     console.log("connessione");
 
     req.send();
     
 }
+
+
+
