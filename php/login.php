@@ -1,6 +1,4 @@
 <?php
-session_start();
-
 
 // Verifica il metodo e il percorso inseriti
 $method = $_SERVER['REQUEST_METHOD'];
@@ -16,6 +14,8 @@ $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
 if ($table == "users") {
     $email = mysqli_real_escape_string($conn, array_shift($request));
     $password = mysqli_real_escape_string($conn, array_shift($request));
+
+
 
     // Prepared statement
     $query = "SELECT nome, cognome FROM users WHERE email=? AND pswrd=?";
@@ -34,7 +34,6 @@ if ($table == "users") {
             $nome = $row['nome'];
             $cognome = $row['cognome'];
 
-            $_SESSION['logged_in'] = true;
 
             echo "OK";
         } else {
