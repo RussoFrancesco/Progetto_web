@@ -20,6 +20,13 @@ function loginProcedure (){
         if(req.status==200 && this.responseText== "OK"){
             window.location.href="index.html";
         }
+        else{
+
+            var divElement = document.getElementById("messaggio_errore");
+            // Aggiunta delle classi al div
+            divElement.className = "alert alert-danger";
+            divElement.innerHTML="Email o password non validi";
+        }
 
     }
     
