@@ -12,7 +12,6 @@ function loginProcedure (){
     var password=document.getElementById("password").value;
 
     password=email.substring(0,5)+password;
-    console.log(password);
 
     password=sha256(password);
 
