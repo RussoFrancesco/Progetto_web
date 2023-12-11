@@ -1,4 +1,5 @@
 
+<?php include 'controlloaccesso.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -758,8 +759,7 @@
     <!--Script per la home-->
     <script src="js/home.js"></script>
 
-    <!--Script controllo acesso-->
-    <script src="js/controlloaccesso.js"></script>
+
 </body>
 
 </html>
