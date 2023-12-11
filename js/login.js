@@ -20,7 +20,7 @@ function loginProcedure (){
     req.onload=function () {
         
     if(req.status==200 && this.responseText!= "ERROR"){
-            window.location.href="index.php";
+            window.location.href="index.html";
         }
     else{
 

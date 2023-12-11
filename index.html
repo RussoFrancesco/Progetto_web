@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,7 +24,7 @@
 </head>
 
 <body id="page-top">
-    <?php include 'php/controlloaccesso.php' ?>
+ 
     <!-- Page Wrapper -->
     <div id="wrapper">
 
@@ -731,7 +732,7 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <button class="btn btn-primary"  id='logout_button'>Logout</button>
                 </div>
             </div>
         </div>
@@ -757,9 +758,8 @@
     <!--Script per la home-->
     <script src="js/home.js"></script>
 
-    <!-- Script contollo login-->
-    <script src="js/controlla_login.js"></script>
-
+    <!--Script controllo acesso-->
+    <script src="js/controlloaccesso.js"></script>
 </body>
 
 </html>
