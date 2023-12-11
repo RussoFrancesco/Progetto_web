@@ -20,10 +20,9 @@ function loginProcedure (){
     req.onload=function () {
         
     if(req.status==200 && this.responseText!= "ERROR"){
-            
-            window.location.href="index.html";
+            window.location.href="index.php";
         }
-        else{
+    else{
 
             var divElement = document.getElementById("messaggio_errore");
             // Aggiunta delle classi al div

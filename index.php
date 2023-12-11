@@ -23,7 +23,7 @@
 </head>
 
 <body id="page-top">
-    
+    <?php include 'php/controlloaccesso.php' ?>
     <!-- Page Wrapper -->
     <div id="wrapper">
 
@@ -756,6 +756,9 @@
 
     <!--Script per la home-->
     <script src="js/home.js"></script>
+
+    <!-- Script contollo login-->
+    <script src="js/controlla_login.js"></script>
 
 </body>
 
