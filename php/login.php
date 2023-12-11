@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 
 // Connessione al database
 include 'conn.php';
@@ -20,7 +20,7 @@ if ($table == "users") {
 
 
     // Prepared statement
-    $query = "SELECT id FROM users WHERE email=? AND pswrd=?";
+    $query = "SELECT id,nome,cognome FROM users WHERE email=? AND pswrd=?";
     $stmt = mysqli_prepare($conn, $query);
     
     if ($stmt) {
@@ -32,20 +32,22 @@ if ($table == "users") {
         $num_rows = mysqli_num_rows($res);
 
         if ($num_rows == 1) {
-            
-            
-
             $row = mysqli_fetch_array($res);
-            $id = $row['id'];
-            
-            $_SESSION['id'] = $id;
+           
+            session_start();
+            $_SESSION['id'] = $row['id'];
+            $_SESSION['nome'] = $row['nome'];
+            $_SESSION['cognome'] = $row['cognome'];
+            $_SESSION['login'] =true;
 
             echo "OK";
 
-        } else {
+        } 
+        else {
             echo "ERROR";
         }
-    } else {
+    } 
+    else {
         echo "Statement preparation error: " . mysqli_error($conn);
     }
 }

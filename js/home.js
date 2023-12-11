@@ -4,6 +4,10 @@ function bindEvents (){
     userinfo();
 }
 
+function checkAuthentication(){
+
+}
+
 
 function userinfo(){    
     var user=document.getElementById("span_user");
