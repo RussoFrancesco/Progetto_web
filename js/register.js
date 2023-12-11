@@ -72,8 +72,8 @@ function validateForm(){
 
       var req = new XMLHttpRequest();
       req.onload = function(){
-      if(req.status==200 && this.responseText== "OK"){
-          window.location.href="index.html";
+      if(req.status==200){
+          window.location.href="login.html";
       }
       else{
           var divElement = document.getElementById("messaggio_errore");
