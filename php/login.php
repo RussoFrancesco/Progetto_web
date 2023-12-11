@@ -17,8 +17,6 @@ if ($table == "users") {
     $email = mysqli_real_escape_string($conn, array_shift($request));
     $password = mysqli_real_escape_string($conn, array_shift($request));
 
-
-
     // Prepared statement
     $query = "SELECT id,nome,cognome FROM users WHERE email=? AND pswrd=?";
     $stmt = mysqli_prepare($conn, $query);
@@ -35,9 +33,17 @@ if ($table == "users") {
             $row = mysqli_fetch_array($res);
            
             session_start();
-            $_SESSION['id'] = $row['id'];
-            $_SESSION['nome'] = $row['nome'];
-            $_SESSION['cognome'] = $row['cognome'];
+
+            $sessionid=session_id();
+            $id=$row['id'];
+
+            $query="UPDATE users SET session_id=? WHERE id=?";
+            $stmt=mysqli_prepare($conn, $query);
+            mysqli_stmt_bind_param($stmt, "ss", $sessionid, $id);
+            mysqli_stmt_execute($stmt);
+            
+            
+
             $_SESSION['login'] =true;
 
             echo "OK";

@@ -11,11 +11,11 @@ $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
 
 
 if ($table == "users" and $method =="GET") {
-    $query="SELECT nome,cognome FROM users where id =?";
+    $query="SELECT nome,cognome FROM users where session_id =?";
     $stmt = mysqli_prepare($conn, $query);
 
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "i", $_SESSION['id']);
+        mysqli_stmt_bind_param($stmt, "i", session_id());
         mysqli_stmt_execute($stmt);
 
         $res = mysqli_stmt_get_result($stmt);
