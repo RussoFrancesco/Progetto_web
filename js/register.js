@@ -79,7 +79,7 @@ function validateForm(){
           var divElement = document.getElementById("messaggio_errore");
           // Aggiunta delle classi al div
           divElement.className = "alert alert-danger";
-          divElement.innerHTML="Utente non inserito";
+          divElement.innerHTML="Email già inserita";
       }
       }
       
