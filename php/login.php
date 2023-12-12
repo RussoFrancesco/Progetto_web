@@ -33,7 +33,7 @@ if ($table == "users") {
             $row = mysqli_fetch_array($res);
            
             session_start();
-
+            session_regenerate_id();
             $sessionid=session_id();
             $id=$row['id'];
 

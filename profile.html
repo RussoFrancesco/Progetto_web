@@ -370,22 +370,24 @@
                                 <form class="user" id="modify" method="PUT">
                                     <div class="form-group">
                                         <input type="text" class="form-control form-control-user" name="FirstName" id="FirstName"
-                                            placeholder="First Name" required>
+                                            placeholder="First Name" readonly>
                                     </div>
                                     <div class="form-group">
                                         <input type="text" class="form-control form-control-user" name="LastName" id="LastName"
-                                            placeholder="Last Name" required>
+                                            placeholder="Last Name" readonly>
                                     </div>
                                     <div class="form-group">
-                                        <input type="email" class="form-control form-control-user" name="Email" id="InputEmail"
-                                            placeholder="Email Address" required>
+                                        <input type="email" class="form-control form-control-user" name="Email" id="Email"
+                                            placeholder="Email Address" readonly>
                                     </div>
                                     <div class="form-group">
                                         <input type="tel" class="form-control form-control-user" name="Phone" id="Phone"
-                                        placeholder="Phone Number (optional)">
+                                        placeholder="Phone Number (optional)" readonly>
                                     </div>
                                 </form>
                             </div>
                     </div>
                 </div>
+                <!-- Script per recuperare i dati da mostare-->
+                <script defer src="js/profile.js"></script>
 </body>
