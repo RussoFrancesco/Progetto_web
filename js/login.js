@@ -23,7 +23,6 @@ function loginProcedure (){
             window.location.href="index.php";
         }
     else{
-
             var divElement = document.getElementById("messaggio_errore");
             // Aggiunta delle classi al div
             divElement.className = "alert alert-danger";
