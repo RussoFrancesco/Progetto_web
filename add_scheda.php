@@ -32,12 +32,12 @@
 <body id="page-top">
     <!-- Page Wrapper -->
         <div id="wrapper">
-            <?php include 'sidebar.php';?>
+            <div w3-include-html="sidebar.html"></div>
                     <!-- Content Wrapper -->
             <div id="content-wrapper" class="d-flex flex-column">
                 <!-- Main Content -->
                 <div id="content">
-                    <?php include 'topbar.php';?>
+                    <div w3-include-html="topbar.html"></div>
                 </div>
             </div>
         </div>
