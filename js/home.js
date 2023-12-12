@@ -1,9 +1,7 @@
-window.onload=bindEvents();
-
-function bindEvents (){
+document.addEventListener("DOMContentLoaded", function(){
     userinfo();
     document.getElementById("logout_button").addEventListener("click", logoutProcedure);
-}
+});
 
 
 
