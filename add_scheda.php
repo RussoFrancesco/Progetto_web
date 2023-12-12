@@ -1,3 +1,4 @@
+<?php include 'controlloaccesso.php';?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,6 +17,7 @@
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
+    
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
@@ -360,34 +362,6 @@
 
                 </nav>
                 <!-- End of Topbar -->
-                <div class="justify-content-center">
-                    <div class="col-auto">
-                        <div class="col">
-                            <div class="p-2">
-                                <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">Il tuo profilo</h1>
-                                </div>
-                                <form class="user" id="modify" method="PUT">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control form-control-user" name="FirstName" id="FirstName"
-                                            placeholder="First Name" readonly>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control form-control-user" name="LastName" id="LastName"
-                                            placeholder="Last Name" readonly>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="email" class="form-control form-control-user" name="Email" id="Email"
-                                            placeholder="Email Address" readonly>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="tel" class="form-control form-control-user" name="Phone" id="Phone"
-                                        placeholder="Phone Number (optional)" readonly>
-                                    </div>
-                                </form>
-                            </div>
-                    </div>
-                </div>
-                <!-- Script per recuperare i dati da mostare-->
-                <script defer src="js/profile.js"></script>
+                
+    <script defer src="js/home.js"></script>
 </body>

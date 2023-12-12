@@ -58,7 +58,7 @@
             </div>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="schede.html">
+                <a class="nav-link collapsed" href="schede.php">
                 <i class="fas fa-fw fa-table"></i>
                 <span>Schede</span>
                 </a>
@@ -345,7 +345,7 @@
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="profile.html">
+                                <a class="dropdown-item" href="profile.php">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
