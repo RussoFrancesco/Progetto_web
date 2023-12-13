@@ -26,8 +26,6 @@
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
 
-    <script defer src="include_html.js"></script>
-
 
 </head>
 <body id="page-top">
@@ -55,8 +53,8 @@
 
                                 <div class="card mt-3">
                                     <div class="card-body">
-                                        <h3>Dorsale</h3>
-                                        <div class="form-check" id="dorsale"></div>
+                                        <h3>Dorsali</h3>
+                                        <div class="form-check" id="dorsali"></div>
                                     </div>
                                 </div>
 
