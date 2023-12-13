@@ -33,12 +33,12 @@
 <body id="page-top">
     <!-- Page Wrapper -->
     <div id="wrapper">
-        <div include-html="sidebar.html"></div>
+        <?php include 'sidebar.php';?>
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
             <!-- Main Content -->
             <div id="content">
-                <div include-html="topbar.html"></div>
+                <? include 'topbar.php';?>
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-md-8">
