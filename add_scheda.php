@@ -28,86 +28,86 @@
 
     <script defer src="include_html.js"></script>
 
+
 </head>
 <body id="page-top">
     <!-- Page Wrapper -->
-        <div id="wrapper">
-            <div include-html="sidebar.html"></div>
-                    <!-- Content Wrapper -->
-            <div id="content-wrapper" class="d-flex flex-column">
-                <!-- Main Content -->
-                <div id="content">
-                    <div include-html="topbar.html"></div>
-                    <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <form class='user'>
+    <div id="wrapper">
+        <div include-html="sidebar.html"></div>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <div include-html="topbar.html"></div>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <form class='user'>
 
-                <h1 class="text-center">Seleziona gli esercizi da inserire</h1>
+                                <h1 class="text-center">Seleziona gli esercizi da inserire</h1>
 
-                <div class="card">
-                    <div class="card-body">
-                        <h3>Pettorali</h3>
-                        <div class="form-check" id="pettorali"></div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h3>Pettorali</h3>
+                                        <div class="form-check" id="pettorali"></div>
+                                    </div>
+                                </div>
+
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <h3>Dorsale</h3>
+                                        <div class="form-check" id="dorsale"></div>
+                                    </div>
+                                </div>
+
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <h3>Spalle</h3>
+                                        <div class="form-check" id="spalle"></div>
+                                    </div>
+                                </div>
+
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <h3>Bicipiti</h3>
+                                        <div class="form-check" id="bicipiti"></div>
+                                    </div>
+                                </div>
+
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <h3>Tricipiti</h3>
+                                        <div class="form-check" id="tricipiti"></div>
+                                    </div>
+                                </div>
+
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <h3>Gambe</h3>
+                                        <div class="form-check" id="gambe"></div>
+                                    </div>
+                                </div>
+
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <h3>Addome</h3>
+                                        <div class="form-check" id="addome"></div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center mt-3">
+                                    <button type="button" class="btn btn-primary">Aggiungi scheda</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <h3>Dorsale</h3>
-                        <div class="form-check" id="dorsale"></div>
-                    </div>
-                </div>
-
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <h3>Spalle</h3>
-                        <div class="form-check" id="spalle"></div>
-                    </div>
-                </div>
-
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <h3>Bicipiti</h3>
-                        <div class="form-check" id="bicipiti"></div>
-                    </div>
-                </div>
-
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <h3>Tricipiti</h3>
-                        <div class="form-check" id="tricipiti"></div>
-                    </div>
-                </div>
-
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <h3>Gambe</h3>
-                        <div class="form-check" id="gambe"></div>
-                    </div>
-                </div>
-
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <h3>Addome</h3>
-                        <div class="form-check" id="addome"></div>
-                    </div>
-                </div>
-
-                <div class="text-center mt-3">
-                    <button type="button" class="btn btn-primary">Aggiungi scheda</button>
-                </div>
-
-            </form>
-        </div>
-    </div>
-</div>
-
-                </div> 
             </div>
         </div>
+    </div>
     
-    <script defer src="js/home.js"></script>
+    
     <script defer src="js/add_scheda.js"></script>
+    <script defer src="js/home.js"></script>
 </body>
 </html>
