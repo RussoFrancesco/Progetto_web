@@ -32,16 +32,16 @@
 <body id="page-top">
     <!-- Page Wrapper -->
         <div id="wrapper">
-            <div w3-include-html="sidebar.html"></div>
+            <div include-html="sidebar.html"></div>
                     <!-- Content Wrapper -->
             <div id="content-wrapper" class="d-flex flex-column">
                 <!-- Main Content -->
                 <div id="content">
-                    <div w3-include-html="topbar.html"></div>
+                    <div include-html="topbar.html"></div>
                 </div>
             </div>
         </div>
     
-    <script src="js/home.js"></script>
+    <script defer src="js/home.js"></script>
 </body>
 </html>

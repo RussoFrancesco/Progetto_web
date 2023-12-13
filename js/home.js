@@ -1,9 +1,12 @@
-document.addEventListener("DOMContentLoaded", function(){
+/*document.addEventListener("DOMContentLoaded", function(){
     userinfo();
     document.getElementById("logout_button").addEventListener("click", logoutProcedure);
-});
+});*/
 
-
+window.onload = function(){
+    userinfo();
+    document.getElementById("logout_button").addEventListener("click", logoutProcedure);
+}
 
 function userinfo(){    
     var user=document.getElementById("span_user");
