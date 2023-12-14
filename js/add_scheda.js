@@ -49,56 +49,38 @@ function insert_esercizi(data) {
             div.appendChild(checkboxLabel);
             div.appendChild(document.createElement('br'));
 
-            const hiddenInput1 = document.createElement('input');
-            hiddenInput1.type = 'number';
-            hiddenInput1.id = 'n_serie_' + nome;
-            hiddenInput1.classList.add('form-control', 'hidden-fields', 'form-control-user');
-            hiddenInput1.style.display = 'none';
-            hiddenInput1.setAttribute('data-checkbox', nome);
-            
+            const hiddenInputGroup = document.createElement('div');
+            hiddenInputGroup.classList.add('row');
 
-            const labelHidden1 = document.createElement('label');
-            labelHidden1.htmlFor = hiddenInput1.id;
-            labelHidden1.classList.add('form-control-label', 'hidden-fields');
-            labelHidden1.style.display = 'none';
-            labelHidden1.setAttribute('data-checkbox', nome);
-            labelHidden1.innerHTML = "Numero di serie";
-            div.appendChild(labelHidden1);
-            div.appendChild(hiddenInput1);
-            
-            const hiddenInput2 = document.createElement('input');
-            hiddenInput2.type = 'number';
-            hiddenInput2.id = 'n_rep_' + nome;
-            hiddenInput2.classList.add('form-control', 'hidden-fields', 'form-control-user');
-            hiddenInput2.style.display = 'none';
-            hiddenInput2.setAttribute('data-checkbox', nome);
-            
+            const createHiddenInput = (id, label) => {
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'number';
+                hiddenInput.id = id;
+                hiddenInput.classList.add('form-control', 'hidden-fields', 'form-control-user');
+                hiddenInput.style.display = 'none';
+                hiddenInput.setAttribute('data-checkbox', nome);
 
-            const labelHidden2 = document.createElement('label');
-            labelHidden2.htmlFor = hiddenInput2.id;
-            labelHidden2.classList.add('form-control-label', 'hidden-fields');
-            labelHidden2.style.display = 'none';
-            labelHidden2.setAttribute('data-checkbox', nome);
-            labelHidden2.innerHTML = "Numero di ripetizioni per serie";
-            div.appendChild(labelHidden2);
-            div.appendChild(hiddenInput2);
+                const labelHidden = document.createElement('label');
+                labelHidden.htmlFor = hiddenInput.id;
+                labelHidden.classList.add('form-control-label', 'hidden-fields');
+                labelHidden.style.display = 'none';
+                labelHidden.setAttribute('data-checkbox', nome);
+                labelHidden.innerHTML = label;
 
-            const hiddenInput3 = document.createElement('input');
-            hiddenInput3.type = 'number';
-            hiddenInput3.id = 'rec_' + nome;
-            hiddenInput3.classList.add('form-control', 'hidden-fields', 'form-control-user');
-            hiddenInput3.style.display = 'none';
-            hiddenInput3.setAttribute('data-checkbox', nome);
-            
+                const colDiv = document.createElement('div');
+                colDiv.classList.add('col-auto');
+                colDiv.appendChild(labelHidden);
+                colDiv.appendChild(hiddenInput);
 
-            const labelHidden3 = document.createElement('label');
-            labelHidden3.htmlFor = hiddenInput3.id;
-            labelHidden3.classList.add('form-control-label', 'hidden-fields');
-            labelHidden3.style.display = 'none';
-            labelHidden3.setAttribute('data-checkbox', nome);
-            labelHidden3.innerHTML = "Recupero tra le serie";
-            div.appendChild(labelHidden3);
-            div.appendChild(hiddenInput3);
+                return colDiv;
+            };
+
+            hiddenInputGroup.appendChild(createHiddenInput('n_serie_' + nome, 'Numero di serie'));
+            hiddenInputGroup.appendChild(createHiddenInput('n_rep_' + nome, 'Numero di ripetizioni per serie'));
+            hiddenInputGroup.appendChild(createHiddenInput('rec_' + nome, 'Recupero tra le serie'));
+
+            div.appendChild(hiddenInputGroup);
+
             
             // Aggiungi un event listener al cambio di stato della checkbox
             checkbox.addEventListener('change', function() {
