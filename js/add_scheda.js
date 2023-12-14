@@ -56,6 +56,7 @@ function insert_esercizi(data) {
                 const hiddenInput = document.createElement('input');
                 hiddenInput.type = 'number';
                 hiddenInput.id = id;
+                hiddenInput.setAttribute('min', '1');
                 hiddenInput.classList.add('form-control', 'hidden-fields', 'form-control-user');
                 hiddenInput.style.display = 'none';
                 hiddenInput.setAttribute('data-checkbox', nome);
@@ -77,7 +78,7 @@ function insert_esercizi(data) {
 
             hiddenInputGroup.appendChild(createHiddenInput('n_serie_' + nome, 'Numero di serie'));
             hiddenInputGroup.appendChild(createHiddenInput('n_rep_' + nome, 'Numero di ripetizioni per serie'));
-            hiddenInputGroup.appendChild(createHiddenInput('rec_' + nome, 'Recupero tra le serie'));
+            hiddenInputGroup.appendChild(createHiddenInput('rec_' + nome, 'Recupero tra le serie(sec)'));
 
             div.appendChild(hiddenInputGroup);
 
@@ -105,10 +106,19 @@ function componiScheda(){
     const data_inizio=data.getFullYear()+'-'+(data.getMonth()+1)+'-'+data.getDate();
 
     var checkboxes=document.getElementsByTagName("input");
+
+    var form_data = [];
     
     for(var i=0;i<checkboxes.length;i++){
         if (checkboxes[i].type=="checkbox" && checkboxes[i].checked == true){
-            var nome=checkboxes[i].id;
+            var esercizio = {};
+            esercizio.nome=checkboxes[i].id;
+            esercizio.n_serie = checkboxes[i+1].value;
+            esercizio.n_rep = checkboxes[i+2].value;
+            esercizio.rec = checkboxes[i+3].value;
+            console.log(esercizio);
+            form_data.push(esercizio);
         }
     }
+    console.log("array: ",...form_data);
 }
