@@ -62,19 +62,16 @@ elseif($method=='POST' && $table=='scheda'){
 
     //Recupero oggetto JSON con esercizi nella scheda 
     $input = json_decode(file_get_contents('php://input'),true);
-    $query="INSERT INTO `e_s`(`esercizio`, `scheda`, `serie`, `ripetizioni`, `recupero`) VALUES ";
+    $query="INSERT INTO `e_s`(`esercizio`, `scheda`, `serie`, `ripetizioni`, `recupero`) VALUES (?,?,?,?,?)";
     
-    for($i=0; $i<count($input)-1; $i++){
-        $query.="(".$input[$i]['nome'].", ".$id_scheda.", ".$input[$i]['n_serie'].
-        ", ".$input[$i]['n_rep'].", ".$input[$i]['rec']."),";
+    for($i=0; $i<count($input); $i++){
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "siiii", $input[$i]["nome"], $id_scheda, $input[$i]["n_serie"], $input[$i]["n_rep"], $input[$i]["rec"]);
+        mysqli_stmt_execute($stmt);
     }
-    $query.="('".$input[count($input)-1]['nome']."', ".$id_scheda.", ".$input[count($input)-1]['n_serie'].
-        ", ".$input[count($input)-1]['n_rep'].", ".$input[count($input)-1]['rec'].");";
 
+    echo "ok";
 
-    echo $query;
-
-    mysqli_query($conn, $query);
    
 
 }
