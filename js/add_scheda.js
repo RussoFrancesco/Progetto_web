@@ -1,5 +1,6 @@
 window.addEventListener('load', function() {
     get_esercizi();
+    document.getElementById("invio_scheda").addEventListener('click', componiScheda);
 });
 
 function get_esercizi() {
@@ -116,10 +117,16 @@ function insert_esercizi(data) {
 
 
 
-function submitForm(){
+function componiScheda(){
+    //Composizione data inizio
+    const data=new Date();
+    const data_inizio=data.getFullYear()+'-'+(data.getMonth()+1)+'-'+data.getDate();
 
-}
-
-
+    var checkboxes=document.getElementsByTagName("input");
     
-
+    for(var i=0;i<checkboxes.length;i++){
+        if (checkboxes[i].type=="checkbox" && checkboxes[i].checked == true){
+            var nome=checkboxes[i].id;
+        }
+    }
+}

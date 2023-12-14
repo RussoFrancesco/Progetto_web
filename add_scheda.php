@@ -94,7 +94,7 @@
                                 </div>
 
                                 <div class="text-center mt-3">
-                                    <button type="button" class="btn btn-primary">Aggiungi scheda</button>
+                                    <button type="button" class="btn btn-primary" id="invio_scheda">Aggiungi scheda</button>
                                 </div>
                             </form>
                         </div>
