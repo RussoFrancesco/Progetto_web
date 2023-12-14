@@ -36,7 +36,7 @@
         <div id="content-wrapper" class="d-flex flex-column">
             <!-- Main Content -->
             <div id="content">
-                <? include 'topbar.php';?>
+                <?php include 'topbar.php';?>
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-md-8">
