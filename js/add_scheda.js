@@ -3,6 +3,8 @@ window.addEventListener('load', function() {
     document.getElementById("invio_scheda").addEventListener('click', componiScheda);
 });
 
+
+
 function get_esercizi() {
     req = new XMLHttpRequest();
     
@@ -103,22 +105,37 @@ function insert_esercizi(data) {
 function componiScheda(){
     //Composizione data inizio
     const data=new Date();
-    const data_inizio=data.getFullYear()+'-'+(data.getMonth()+1)+'-'+data.getDate();
+    var data_inizio=data.toISOString().split('T')[0];
 
-    var checkboxes=document.getElementsByTagName("input");
+    
+
+    //recupero tutti gli input elements 
+    var form_fields=document.getElementsByTagName("input");
 
     var form_data = [];
     
-    for(var i=0;i<checkboxes.length;i++){
-        if (checkboxes[i].type=="checkbox" && checkboxes[i].checked == true){
+    for(var i=0;i<form_fields.length;i++){
+        /*controllo che gli input siano type checkbox e che sono stati cliccati, se cosi' prendo i dati correlati
+            numero di serie, numero di ripetizioni, numero di recupero tra le serie  e li metto in un'array    */
+        if (form_fields[i].type=="checkbox" && form_fields[i].checked == true){
             var esercizio = {};
-            esercizio.nome=checkboxes[i].id;
-            esercizio.n_serie = checkboxes[i+1].value;
-            esercizio.n_rep = checkboxes[i+2].value;
-            esercizio.rec = checkboxes[i+3].value;
+            esercizio.nome=form_fields[i].id;
+            esercizio.n_serie = form_fields[i+1].value;
+            esercizio.n_rep = form_fields[i+2].value;
+            esercizio.rec = form_fields[i+3].value;
             console.log(esercizio);
             form_data.push(esercizio);
         }
     }
-    console.log("array: ",...form_data);
+    //console.log("array: ",...form_data);
+
+    var form_data_json = JSON.stringify(form_data);
+    console.log(form_data_json);
+
+    var req= new XMLHttpRequest();
+    req.onload = function() {
+        console.log(this.responseText);
+    }
+    req.open('post', 'php/logicaSchede.php/scheda/'+data_inizio, true);
+    req.send(form_data_json);
 }
