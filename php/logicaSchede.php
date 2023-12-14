@@ -72,8 +72,6 @@ elseif($method=='POST' && $table=='scheda'){
 
     echo "ok";
 
-   
-
 }
 
 
