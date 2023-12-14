@@ -12,7 +12,7 @@ $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
 
 if($method=='GET' && $request[0]=="storico" && $table=='schede'){
 
-    $id_user=getUserFromSession();
+    $id_user=getUserFromSession($conn);
 
     $query="SELECT schede.id as id_scheda, data_inizio,data_fine
     FROM `schede` 
@@ -62,17 +62,20 @@ elseif($method=='POST' && $table=='scheda'){
 
     //Recupero oggetto JSON con esercizi nella scheda 
     $input = json_decode(file_get_contents('php://input'),true);
-    $query="INSERT INTO `e_s`(`esercizio`, `scheda`, `n_serie`, `n_rep`, `rec`) VALUES ";
+    $query="INSERT INTO `e_s`(`esercizio`, `scheda`, `serie`, `ripetizioni`, `recupero`) VALUES ";
     
     for($i=0; $i<count($input)-1; $i++){
         $query.="(".$input[$i]['nome'].", ".$id_scheda.", ".$input[$i]['n_serie'].
         ", ".$input[$i]['n_rep'].", ".$input[$i]['rec']."),";
     }
-    $query.="(".$input[count($input)-1]['nome'].", ".$id_scheda.", ".$input[count($input)-1]['n_serie'].
-        ", ".$input[count($input)-1]['n_rep'].", ".$input[count($input)-1]['rec'].")";
+    $query.="('".$input[count($input)-1]['nome']."', ".$id_scheda.", ".$input[count($input)-1]['n_serie'].
+        ", ".$input[count($input)-1]['n_rep'].", ".$input[count($input)-1]['rec'].");";
 
-   
+
     echo $query;
+
+    mysqli_query($conn, $query);
+   
 
 }
 
