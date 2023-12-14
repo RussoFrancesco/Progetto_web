@@ -71,8 +71,8 @@ elseif($method=='POST' && $table=='scheda'){
     $query.="(".$input[count($input)-1]['nome'].", ".$id_scheda.", ".$input[count($input)-1]['n_serie'].
         ", ".$input[count($input)-1]['n_rep'].", ".$input[count($input)-1]['rec'].")";
 
+   
     echo $query;
-    
 
 }
 
