@@ -1,6 +1,6 @@
 window.addEventListener('load', function() {
     get_esercizi();
-    document.getElementById("invio_scheda").addEventListener('click', componiScheda);
+    document.getElementById("invio_scheda").addEventListener('click', check_scheda);
 });
 
 
@@ -61,6 +61,7 @@ function insert_esercizi(data) {
                 hiddenInput.setAttribute('min', '1');
                 hiddenInput.classList.add('form-control', 'hidden-fields', 'form-control-user');
                 hiddenInput.style.display = 'none';
+                hiddenInput.setAttribute("value", '1');
                 hiddenInput.setAttribute('data-checkbox', nome);
 
                 const labelHidden = document.createElement('label');
@@ -99,12 +100,6 @@ function insert_esercizi(data) {
                         var label = document.getElementById("label"+field.id);
                         label.style.display = this.checked ? 'block' : 'none';
                         field.style.display = this.checked ? 'block' : 'none';
-                        if(this.checked){
-                            field.required= true;
-                        }
-                        else{
-                            field.required = false;
-                        }
                     }
                 });
             });
@@ -112,6 +107,25 @@ function insert_esercizi(data) {
     });
 }
 
+
+function check_scheda() {
+    var form_fields = document.getElementsByTagName("input");
+    for (var i = 0; i < form_fields.length; i++) {
+        /*controllo che gli input siano type checkbox e che sono stati cliccati, se cosi' prendo i dati correlati
+            numero di serie, numero di ripetizioni, numero di recupero tra le serie e li metto in un'array*/
+        if (form_fields[i].type == "checkbox" && form_fields[i].checked == true) {
+            // Controllo che i valori dei campi numerici siano maggiori o uguali a 1
+            var n_serie = parseInt(form_fields[i + 1].value);
+            var n_rep = parseInt(form_fields[i + 2].value);
+            var rec = parseInt(form_fields[i + 3].value);
+
+            if (isNaN(n_serie) || isNaN(n_rep) || isNaN(rec) || n_serie < 1 || n_rep < 1 || rec < 1) {
+                return alert("Compilare i campi numerici in modo corretto (valori maggiori o uguali a 1)");
+            }
+        }
+    }
+    componiScheda();
+}
 
 
 function componiScheda(){
