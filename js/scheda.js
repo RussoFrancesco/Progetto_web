@@ -41,9 +41,9 @@ function visualizzaSchede(){
                 const h3 = document.createElement("h3");
                 card_body.appendChild(h3);
 
-                var botton_chiusura=document.createElement("button");
+                /*var botton_chiusura=document.createElement("button");
                 botton_chiusura.classList("btn btn-primary");
-                
+                */
 
 
 

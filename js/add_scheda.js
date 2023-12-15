@@ -61,7 +61,6 @@ function insert_esercizi(data) {
                 hiddenInput.setAttribute('min', '1');
                 hiddenInput.classList.add('form-control', 'hidden-fields', 'form-control-user');
                 hiddenInput.style.display = 'none';
-                hiddenInput.setAttribute("value", '1');
                 hiddenInput.setAttribute('data-checkbox', nome);
 
                 const labelHidden = document.createElement('label');
