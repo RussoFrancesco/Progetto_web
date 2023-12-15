@@ -14,10 +14,10 @@ if($method=='GET' && $request[0]=="storico" && $table=='schede'){
 
     $id_user=getUserFromSession($conn);
 
-    $query="SELECT schede.id as id_scheda, data_inizio,data_fine
+    $query="SELECT schede.id as id_scheda, data_inizio, data_fine
     FROM `schede` 
     WHERE user=? ORDER BY data_fine DESC";
-
+    
     $stmt=mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt, "i", $id_user);
     mysqli_stmt_execute($stmt);

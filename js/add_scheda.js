@@ -65,6 +65,7 @@ function insert_esercizi(data) {
 
                 const labelHidden = document.createElement('label');
                 labelHidden.htmlFor = hiddenInput.id;
+                labelHidden.id = "label"+hiddenInput.id;
                 labelHidden.classList.add('form-control-label', 'hidden-fields');
                 labelHidden.style.display = 'none';
                 labelHidden.setAttribute('data-checkbox', nome);
@@ -88,11 +89,22 @@ function insert_esercizi(data) {
             // Aggiungi un event listener al cambio di stato della checkbox
             checkbox.addEventListener('change', function() {
                 const nomeCheckbox = this.id;
-                const hiddenFields = div.querySelectorAll('.hidden-fields');
+                //const hiddenFields = div.querySelectorAll('.hidden-fields');
+                const hiddenFields = [];
+                hiddenFields.push(document.getElementById('n_serie_' + nome));
+                hiddenFields.push(document.getElementById('n_rep_' + nome));
+                hiddenFields.push(document.getElementById('rec_' + nome));
                 hiddenFields.forEach(field => {
                     if (field.getAttribute('data-checkbox') === nomeCheckbox) {
+                        var label = document.getElementById("label"+field.id);
+                        label.style.display = this.checked ? 'block' : 'none';
                         field.style.display = this.checked ? 'block' : 'none';
-                     
+                        if(this.checked){
+                            field.required= true;
+                        }
+                        else{
+                            field.required = false;
+                        }
                     }
                 });
             });
@@ -134,7 +146,9 @@ function componiScheda(){
 
     var req= new XMLHttpRequest();
     req.onload = function() {
-        console.log(this.responseText);
+        if(this.responseText=='ok'){
+            window.location.href="schede.php";
+        }
     }
     req.open('post', 'php/logicaSchede.php/scheda/'+data_inizio, true);
     req.send(form_data_json);
