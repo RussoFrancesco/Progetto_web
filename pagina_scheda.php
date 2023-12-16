@@ -49,17 +49,20 @@
                             <div id="scheda_attuale"></div>
                         </div>
                     </div>
-                    <div class="row justify-content-end">
+                    <div class="row justify-content-end mt-3">
                         <div class="col-auto">
                             <button class="btn btn-primary btn-lg" id="modifica_scheda">Modifica Scheda</button>
                         </div>
-                    </div>
-                    <div class="row justify-content-end">
+                        <div class="col-auto" id="modifica_buttons" style="display: none;">
+                            <button class="btn btn-secondary btn-lg" id="annulla_modifica">Annulla Modifica</button>
+                            <button class="btn btn-success btn-lg" id="conferma_modifica">Conferma Modifica</button>
+                        </div>
                         <div class="col-auto">
-                            <button class="btn btn-primary btn-lg" id="button_terminazione_scheda" href="#" data-toggle="modal" data-target="#Modal_chiusura" style="display:none">Termina Scheda</button>
+                            <button class="btn btn-danger btn-lg" id="button_terminazione_scheda" data-toggle="modal" data-target="#Modal_chiusura" style="display:none">Termina Scheda</button>
                         </div>
                     </div>
                 </div>
+
             </div>
     </div>
 

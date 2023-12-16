@@ -2,11 +2,20 @@ var id = window.location.search.substring(0).replace("?id=", "");
 var gruppi = new Set();
 var data;
 
+var chiudi_scheda = document.getElementById('button_terminazione_scheda');
+var modifica_scheda = document.getElementById("modifica_scheda");
+var div_modifica = document.getElementById("modifica_buttons");
+var annulla_modifica = document.getElementById("annulla_modifica");
+var conferma_modifica = document.getElementById("conferma_modifica");
+
 
 window.onload = function(){
     get_scheda();
-    document.getElementById("modifica_scheda").addEventListener('click', abilita_modifica);
-    document.getElementById('button_terminazione_scheda').addEventListener('click', termina_scheda);
+    modifica_scheda.addEventListener('click', abilita_modifica);
+    chiudi_scheda.addEventListener('click', termina_scheda);
+    annulla_modifica.addEventListener('click', function(){
+        location.reload();
+    });
 }
 
 function get_scheda() {
@@ -44,44 +53,8 @@ function get_esercizi_from_scheda(){
             gruppi.add(data[i]['gruppo']);
         }
 
-        // Trasformazione del set in un array
-        gruppi = Array.from(gruppi);
+        crea_div();
 
-        // Per ogni gruppo, crea un elemento 'ul' e un elemento 'h4'
-        // Creazione delle card per ciascun gruppo
-gruppi.forEach(gruppo => {
-    var card = document.createElement("div");
-    card.setAttribute("class", "card mt-3");
-    card.setAttribute("id", gruppo);
-
-    var card_header = document.createElement("div");
-    card_header.setAttribute("class", "card-header");
-    card_header.innerHTML = `<h4>${gruppo}</h4>`;
-
-    var card_body = document.createElement("div");
-    card_body.setAttribute("class", "card-body");
-
-    card.appendChild(card_header);
-    card.appendChild(card_body);
-
-    document.getElementById("scheda_attuale").appendChild(card);
-});
-
-// Aggiunta degli esercizi alle rispettive card
-for (var i = 0; i < data.length; i++) {
-    var card_body = document.getElementById(data[i]['gruppo']).getElementsByClassName('card-body')[0];
-
-    var div = document.createElement("div");
-    div.setAttribute("id", data[i]['esercizio']);
-
-    var text = document.createElement("p");
-    text.innerHTML = data[i]['esercizio'] + ": " + data[i]['serie'] + "x" + data[i]['ripetizioni'] + " recupero " + data[i]["recupero"];
-
-    div.appendChild(text);
-    card_body.appendChild(div);
-}
-
-        
     }
 
     req.open('GET', "php/logicaSchede.php/e_s/schede/esercizi/"+id, true);
@@ -114,40 +87,107 @@ function termina_scheda(){
 
 }
 
+function crea_div(){
+    // Trasformazione del set in un array
+    gruppi = Array.from(gruppi);
+        // Per ogni gruppo, crea un elemento 'ul' e un elemento 'h4'
+        // Creazione delle card per ciascun gruppo
+    gruppi.forEach(gruppo => {
+        var card = document.createElement("div");
+        card.setAttribute("class", "card mt-3");
+        card.setAttribute("id", gruppo);
+
+        var card_header = document.createElement("div");
+        card_header.setAttribute("class", "card-header");
+        card_header.innerHTML = `<h4>${gruppo}</h4>`;
+
+        var card_body = document.createElement("div");
+        card_body.setAttribute("class", "card-body");
+
+        card.appendChild(card_header);
+        card.appendChild(card_body);
+
+        document.getElementById("scheda_attuale").appendChild(card);
+    });
+
+    // Aggiunta degli esercizi alle rispettive card
+    for (var i = 0; i < data.length; i++) {
+        var card_body = document.getElementById(data[i]['gruppo']).getElementsByClassName('card-body')[0];
+
+        var div = document.createElement("div");
+        div.setAttribute("id", data[i]['esercizio']);
+
+        var text = document.createElement("p");
+        text.innerHTML = data[i]['esercizio'] + ": " + data[i]['serie'] + "x" + data[i]['ripetizioni'] + " recupero " + data[i]["recupero"];
+
+        div.appendChild(text);
+        card_body.appendChild(div);
+    }
+}
+
 function abilita_modifica() {
     for (var i = 0; i < data.length; i++) {
         var esercizio = document.getElementById(data[i]['esercizio']); // Recupera l'elemento esercizio
-        
-        // Creazione di un div per contenere la checkbox e la label
+
+        // Creazione di un div per contenere la checkbox, la label e i campi input
         var container = document.createElement('div');
-        container.classList.add('form-check');
-    
+        container.classList.add('form-check', 'd-flex', 'flex-row', 'align-items-center');
+
         // Creazione della checkbox
         var checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
+        checkbox.checked = true;
         checkbox.id = 'checkbox_' + data[i]['esercizio'];
         checkbox.name = data[i]['esercizio'];
         checkbox.classList.add('form-check-input'); // Aggiungi classe per lo stile Bootstrap (o personalizzato)
-    
+
         // Creazione della label associata alla checkbox
         var label_checkbox = document.createElement('label');
         label_checkbox.htmlFor = 'checkbox_' + data[i]['esercizio'];
-        label_checkbox.classList.add('form-check-label'); // Aggiungi classe per lo stile Bootstrap (o personalizzato)
+        label_checkbox.classList.add('form-check-label', 'mr-3'); // Aggiungi classe per lo stile Bootstrap (o personalizzato)
         label_checkbox.innerHTML = data[i]['esercizio'];
-    
+
         // Aggiunta della checkbox e della label al contenitore
         container.appendChild(checkbox);
         container.appendChild(label_checkbox);
-    
-        // Sostituzione del paragrafo dell'esercizio con il contenitore della checkbox e della label
+
+        const createInput = (id, label, value) => {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.id = id;
+            input.setAttribute('value', value);
+            input.setAttribute('min', '1');
+            input.classList.add('form-control', 'form-control-user');
+        
+            const labelElement = document.createElement('label');
+            labelElement.htmlFor = input.id;
+            labelElement.id = "label" + input.id;
+            labelElement.classList.add('form-control-label');
+            labelElement.innerHTML = label;
+        
+            const colDiv = document.createElement('div');
+            colDiv.classList.add('col-auto');
+            colDiv.appendChild(labelElement);
+            colDiv.appendChild(input);
+        
+            return colDiv;
+        };
+
+        container.appendChild(createInput('n_serie_'+data[i]['esercizio'], 'Numero di serie', data[i]['serie']));
+        container.appendChild(createInput('n_rep_'+data[i]['esercizio'], 'Numero di ripetizioni per serie', data[i]['ripetizioni']));
+        container.appendChild(createInput('rec_'+data[i]['esercizio'], 'Recupero tra le serie(sec)', data[i]['recupero']));
+        
+
+        // Sostituzione del paragrafo dell'esercizio con il contenitore della checkbox, della label e dei campi input
         if (esercizio && esercizio.getElementsByTagName('p').length > 0) {
             var paragrafoEsercizio = esercizio.getElementsByTagName('p')[0]; // Recupera il paragrafo dell'esercizio
             esercizio.removeChild(paragrafoEsercizio); // Rimuove il paragrafo dell'esercizio
             esercizio.appendChild(container); // Aggiunge il contenitore al posto del paragrafo
         }
     }
-    
-    
 
+    modifica_scheda.style.display = 'none';
+    div_modifica.style.display = 'block';
 }
+
 
