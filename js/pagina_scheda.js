@@ -1,5 +1,5 @@
 var id = window.location.search.substring(0).replace("?id=", "");
-var attuale = false; //FLAG PER VEDERE SE LA SCHEDA È ATTUALE O PASSATA
+
 
 window.onload = function(){
     get_scheda();
@@ -13,12 +13,14 @@ function get_scheda() {
     console.log(id);
 
     req.onload = function(){
+        var data = JSON.parse(this.responseText)
+        console.log(data['data_fine']);
         if (this.responseText == 'ERROR'){
             alert("Errore");
             window.location.href = "schede.php";
         }
-        if (this.responseText['data_fine']==null){
-            attuale = true;
+        if (data['data_fine']==null){
+            document.getElementById('button_terminazione_scheda').style.display = "block";
         }
         get_esercizi_from_scheda();
     }
@@ -30,7 +32,6 @@ function get_scheda() {
 
 
 function get_esercizi_from_scheda(){
-    console.log(attuale);
     var req = new XMLHttpRequest();
 
     req.onload = function(){
@@ -67,19 +68,10 @@ function get_esercizi_from_scheda(){
             li.innerHTML=data[i]['esercizio']+": "+data[i]['serie']+"x"+data[i]['ripetizioni']+" recupero "+data[i]["recupero"];
             document.getElementById(data[i]['gruppo']).appendChild(li);
         }
-
-        if(attuale){
-            document.getElementById("termina_scheda").style.display="block";
-        }
-        
     }
 
     req.open('GET', "php/logicaSchede.php/e_s/schede/esercizi/"+id, true);
     req.send();
-}
-
-function conferma_terminazione_scheda(){
-    
 }
 
 function termina_scheda(){

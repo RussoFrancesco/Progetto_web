@@ -56,7 +56,7 @@
                     </div>
                     <div class="row justify-content-end">
                         <div class="col-auto">
-                            <button class="btn btn-primary btn-lg" id="termina_scheda" href="#" data-toggle="modal" data-target="#Modal_chiusura">Termina Scheda</button>
+                            <button class="btn btn-primary btn-lg" id="button_terminazione_scheda" href="#" data-toggle="modal" data-target="#Modal_chiusura" style="display:none">Termina Scheda</button>
                         </div>
                     </div>
                 </div>
