@@ -93,13 +93,16 @@ function termina_scheda(){
     console.log(formattedDate);
 
     req.onload = function(){
+
+        console.log("risposta server: "+this.responseText);
+
         if (this.responseText == 'ok'){
             window.location.href = "schede.php";
         }
-        console.log(this.responseText);
+
     }
 
-    req.open('PUT', "php/logicaSchede.php/scheda/"+id+"/"+formattedDate, true);
+    req.open('PUT', "php/logicaSchede.php/schede/"+id+"/"+formattedDate, true);
     req.send();
 
 }
