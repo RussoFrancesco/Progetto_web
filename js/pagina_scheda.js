@@ -3,6 +3,7 @@ var attuale = false; //FLAG PER VEDERE SE LA SCHEDA È ATTUALE O PASSATA
 
 window.onload = function(){
     get_scheda();
+    document.getElementById("modifica_scheda").addEventListener('click', abilita_modifica);
     document.getElementById('button_terminazione_scheda').addEventListener('click', termina_scheda);
 }
 
