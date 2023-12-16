@@ -1,5 +1,6 @@
 var id = window.location.search.substring(0).replace("?id=", "");
 var gruppi = new Set();
+var data;
 
 
 window.onload = function(){
@@ -14,7 +15,7 @@ function get_scheda() {
     console.log(id);
 
     req.onload = function(){
-        var data = JSON.parse(this.responseText);
+        data = JSON.parse(this.responseText);
         if (this.responseText == 'ERROR'){
             alert("Errore");
             window.location.href = "schede.php";
@@ -36,7 +37,7 @@ function get_esercizi_from_scheda(){
 
     req.onload = function(){
         console.log(this.responseText);
-        var data = JSON.parse(req.responseText);
+        data = JSON.parse(req.responseText);
 
         // Creazione di un set di gruppi unici dai dati ricevuti per dividere la scheda in gruppi muscolari separati
         for(var i=0; i<data.length; i++){
@@ -45,8 +46,6 @@ function get_esercizi_from_scheda(){
 
         // Trasformazione del set in un array
         gruppi = Array.from(gruppi);
-
-        console.log(typeof(gruppi));
 
         // Per ogni gruppo, crea un elemento 'ul' e un elemento 'h4'
         // Creazione delle card per ciascun gruppo
@@ -72,14 +71,14 @@ gruppi.forEach(gruppo => {
 for (var i = 0; i < data.length; i++) {
     var card_body = document.getElementById(data[i]['gruppo']).getElementsByClassName('card-body')[0];
 
-    var li = document.createElement("div");
-    li.setAttribute("id", data[i]['esercizio']);
+    var div = document.createElement("div");
+    div.setAttribute("id", data[i]['esercizio']);
 
     var text = document.createElement("p");
     text.innerHTML = data[i]['esercizio'] + ": " + data[i]['serie'] + "x" + data[i]['ripetizioni'] + " recupero " + data[i]["recupero"];
 
-    li.appendChild(text);
-    card_body.appendChild(li);
+    div.appendChild(text);
+    card_body.appendChild(div);
 }
 
         
@@ -116,9 +115,39 @@ function termina_scheda(){
 }
 
 function abilita_modifica() {
-    console.log(gruppi);
-    for(i=0; i<gruppi.length; i++) {
-        console.log(document.getElementById(gruppi[i]));
+    for (var i = 0; i < data.length; i++) {
+        var esercizio = document.getElementById(data[i]['esercizio']); // Recupera l'elemento esercizio
+        
+        // Creazione di un div per contenere la checkbox e la label
+        var container = document.createElement('div');
+        container.classList.add('form-check');
+    
+        // Creazione della checkbox
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = 'checkbox_' + data[i]['esercizio'];
+        checkbox.name = data[i]['esercizio'];
+        checkbox.classList.add('form-check-input'); // Aggiungi classe per lo stile Bootstrap (o personalizzato)
+    
+        // Creazione della label associata alla checkbox
+        var label_checkbox = document.createElement('label');
+        label_checkbox.htmlFor = 'checkbox_' + data[i]['esercizio'];
+        label_checkbox.classList.add('form-check-label'); // Aggiungi classe per lo stile Bootstrap (o personalizzato)
+        label_checkbox.innerHTML = data[i]['esercizio'];
+    
+        // Aggiunta della checkbox e della label al contenitore
+        container.appendChild(checkbox);
+        container.appendChild(label_checkbox);
+    
+        // Sostituzione del paragrafo dell'esercizio con il contenitore della checkbox e della label
+        if (esercizio && esercizio.getElementsByTagName('p').length > 0) {
+            var paragrafoEsercizio = esercizio.getElementsByTagName('p')[0]; // Recupera il paragrafo dell'esercizio
+            esercizio.removeChild(paragrafoEsercizio); // Rimuove il paragrafo dell'esercizio
+            esercizio.appendChild(container); // Aggiunge il contenitore al posto del paragrafo
+        }
     }
+    
+    
+
 }
 
