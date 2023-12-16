@@ -128,6 +128,27 @@ elseif ($method == 'GET' && $table == 'e_s' && $request[0]=='schede' && $request
         echo "ERROR";
     }
     
+}elseif ($method == "GET" && $table == 'esercizi' && isset($request[0])){
+    $id_scheda=array_shift($request);
+
+    $query = "SELECT esercizi.nome, esercizi.gruppo FROM esercizi 
+              WHERE esercizi.nome NOT IN (SELECT e_s.esercizio
+                                            FROM e_s, schede, esercizi 
+                                            WHERE e_s.scheda = schede.id 
+                                            AND e_s.esercizio = esercizi.nome 
+                                            AND e_s.scheda = ?)";
+    
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $id_scheda);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $rows=[];
+    while($row=mysqli_fetch_assoc($res)){
+        $rows[]=$row; // Aggiungi ogni riga all'array $rows
+    }
+    $rows=json_encode($rows);
+    echo $rows;
+
 }
 
 

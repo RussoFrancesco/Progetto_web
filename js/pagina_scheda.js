@@ -188,6 +188,109 @@ function abilita_modifica() {
 
     modifica_scheda.style.display = 'none';
     div_modifica.style.display = 'block';
+    get_esercizi_from_db();
+}
+
+function insert_esercizi(data) {
+    const gruppiDiv = {
+        pettorali: 'pettorali',
+        dorsali: 'dorsali',
+        spalle: 'spalle',
+        tricipiti: 'tricipiti',
+        bicipiti: 'bicipiti',
+        addome: 'addome',
+        gambe: 'gambe'
+    };
+
+    data.forEach(esercizio => {
+        const gruppo = esercizio['gruppo'];
+        const nome = esercizio['nome'];
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.name = nome;
+        checkbox.id = nome;
+        checkbox.classList.add('form-check-input');
+
+        const checkboxLabel = document.createElement('label');
+        checkboxLabel.htmlFor = nome;
+        checkboxLabel.classList.add('form-check-label');
+        checkboxLabel.appendChild(document.createTextNode(nome));
+
+        const div = document.getElementById(gruppiDiv[gruppo]);
+        if (div) {
+            div.appendChild(checkbox);
+            div.appendChild(checkboxLabel);
+            div.appendChild(document.createElement('br'));
+
+            const hiddenInputGroup = document.createElement('div');
+            hiddenInputGroup.classList.add('row');
+
+            const createHiddenInput = (id, label) => {
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'number';
+                hiddenInput.id = id;
+                hiddenInput.setAttribute('min', '1');
+                hiddenInput.classList.add('form-control', 'hidden-fields', 'form-control-user');
+                hiddenInput.style.display = 'none';
+                hiddenInput.setAttribute('data-checkbox', nome);
+
+                const labelHidden = document.createElement('label');
+                labelHidden.htmlFor = hiddenInput.id;
+                labelHidden.id = "label"+hiddenInput.id;
+                labelHidden.classList.add('form-control-label', 'hidden-fields');
+                labelHidden.style.display = 'none';
+                labelHidden.setAttribute('data-checkbox', nome);
+                labelHidden.innerHTML = label;
+
+                const colDiv = document.createElement('div');
+                colDiv.classList.add('col-auto');
+                colDiv.appendChild(labelHidden);
+                colDiv.appendChild(hiddenInput);
+
+                return colDiv;
+            };
+
+            hiddenInputGroup.appendChild(createHiddenInput('n_serie_' + nome, 'Numero di serie'));
+            hiddenInputGroup.appendChild(createHiddenInput('n_rep_' + nome, 'Numero di ripetizioni per serie'));
+            hiddenInputGroup.appendChild(createHiddenInput('rec_' + nome, 'Recupero tra le serie(sec)'));
+
+            div.appendChild(hiddenInputGroup);
+
+            
+            // Aggiungi un event listener al cambio di stato della checkbox
+            checkbox.addEventListener('change', function() {
+                const nomeCheckbox = this.id;
+                //const hiddenFields = div.querySelectorAll('.hidden-fields');
+                const hiddenFields = [];
+                hiddenFields.push(document.getElementById('n_serie_' + nome));
+                hiddenFields.push(document.getElementById('n_rep_' + nome));
+                hiddenFields.push(document.getElementById('rec_' + nome));
+                hiddenFields.forEach(field => {
+                    if (field.getAttribute('data-checkbox') === nomeCheckbox) {
+                        var label = document.getElementById("label"+field.id);
+                        label.style.display = this.checked ? 'block' : 'none';
+                        field.style.display = this.checked ? 'block' : 'none';
+                    }
+                });
+            });
+        }
+    });
+}
+
+function get_esercizi_from_db(){
+    var req = new XMLHttpRequest();
+
+    req.onload = function(){
+            console.log('get_esercizi_from_db');
+            var h3 = document.createElement('h3');
+            h3.innerHTML = "Esercizi non presenti nella tua scheda";
+            document.getElementById('esercizi_mancanti').appendChild(h3);
+            var add_esercizi = JSON.parse(this.responseText);
+    }
+
+    req.open('GET', 'php/logicaSchede.php/esercizi/'+id, true);
+    req.send();
 }
 
 

@@ -47,6 +47,8 @@
                         <div class="col">
                             <h1>Scheda attuale</h1>
                             <div id="scheda_attuale"></div>
+                            <br>
+                            <div id="esercizi_mancanti"></div>
                         </div>
                     </div>
                     <div class="row justify-content-end mt-3">
