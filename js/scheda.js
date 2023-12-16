@@ -34,6 +34,7 @@ function visualizzaSchede(){
                 } else {
                     div = scheda_attuale;
                 }
+
                 // Crea un elemento div per la card e lo aggiunge al div corretto
                 const card = document.createElement("div");
                 card.setAttribute("class", "card mt-2 span");
@@ -59,18 +60,8 @@ function visualizzaSchede(){
                 hiddenInput.id = scheda.id_scheda;
                 card_body.appendChild(hiddenInput);
             
-            
-                h3.innerHTML = "Scheda del "+scheda.data_inizio;
-                
-                // Se la scheda è nell'attuale, crea e aggiunge un bottone "Termina la scheda"
-                if(div == scheda_attuale){
-                    var button_chiusura = document.createElement("button");
-                    button_chiusura.classList = "btn btn-primary";
-                    button_chiusura.textContent = "Termina la scheda ";
-                    button_chiusura.setAttribute("id", "button_chiusura");
-                    button_chiusura.style.float = "right";
-                    card_body.appendChild(button_chiusura);
-                }
+        
+                h3.innerHTML = "Scheda del "+scheda.data_inizio+", chiusa il "+scheda.data_fine;
             });
         }
     }
