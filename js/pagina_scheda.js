@@ -3,7 +3,6 @@ var attuale = false; //FLAG PER VEDERE SE LA SCHEDA È ATTUALE O PASSATA
 
 window.onload = function(){
     get_scheda();
-    document.getElementById('modifica_scheda').addEventListener('click', abilita_modifica);
     document.getElementById('termina_scheda').addEventListener('click', termina_scheda);
 }
 
@@ -94,13 +93,16 @@ function termina_scheda(){
     console.log(formattedDate);
 
     req.onload = function(){
+
+        console.log("risposta server: "+this.responseText);
+
         if (this.responseText == 'ok'){
             window.location.href = "schede.php";
         }
-        console.log(this.responseText);
+
     }
 
-    req.open('PUT', "php/logicaSchede.php/scheda/"+id+"/"+formattedDate, true);
+    req.open('PUT', "php/logicaSchede.php/schede/"+id+"/"+formattedDate, true);
     req.send();
 
 }
