@@ -1,4 +1,5 @@
 var id = window.location.search.substring(0).replace("?id=", "");
+var gruppi = new Set();
 
 
 window.onload = function(){
@@ -13,8 +14,7 @@ function get_scheda() {
     console.log(id);
 
     req.onload = function(){
-        var data = JSON.parse(this.responseText)
-        console.log(data['data_fine']);
+        var data = JSON.parse(this.responseText);
         if (this.responseText == 'ERROR'){
             alert("Errore");
             window.location.href = "schede.php";
@@ -39,7 +39,6 @@ function get_esercizi_from_scheda(){
         var data = JSON.parse(req.responseText);
 
         // Creazione di un set di gruppi unici dai dati ricevuti per dividere la scheda in gruppi muscolari separati
-        var gruppi = new Set();
         for(var i=0; i<data.length; i++){
             gruppi.add(data[i]['gruppo']);
         }
@@ -50,24 +49,40 @@ function get_esercizi_from_scheda(){
         console.log(typeof(gruppi));
 
         // Per ogni gruppo, crea un elemento 'ul' e un elemento 'h4'
-        gruppi.forEach(gruppo => {
-            var ul = document.createElement("ul");
-            ul.setAttribute("class", "list-group list-group-flush");
-            ul.setAttribute("id", gruppo);
-            var h4 = document.createElement("h4");
-            h4.innerHTML = gruppo;
-            document.getElementById("scheda_attuale").appendChild(h4);
-            document.getElementById("scheda_attuale").appendChild(ul);
-        });
+        // Creazione delle card per ciascun gruppo
+gruppi.forEach(gruppo => {
+    var card = document.createElement("div");
+    card.setAttribute("class", "card mt-3");
+    card.setAttribute("id", gruppo);
 
-        // Per ogni esercizio nei dati, crea un elemento 'li' e lo aggiunge al relativo 'ul' del gruppo
-        for(i=0; i<data.length; i++){
-            var li = document.createElement("li");
-            li.setAttribute("class", "list-group-item");
-            li.setAttribute("id", data[i]['esercizio']);
-            li.innerHTML=data[i]['esercizio']+": "+data[i]['serie']+"x"+data[i]['ripetizioni']+" recupero "+data[i]["recupero"];
-            document.getElementById(data[i]['gruppo']).appendChild(li);
-        }
+    var card_header = document.createElement("div");
+    card_header.setAttribute("class", "card-header");
+    card_header.innerHTML = `<h4>${gruppo}</h4>`;
+
+    var card_body = document.createElement("div");
+    card_body.setAttribute("class", "card-body");
+
+    card.appendChild(card_header);
+    card.appendChild(card_body);
+
+    document.getElementById("scheda_attuale").appendChild(card);
+});
+
+// Aggiunta degli esercizi alle rispettive card
+for (var i = 0; i < data.length; i++) {
+    var card_body = document.getElementById(data[i]['gruppo']).getElementsByClassName('card-body')[0];
+
+    var li = document.createElement("div");
+    li.setAttribute("id", data[i]['esercizio']);
+
+    var text = document.createElement("p");
+    text.innerHTML = data[i]['esercizio'] + ": " + data[i]['serie'] + "x" + data[i]['ripetizioni'] + " recupero " + data[i]["recupero"];
+
+    li.appendChild(text);
+    card_body.appendChild(li);
+}
+
+        
     }
 
     req.open('GET', "php/logicaSchede.php/e_s/schede/esercizi/"+id, true);
@@ -100,6 +115,10 @@ function termina_scheda(){
 
 }
 
-function abilita_modifica(){
-    
+function abilita_modifica() {
+    console.log(gruppi);
+    for(i=0; i<gruppi.length; i++) {
+        console.log(document.getElementById(gruppi[i]));
+    }
 }
+
