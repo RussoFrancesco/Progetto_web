@@ -72,8 +72,60 @@ elseif($method=='POST' && $table=='scheda'){
 
     echo "ok";
 
-}
+}//RECUPERO SCHEDA CON ID 
+elseif ($method == 'GET' && $table == 'scheda' && isset($request[0]) ) {
 
+    $id_user=getUserFromSession($conn);
+    $id_scheda = array_shift($request);
+    $query = "SELECT * FROM `schede` WHERE id=? AND user=?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "ii", $id_scheda, $id_user);
+    mysqli_stmt_execute($stmt);
+    
+    
+    //cotrollo errore
+    $res = mysqli_stmt_get_result($stmt);
+    if ($res && mysqli_num_rows($res) == 1) {
+        $row=mysqli_fetch_assoc($res);
+        echo json_encode($row);
+    }else{
+    echo "ERROR";
+    }
+}
+elseif ($method == 'GET' && $table == 'e_s' && $request[0]=='schede' && $request[1]='esercizi' && isset($request[2])) {
+    $id_scheda=$request[2];
+
+    $query="SELECT e_s.esercizio,e_s.serie,e_s.ripetizioni,e_s.recupero,esercizi.gruppo
+    FROM e_s,schede,esercizi 
+    WHERE e_s.scheda=schede.id AND e_s.esercizio=esercizi.nome AND e_s.scheda=?";
+    
+    $stmt=mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $id_scheda);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $rows=[];
+    while($row=mysqli_fetch_assoc($res)){
+        $rows[]=$row; // Aggiungi ogni riga all'array $rows
+    }
+    $rows=json_encode($rows);
+    echo $rows;
+}elseif ($method == 'PUT' && $table == 'schede' && isset($request[0]) && isset($request[1])) {
+    $id_scheda=array_shift($request);
+    $data_fine=array_shift($request);
+    $userId=getUserFromSession($conn);
+
+    $query="UPDATE `schede` SET `data_fine`='?' WHERE id=? AND user=?";
+    $stmt=mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "ssi",$data_fine, $id_scheda, $userId);
+    mysqli_stmt_execute($stmt);
+    if(mysqli_affected_rows($conn) > 0){
+        echo "ok";
+    }
+    else{
+        echo "ERROR";
+    }
+    
+}
 
 
 
@@ -90,5 +142,6 @@ function getUserFromSession($conn){
 
     return "$id_user";
 }
+
 
 ?>
