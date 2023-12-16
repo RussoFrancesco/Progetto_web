@@ -46,9 +46,12 @@
                     <div class="row">
                         <div class="col">
                             <h1>Scheda attuale</h1>
-                            <form class="user">
-                                <div id="scheda_attuale"></div>
-                            </form>
+                            <div id="scheda_attuale"></div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-end">
+                        <div class="col-auto">
+                            <button class="btn btn-primary btn-lg" id="modifica_scheda">Modifica Scheda</button>
                         </div>
                     </div>
                     <div class="row justify-content-end">
@@ -56,16 +59,12 @@
                             <button class="btn btn-primary btn-lg" id="termina_scheda" href="#" data-toggle="modal" data-target="#Modal_chiusura">Termina Scheda</button>
                         </div>
                     </div>
-                    <div class="row justify-content-end">
-                        <div class="col-auto">
-                            <button class="btn btn-primary btn-lg" id="modifica_scheda" href="#">Modifica Scheda</button>
-                        </div>
-                    </div>
                 </div>
             </div>
     </div>
 
 
+    
     <!-- Modal chiusura scheda-->
     <div class="modal fade" id="Modal_chiusura" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">

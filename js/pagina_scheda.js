@@ -3,7 +3,7 @@ var attuale = false; //FLAG PER VEDERE SE LA SCHEDA È ATTUALE O PASSATA
 
 window.onload = function(){
     get_scheda();
-    document.getElementById('termina_scheda').addEventListener('click', termina_scheda);
+    document.getElementById('button_terminazione_scheda').addEventListener('click', termina_scheda);
 }
 
 function get_scheda() {
@@ -108,11 +108,5 @@ function termina_scheda(){
 }
 
 function abilita_modifica(){
-
-    var li_elements = document.getElementById("scheda_attuale").getElementsByTagName("li");
-    console.log(li_elements);
-}
-
-function convert_checkbox(li_ele){
     
 }
