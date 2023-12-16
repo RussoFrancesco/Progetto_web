@@ -58,6 +58,7 @@
             </div>
     </div>
 
+
     <!-- Modal chiusura scheda-->
     <div class="modal fade" id="Modal_chiusura" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -69,7 +70,8 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Seleziona "Conferma" se vuoi chiudere la scheda corrente .</div>
+                <div class="modal-body">Seleziona "Conferma" se vuoi chiudere la scheda corrente alla data di oggi.
+                </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                     <button class="btn btn-primary"  id='button_terminazione_scheda'>Termina Scheda</button>
