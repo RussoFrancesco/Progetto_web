@@ -44,7 +44,7 @@ elseif($method=='POST' && $table=='scheda'){
    
 
     //Query che inserisce i dati nel database nella tabella schede
-    $query = "INSERT INTO `schede` (,`data_inizio`,`user`) VALUES (?,?)";
+    $query = "INSERT INTO `schede` (`data_inizio`,`user`) VALUES (?,?)";
     $stmt = mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt, "si",$data_inizio, $id_user);
     mysqli_stmt_execute($stmt);
