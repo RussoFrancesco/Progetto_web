@@ -11,11 +11,17 @@ var conferma_modifica = document.getElementById("conferma_modifica");
 
 window.onload = function(){
     get_scheda();
+
     modifica_scheda.addEventListener('click', abilita_modifica);
+
     chiudi_scheda.addEventListener('click', termina_scheda);
+
     annulla_modifica.addEventListener('click', function(){
         location.reload();
     });
+
+    conferma_modifica.addEventListener('click', check_scheda)
+
 }
 
 function get_scheda() {
@@ -89,10 +95,10 @@ function termina_scheda(){
 
 function crea_div(){
     // Trasformazione del set in un array
-    gruppi = Array.from(gruppi);
+    gruppi_array = Array.from(gruppi);
         // Per ogni gruppo, crea un elemento 'ul' e un elemento 'h4'
         // Creazione delle card per ciascun gruppo
-    gruppi.forEach(gruppo => {
+    gruppi_array.forEach(gruppo => {
         var card = document.createElement("div");
         card.setAttribute("class", "card mt-3");
         card.setAttribute("id", gruppo);
@@ -137,13 +143,13 @@ function abilita_modifica() {
         var checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.checked = true;
-        checkbox.id = 'checkbox_' + data[i]['esercizio'];
+        checkbox.id = data[i]['esercizio'];
         checkbox.name = data[i]['esercizio'];
         checkbox.classList.add('form-check-input'); // Aggiungi classe per lo stile Bootstrap (o personalizzato)
 
         // Creazione della label associata alla checkbox
         var label_checkbox = document.createElement('label');
-        label_checkbox.htmlFor = 'checkbox_' + data[i]['esercizio'];
+        label_checkbox.htmlFor = data[i]['esercizio'];
         label_checkbox.classList.add('form-check-label', 'mr-3'); // Aggiungi classe per lo stile Bootstrap (o personalizzato)
         label_checkbox.innerHTML = data[i]['esercizio'];
 
@@ -191,7 +197,25 @@ function abilita_modifica() {
     get_esercizi_from_db();
 }
 
-function insert_esercizi(data) {
+function get_esercizi_from_db(){
+    var req = new XMLHttpRequest();
+
+    req.onload = function(){
+            console.log('get_esercizi_from_db');
+            var h3 = document.createElement('h3');
+            h3.innerHTML = "Esercizi non presenti nella tua scheda";
+            document.getElementById('esercizi_mancanti').appendChild(h3);
+            var add_esercizi = JSON.parse(this.responseText);
+            put_esercizi_mancanti(add_esercizi);
+    }
+
+    req.open('GET', 'php/logicaSchede.php/esercizi/'+id, true);
+    req.send();
+}
+
+function put_esercizi_mancanti(esercizi){
+
+
     const gruppiDiv = {
         pettorali: 'pettorali',
         dorsali: 'dorsali',
@@ -202,7 +226,35 @@ function insert_esercizi(data) {
         gambe: 'gambe'
     };
 
-    data.forEach(esercizio => {
+    for(i = 0; i < esercizi.length; i++){
+        gruppi.add(esercizi[i]['gruppo']);
+    }
+
+    gruppi_array = Array.from(gruppi);
+
+    gruppi_array.forEach(gruppo => {
+        var card = document.createElement("div");
+        card.setAttribute("class", "card mt-3");
+
+        var card_header = document.createElement("div");
+        card_header.setAttribute("class", "card-header");
+        card_header.innerHTML = `<h4>${gruppo}</h4>`;
+
+        var card_body = document.createElement("div");
+        card_body.setAttribute("class", "card-body");
+        card_body.setAttribute("id", gruppo+"_mancante");
+
+        card.appendChild(card_header);
+        card.appendChild(card_body);
+
+        document.getElementById("esercizi_mancanti").appendChild(card);
+    });
+
+    esercizi.forEach(esercizio => {
+
+        const container = document.createElement('div');
+        container.classList.add('form-check', 'd-flex', 'flex-row', 'align-items-center');
+
         const gruppo = esercizio['gruppo'];
         const nome = esercizio['nome'];
 
@@ -214,15 +266,15 @@ function insert_esercizi(data) {
 
         const checkboxLabel = document.createElement('label');
         checkboxLabel.htmlFor = nome;
-        checkboxLabel.classList.add('form-check-label');
+        checkboxLabel.classList.add('form-check-label', 'mr-3');
         checkboxLabel.appendChild(document.createTextNode(nome));
 
-        const div = document.getElementById(gruppiDiv[gruppo]);
-        if (div) {
-            div.appendChild(checkbox);
-            div.appendChild(checkboxLabel);
-            div.appendChild(document.createElement('br'));
+        container.appendChild(checkbox);
+        container.appendChild(checkboxLabel);
 
+        const div = document.getElementById(gruppiDiv[gruppo]+"_mancante");
+        if (div) {
+            
             const hiddenInputGroup = document.createElement('div');
             hiddenInputGroup.classList.add('row');
 
@@ -255,7 +307,9 @@ function insert_esercizi(data) {
             hiddenInputGroup.appendChild(createHiddenInput('n_rep_' + nome, 'Numero di ripetizioni per serie'));
             hiddenInputGroup.appendChild(createHiddenInput('rec_' + nome, 'Recupero tra le serie(sec)'));
 
-            div.appendChild(hiddenInputGroup);
+            container.appendChild(hiddenInputGroup);
+
+            div.appendChild(container);
 
             
             // Aggiungi un event listener al cambio di stato della checkbox
@@ -276,21 +330,63 @@ function insert_esercizi(data) {
             });
         }
     });
+
 }
 
-function get_esercizi_from_db(){
-    var req = new XMLHttpRequest();
+function check_scheda() {
+    var form_fields = document.getElementsByTagName("input");
+    for (var i = 0; i < form_fields.length; i++) {
+        /*controllo che gli input siano type checkbox e che sono stati cliccati, se cosi' prendo i dati correlati
+            numero di serie, numero di ripetizioni, numero di recupero tra le serie e li metto in un'array*/
+        if (form_fields[i].type == "checkbox" && form_fields[i].checked == true) {
+            // Controllo che i valori dei campi numerici siano maggiori o uguali a 1
+            var n_serie = parseInt(form_fields[i + 1].value);
+            var n_rep = parseInt(form_fields[i + 2].value);
+            var rec = parseInt(form_fields[i + 3].value);
 
-    req.onload = function(){
-            console.log('get_esercizi_from_db');
-            var h3 = document.createElement('h3');
-            h3.innerHTML = "Esercizi non presenti nella tua scheda";
-            document.getElementById('esercizi_mancanti').appendChild(h3);
-            var add_esercizi = JSON.parse(this.responseText);
+            if (isNaN(n_serie) || isNaN(n_rep) || isNaN(rec) || n_serie < 1 || n_rep < 1 || rec < 1) {
+                return alert("Compilare i campi numerici in modo corretto (valori maggiori o uguali a 1)");
+            }
+        }
     }
-
-    req.open('GET', 'php/logicaSchede.php/esercizi/'+id, true);
-    req.send();
+    componiScheda();
 }
 
+function componiScheda(){
+    //Composizione data inizio
+    const data=new Date();
+    var data_inizio=data.toISOString().split('T')[0];
+
+    //recupero tutti gli input elements 
+    var form_fields=document.getElementsByTagName("input");
+
+    var form_data = [];
+    
+    for(var i=0;i<form_fields.length;i++){
+        /*controllo che gli input siano type checkbox e che sono stati cliccati, se cosi' prendo i dati correlati
+            numero di serie, numero di ripetizioni, numero di recupero tra le serie  e li metto in un'array    */
+        if (form_fields[i].type=="checkbox" && form_fields[i].checked == true){
+            var esercizio = {};
+            esercizio.nome=form_fields[i].id;
+            esercizio.n_serie = form_fields[i+1].value;
+            esercizio.n_rep = form_fields[i+2].value;
+            esercizio.rec = form_fields[i+3].value;
+            console.log(esercizio);
+            form_data.push(esercizio);
+        }
+    }
+    //console.log("array: ",...form_data);
+
+    var form_data_json = JSON.stringify(form_data);
+    console.log(form_data_json);
+
+    var req= new XMLHttpRequest();
+    req.onload = function() {
+        if(this.responseText=='ok'){
+            window.location.href="schede.php";
+        }
+    }
+    req.open('put', 'php/logicaSchede.php/scheda/'+id+'/'+data_inizio, true);
+    req.send(form_data_json);
+}
 

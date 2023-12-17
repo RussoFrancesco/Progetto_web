@@ -149,6 +149,37 @@ elseif ($method == 'GET' && $table == 'e_s' && $request[0]=='schede' && $request
     $rows=json_encode($rows);
     echo $rows;
 
+}elseif($method == 'PUT' && $table == 'esercizi' && isset($request[0]) && isset($request[1])){
+    $id_scheda=array_shift($request);
+    $data_inizio = array_shift($request);
+    $input = json_decode(file_get_contents('php://input'),true);
+
+    $query = "DELETE FROM `e_s` WHERE scheda = ?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $id_scheda);
+    mysqli_stmt_execute($stmt);
+
+    $query = "DELETE FROM `schede` WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $id_scheda);
+    mysqli_stmt_execute($stmt);
+
+    //Query che inserisce i dati nel database nella tabella schede
+    $query = "INSERT INTO `schede` (`id`,`data_inizio`,`user`) VALUES (?,?,?)";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "isi",$id_scheda,$data_inizio, $id_user);
+    mysqli_stmt_execute($stmt);
+
+    $query="INSERT INTO `e_s`(`esercizio`, `scheda`, `serie`, `ripetizioni`, `recupero`) VALUES (?,?,?,?,?)";
+    
+    for($i=0; $i<count($input); $i++){
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "siiii", $input[$i]["nome"], $id_scheda, $input[$i]["n_serie"], $input[$i]["n_rep"], $input[$i]["rec"]);
+        mysqli_stmt_execute($stmt);
+    }
+
+    echo "ok";
+
 }
 
 

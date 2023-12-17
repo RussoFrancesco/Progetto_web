@@ -46,9 +46,11 @@
                     <div class="row">
                         <div class="col">
                             <h1>Scheda attuale</h1>
+                            <form class="user">
                             <div id="scheda_attuale"></div>
                             <br>
                             <div id="esercizi_mancanti"></div>
+                            </form>
                         </div>
                     </div>
                     <div class="row justify-content-end mt-3">
@@ -64,7 +66,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
     </div>
 
