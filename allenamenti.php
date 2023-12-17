@@ -41,39 +41,39 @@
                 <!-- Topbar -->
                 <?php include 'topbar.php';?>
                 <!-- End of Topbar -->
+
                 <div class="container">
+            
                     <div class="justify-content-left">
                         <div class="col-auto">
                             <div class="col">
-                                <button class="btn btn-primary" id="add_scheda">
-                                    <i class="fas fa-plus"></i> Aggiungi scheda
+                                <button class="btn btn-primary" id="add_allenamento">
+                                    <i class="fas fa-plus"></i> Inizia allenamento
                                 </button>
                             </div>
                         </div>
-                    </div>      
+                    </div>
 
                     <div class="justify-content-left">
-                        <div class="col-auto">
-                            <div class="col">
-                                <h1>Scheda attuale</h1>
-                                <div id="scheda_attuale"></div>
-                            </div>
-                        </div>
-                    </div>
-            
-                    
-                        <div class="justify-content-left">
                             <div class="col-auto">
                                 <div class="col">
-                                    <h1>Schede precedenti</h1>
-                                    <div id="storico_schede"></div>
+                                    <h1>Storico allenamenti</h1>
+                                    <div id="storico_allenamenti">
+
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                    </div>
                 </div>
-            </div>
 
-    <script defer src="js/scheda.js"></script>
+        </div>
+    </div>
+
+
+    <script defer src="js/allenamenti.js"></script>
     <script defer src="js/home.js"></script>
 
 </body>
+
+
+
