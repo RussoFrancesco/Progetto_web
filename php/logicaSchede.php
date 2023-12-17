@@ -35,29 +35,20 @@ if($method=='GET' && $request[0]=="storico" && $table=='schede'){
 }
 elseif($method=='POST' && $table=='scheda'){
 
-    //Query che recupera l'id dell'ultima scheda inserita, utile per avere da parte l'id di una nuova scheda
-    $query="SELECT * FROM `schede` ORDER BY id DESC LIMIT 1";
-    $stmt=mysqli_prepare($conn, $query);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $row=mysqli_fetch_assoc($res);
-    $last_id=$row['id'];
-
     //Recupera i dati da insertare nella tabella schede
     $id_user=getUserFromSession($conn);
     $data_inizio = array_shift($request);
-    $id_scheda=$last_id+1;
 
     //echo $id_scheda.' data '.$data_inizio.' user '.$id_user;
 
    
 
     //Query che inserisce i dati nel database nella tabella schede
-    $query = "INSERT INTO `schede` (`id`,`data_inizio`,`user`) VALUES (?,?,?)";
+    $query = "INSERT INTO `schede` (,`data_inizio`,`user`) VALUES (?,?)";
     $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "isi",$id_scheda,$data_inizio, $id_user);
+    mysqli_stmt_bind_param($stmt, "si",$data_inizio, $id_user);
     mysqli_stmt_execute($stmt);
-    
+    $id_scheda=mysqli_insert_id($conn);
     
 
     //Recupero oggetto JSON con esercizi nella scheda 

@@ -14,13 +14,24 @@ function allenamento(){
 
 function create_allenamento(){
     //setto la data attuale 
-    var data=new Date();
-    console.log(data);
+    const today=new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Aggiunge lo zero iniziale se il mese è inferiore a 10 +1 perchè parte da 0
+    const day = String(today.getDate()).padStart(2, '0'); // Aggiunge lo zero iniziale se il giorno è inferiore a 10
+    const formattedDate = `${year}-${month}-${day}`;
     
+    console.log(formattedDate);
     req=new XMLHttpRequest();
 
-    req.onload = function(){};
+    req.onload = function(){
+        console.log(this.responseText);
+        
+        
+    };
 
-    req.open("POST", "allenamento.php", true);
+    req.open("POST", "php/logicaAllenamento.php/allenamenti/"+formattedDate, true);
+    req.send();
 
 }
+
+costruisci_allenamento();
