@@ -11,6 +11,7 @@ $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
 
 
+
 if($method=='GET' && $request[0]=="storico" && $table=='schede'){
 
     $id_user=getUserFromSession($conn);
@@ -101,7 +102,7 @@ elseif ($method == 'GET' && $table == 'e_s' && $request[0]=='schede' && $request
     }
     $rows=json_encode($rows);
     echo $rows;
-}elseif ($method == 'PUT' && $table == 'schede' && isset($request[0]) && isset($request[1])) {
+}elseif ($method == 'PUT' && $table == 'schede' && isset($request[0]) && isset($request[1]) && !isset($request[2])) {
     $id_scheda=array_shift($request);
     $data_fine=array_shift($request);
     $userId=getUserFromSession($conn);
@@ -141,17 +142,14 @@ elseif ($method == 'GET' && $table == 'e_s' && $request[0]=='schede' && $request
     $rows=json_encode($rows);
     echo $rows;
 
-}elseif($method == 'PUT' && $table == 'esercizi' && isset($request[0]) && isset($request[1])){
+}elseif($method == 'PUT' && $table == 'schede' && isset($request[0]) && isset($request[1]) && isset($request[2])){
+
+    
     $id_scheda=array_shift($request);
     $data_inizio = array_shift($request);
     $input = json_decode(file_get_contents('php://input'),true);
 
     $query = "DELETE FROM `e_s` WHERE scheda = ?";
-    $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "i", $id_scheda);
-    mysqli_stmt_execute($stmt);
-
-    $query = "DELETE FROM `schede` WHERE id = ?";
     $stmt = mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt, "i", $id_scheda);
     mysqli_stmt_execute($stmt);

@@ -382,11 +382,12 @@ function componiScheda(){
 
     var req= new XMLHttpRequest();
     req.onload = function() {
+        console.log(this.responseText);
         if(this.responseText=='ok'){
             window.location.href="schede.php";
         }
     }
-    req.open('put', 'php/logicaSchede.php/scheda/'+id+'/'+data_inizio, true);
+    req.open('put', 'php/logicaSchede.php/schede/'+id+'/'+data_inizio+'/modifica', true);
     req.send(form_data_json);
 }
 
