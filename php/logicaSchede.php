@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 // Connessione al database
 include 'conn.php';

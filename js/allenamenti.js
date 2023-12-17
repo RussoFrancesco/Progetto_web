@@ -34,4 +34,6 @@ function create_allenamento(){
 
 }
 
-costruisci_allenamento();
+function costruisci_allenamento(){
+    console.log("inizia_allenamento");
+}

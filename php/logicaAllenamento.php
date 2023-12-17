@@ -21,18 +21,22 @@ if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
     
     // Recupera l'ID dell'allenamento appena inserito
     $newAllenamentoID = mysqli_insert_id($conn);
-     
-    echo $newAllenamentoID;
-    /*
+
+    
+    
     if (mysqli_stmt_affected_rows($stmt) > 0) {
-        $response={
+        $response=array(
             "status" => "ok",
-            "id_allenamento" => 
-        }
+            "id_allenamento" =>  $newAllenamentoID,
+            "user" =>$user,
+            "scheda" =>$scheda,
+            "data_allenamento" =>$data_allenamento,
+        );
+        echo json_encode($response);
     }
     else{
         echo "ERROR";
-    }*/
+    }
 }
 
 
