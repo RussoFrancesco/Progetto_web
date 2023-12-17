@@ -9,7 +9,8 @@ if(document.getElementById('inizia_allenamento')){
 }
 
 function allenamento(){
-    create_allenamento();
+    var all= create_allenamento();
+
 }
 
 function create_allenamento(){
@@ -24,16 +25,28 @@ function create_allenamento(){
     req=new XMLHttpRequest();
 
     req.onload = function(){
-        console.log(this.responseText);
+        /*JSON response:
+        $response=array(
+            "status" => "ok",
+            "id_allenamento" =>  $newAllenamentoID,
+            "user" =>$user,
+            "scheda" =>$scheda,
+            "data_allenamento" =>$data_allenamento,
+        ); */ 
+        var response= JSON.parse(this.responseText);
         
-        
+        if (response['status']=='ok'){
+           return response;
     };
 
     req.open("POST", "php/logicaAllenamento.php/allenamenti/"+formattedDate, true);
     req.send();
-
+}
 }
 
-function costruisci_allenamento(){
-    console.log("inizia_allenamento");
-}
+
+function costruisci_allenamento(oggettoJson){
+    }
+
+
+
