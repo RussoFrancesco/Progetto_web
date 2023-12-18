@@ -6,7 +6,7 @@ function bindEvents() {
     visualizzaSchede();
     var add_scheda = document.getElementById("add_scheda");
     
-    add_scheda.addEventListener("click",function(event){
+    add_scheda.addEventListener("click",function(){
         if(scheda_attuale.hasChildNodes()){
             alert("chiudi la scheda attuale");
         }
@@ -28,9 +28,21 @@ function visualizzaSchede(){
             // Itera su ogni scheda ricevuta dalla risposta JSON
             data.forEach(scheda => {
                 var div;
+
+                let partiData = scheda.data_inizio.split('-');
+                let anno = partiData[0];
+                let mese = partiData[1];
+                let giorno = partiData[2];
+                scheda.data_inizio = `${giorno}-${mese}-${anno}`;
+
                 // Determina se la scheda è nel div dello storico o nell'attuale
                 if(scheda.data_fine != null){
                     div = storico_schede;
+                    let partiData = scheda.data_fine.split('-');
+                    let anno = partiData[0];
+                    let mese = partiData[1];
+                    let giorno = partiData[2];
+                    scheda.data_fine = `${giorno}-${mese}-${anno}`;
                 } else {
                     div = scheda_attuale;
                 }

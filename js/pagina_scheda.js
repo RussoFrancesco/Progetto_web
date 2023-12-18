@@ -31,6 +31,7 @@ function get_scheda() {
 
     req.onload = function(){
         data = JSON.parse(this.responseText);
+
         if (this.responseText == 'ERROR'){
             alert("Errore");
             window.location.href = "schede.php";
@@ -41,6 +42,11 @@ function get_scheda() {
             document.getElementById("modifica_scheda").style.display = 'block';
         }
         else{
+            let partiData = data['data_fine'].split('-');
+            let anno = partiData[0];
+            let mese = partiData[1];
+            let giorno = partiData[2];
+            data['data_fine'] = `${giorno}-${mese}-${anno}`;
             document.getElementById("attuale_passata").innerHTML += " del "+data['data_fine'];
             document.getElementById("modifica_buttons").style.display = 'none';
             
