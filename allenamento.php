@@ -51,6 +51,7 @@
                                     <h1 id='titolo_allenamento'>Inizio allenamento</h1>
                                 </div>
                             </div>
+                        <div id="scheda"></div>
                     </div>
                     
 

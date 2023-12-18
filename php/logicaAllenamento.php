@@ -6,10 +6,10 @@ include 'conn.php';
 $method = $_SERVER['REQUEST_METHOD'];
 $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
+$user=getUserFromSession($conn);
 
 if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
     $data_allenamento=array_shift($request);
-    $user=getUserFromSession($conn);
     $scheda=getSchedaFromUserID($conn,$user);
 
     //echo "scheda: ".$scheda." user:".$user;
@@ -37,6 +37,23 @@ if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
     else{
         echo "ERROR";
     }
+}elseif($method=='GET' && $table=="schede"){
+    
+    $id_scheda = getSchedaFromUserID($conn,$user);
+    
+    $query="SELECT nome, serie, ripetizioni, recupero, gruppo FROM e_s,esercizi WHERE scheda=? AND esercizi.nome=e_s.esercizio";
+    $stmt=mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt,"i", $id_scheda);
+    mysqli_stmt_execute($stmt);
+    $result=mysqli_stmt_get_result($stmt);
+    $rows=[];
+    while($row=mysqli_fetch_assoc($result)){
+        $rows[]=$row;
+    }
+    $rows=json_encode($rows);
+    echo $rows;
+
+
 }
 
 
