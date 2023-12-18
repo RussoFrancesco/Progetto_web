@@ -14,6 +14,7 @@ if(document.getElementById('inizia_allenamento')){
 }
 
 var id_scheda = 0;
+var gruppi_selezionati = [];
 
 // Se l'URL corrente corrisponde a 'http://localhost/Progetto_web/allenamento.php',
 // viene eseguita una funzione quando la finestra si carica.
@@ -28,8 +29,12 @@ if(window.location.href == 'http://localhost/Progetto_web/allenamento.php'){
 
 function allenamento(){
     document.getElementById("selezione").style.display = "none";
+    document.getElementById("modifica_scheda").style.display = "none";
     document.getElementById("inizia_allenamento").style.display = "none";
     document.getElementById("allenamento").style.display = "block";
+    document.getElementById("termina_allenamento").style.display = "block";
+    createJSON();
+    
     
 }
 
@@ -111,6 +116,7 @@ function scheda(esercizi) {
         const div_card = document.getElementById(gruppo+"_body");
         // Crea un paragrafo per mostrare i dettagli dell'esercizio e lo aggiunge alla card
         const p_esercizio = document.createElement("p");
+        p_esercizio.id = esercizi[i]['nome'];
         p_esercizio.innerHTML = esercizi[i]['nome']+" "+esercizi[i]['serie']+"x"+esercizi[i]['ripetizioni']+" "+esercizi[i]['recupero']+"\"";
         div_card.appendChild(p_esercizio);
     };
@@ -182,7 +188,7 @@ function check_checkbox(){
     for(i=0; i<form.length; i++){
         if(form[i].checked){
             checkedOne=true;
-            break
+            gruppi_selezionati.push(form[i].id.replace("checkbox_", ""));
         }
     }
     
@@ -191,10 +197,25 @@ function check_checkbox(){
     }else{
         alert("Selezionare almeno un gruppo muscolare!");
     }
-
-
-
     
 }
 
+
+function createJSON(){
+    var jsonText ='{';
+
+    for (var i = 0; i < gruppi_selezionati.length; i++) {
+        const gruppo_body = document.getElementById(gruppi_selezionati[i]+"_body");
+        jsonText += '"'+gruppi_selezionati[i]+'": [';
+        const esercizi = gruppo_body.childNodes;
+        for(const esercizio of esercizi){
+            jsonText += '"'+esercizio.id+'", ';
+        };
+        jsonText=jsonText.substring(0, jsonText.length-2);
+        jsonText += "], ";
+    };
+    jsonText=jsonText.substring(0, jsonText.length-2);
+    jsonText += "}";
+
+}
 
