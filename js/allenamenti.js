@@ -5,6 +5,8 @@ if(document.getElementById('add_allenamento')){
     iniziaAllenamento.addEventListener('click', function(){  window.location.href = 'allenamento.php'; });
 }
 
+//aggiunto un event listener al click di un elemento con ID 'inizia_allenamento',
+// chiamando la funzione 'allenamento' quando viene cliccato.
 if(document.getElementById('inizia_allenamento')){
     const iniziaAllenamento=document.getElementById('inizia_allenamento');
     iniziaAllenamento.addEventListener('click', allenamento);
@@ -12,6 +14,8 @@ if(document.getElementById('inizia_allenamento')){
 
 console.log(window.location.href);
 
+// Se l'URL corrente corrisponde a 'http://localhost/Progetto_web/allenamento.php',
+// viene eseguita una funzione quando la finestra si carica.
 if(window.location.href == 'http://localhost/Progetto_web/allenamento.php'){
     window.onload = function(){
         recuperaEserciziDallaScheda();
@@ -23,6 +27,8 @@ function allenamento(){
 }
 
 function scheda(esercizi) {
+
+    // Array contenente i nomi dei gruppi muscolari presenti nei rispoettivi div
     const gruppiDiv = [
         'pettorali',
         'dorsali',
@@ -33,8 +39,10 @@ function scheda(esercizi) {
         'gambe'
     ];
 
+     // Recupera l'elemento con ID 'scheda' 
     const div_scheda = document.getElementById('scheda');
 
+     // Ciclo per ogni gruppo muscolare nell'array
     for (let i = 0; i < gruppiDiv.length; i++) {
         // Creazione della card
         const card = document.createElement("div");
@@ -56,6 +64,7 @@ function scheda(esercizi) {
         const checkboxDiv = document.createElement('div');
         checkboxDiv.classList.add('form-check');
 
+        // Creazione di un elemento checkbox e label per il gruppo muscolare
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.name = 'checkbox_' + gruppiDiv[i];
@@ -67,36 +76,49 @@ function scheda(esercizi) {
         checkboxLabel.classList.add('form-check-label');
         checkboxLabel.appendChild(document.createTextNode(gruppiDiv[i]));
 
+        // Aggiunge un event listener per il cambio dello stato del checkbox
         checkbox.addEventListener('change', function () {
             const div_gruppo = document.getElementById('card_' + gruppiDiv[i]);
             if (this.checked) {
-                div_gruppo.style.display = 'block';
+                div_gruppo.style.display = 'block'; // Mostra la card se il checkbox è selezionato
             } else {
-                div_gruppo.style.display = 'none';
+                div_gruppo.style.display = 'none';  // Nasconde la card se il checkbox è deselezionato
             }
         });
 
+        // Aggiunta degli elementi al DOM
         checkboxDiv.appendChild(checkbox);
         checkboxDiv.appendChild(checkboxLabel);
-
-        // Aggiunta degli elementi al DOM
+       
         card.appendChild(card_header);
         card.appendChild(card_body);
         div_scheda.appendChild(checkboxDiv);
         div_scheda.appendChild(card);
     }
 
+    // Ciclo sugli esercizi
     for(i=0; i<esercizi.length; i++) {
+        // Recupera il gruppo muscolare dell'esercizio corrente
         const gruppo = esercizi[i]['gruppo'];
+        // Recupera l'elemento del corpo della card corrispondente al gruppo muscolare
         const div_card = document.getElementById(gruppo+"_body");
+        // Crea un paragrafo per mostrare i dettagli dell'esercizio e lo aggiunge alla card
         const p_esercizio = document.createElement("p");
         p_esercizio.innerHTML = esercizi[i]['nome']+" "+esercizi[i]['serie']+"x"+esercizi[i]['ripetizioni']+" "+esercizi[i]['recupero']+"\"";
         div_card.appendChild(p_esercizio);
     };
+
+    for(i=0; i<gruppiDiv.length; i++){
+        const div_gruppo = document.getElementById(gruppiDiv[i]+"_body");
+        if(!div_gruppo.hasChildNodes()){
+            const gruppo_checkbox = document.getElementById("checkbox_"+gruppiDiv[i]);
+            gruppo_checkbox.disabled = true;
+        }
+    }
 }
 
 
-
+// Funzione per creare un nuovo allenamento.
 function create_allenamento(){
     //setto la data attuale 
     const today=new Date();
@@ -129,7 +151,7 @@ function create_allenamento(){
 }
 
 
-
+// Funzione per recuperare gli esercizi dalla scheda.
 function recuperaEserciziDallaScheda(){
     req=new XMLHttpRequest();
 

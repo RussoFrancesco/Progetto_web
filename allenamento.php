@@ -49,9 +49,11 @@
                             <div class="col-auto">
                                 <div class="col">
                                     <h1 id='titolo_allenamento'>Inizio allenamento</h1>
+                                    <h2>Seleziona i gruppi muscolari da allenare</h2>
+                                    <div id="scheda"></div>
                                 </div>
                             </div>
-                        <div id="scheda"></div>
+                        
                     </div>
                     
 
