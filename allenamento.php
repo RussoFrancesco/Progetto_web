@@ -45,22 +45,37 @@
                 <div class="container">
             
 
-                    <div class="justify-content-left">
+                    <div class="justify-content-left" id="selezione">
                             <div class="col-auto">
                                 <div class="col">
                                     <h1 id='titolo_allenamento'>Inizio allenamento</h1>
                                     <h2>Seleziona i gruppi muscolari da allenare</h2>
+                                    <form class="user" id="esercizi_allenare">
                                     <div id="scheda"></div>
+                                    </form>
                                 </div>
                             </div>
-                        
+                    </div>
+
+                    <div class="justify-content-center" id="allenamento" style="display: none;">
+                        <div class="col-auto">
+                            <div class="col" id="esercizio">
+                                <div class="card mb-3" id="visualizzazione">
+                                    <div class="card-body" id="card-body">
+                                        <h1>Ciao</h1>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
 
                     <div class="justify-content-left">
                             <div class="col-auto">
                                 <div class="col">
-                                   <button class="btn btn-primary" id="inizia_allenamento">Inizia l'allenamento</button>
+                                   <button class="btn btn-success" id="inizia_allenamento">Inizia l'allenamento</button>
+                                   <button class="btn btn-primary" id="modifica_scheda">Modifica la scheda</button>
                                 </div>
                             </div>
                     </div>

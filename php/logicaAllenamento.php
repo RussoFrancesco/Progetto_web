@@ -50,6 +50,7 @@ if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
     while($row=mysqli_fetch_assoc($result)){
         $rows[]=$row;
     }
+    $rows[] = $id_scheda;
     $rows=json_encode($rows);
     echo $rows;
 

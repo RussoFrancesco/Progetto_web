@@ -1,5 +1,6 @@
 //aggiunge un event listener al click di un elemento con ID 'add_allenamento',
 // reindirizzando l'utente a 'allenamento.php' quando viene cliccato.
+//questo serve p
 if(document.getElementById('add_allenamento')){
     const iniziaAllenamento=document.getElementById('add_allenamento');
     iniziaAllenamento.addEventListener('click', function(){  window.location.href = 'allenamento.php'; });
@@ -9,21 +10,27 @@ if(document.getElementById('add_allenamento')){
 // chiamando la funzione 'allenamento' quando viene cliccato.
 if(document.getElementById('inizia_allenamento')){
     const iniziaAllenamento=document.getElementById('inizia_allenamento');
-    iniziaAllenamento.addEventListener('click', allenamento);
+    iniziaAllenamento.addEventListener('click', check_checkbox);
 }
 
-console.log(window.location.href);
+var id_scheda = 0;
 
 // Se l'URL corrente corrisponde a 'http://localhost/Progetto_web/allenamento.php',
 // viene eseguita una funzione quando la finestra si carica.
 if(window.location.href == 'http://localhost/Progetto_web/allenamento.php'){
     window.onload = function(){
         recuperaEserciziDallaScheda();
+        document.getElementById('modifica_scheda').addEventListener('click', function(){
+            window.location.href = "pagina_scheda.php?id="+id_scheda;
+        });
     }
 }
 
 function allenamento(){
-    var all= create_allenamento();
+    document.getElementById("selezione").style.display = "none";
+    document.getElementById("inizia_allenamento").style.display = "none";
+    document.getElementById("allenamento").style.display = "block";
+    
 }
 
 function scheda(esercizi) {
@@ -108,6 +115,7 @@ function scheda(esercizi) {
         div_card.appendChild(p_esercizio);
     };
 
+    //rendo non cliccabili le checkbox con gruppi non contenenti esercizi nella scheda 
     for(i=0; i<gruppiDiv.length; i++){
         const div_gruppo = document.getElementById(gruppiDiv[i]+"_body");
         if(!div_gruppo.hasChildNodes()){
@@ -118,7 +126,7 @@ function scheda(esercizi) {
 }
 
 
-// Funzione per creare un nuovo allenamento.
+// Funzione per creare un nuovo allenamento inserendolo nel DB con la data attuale.
 function create_allenamento(){
     //setto la data attuale 
     const today=new Date();
@@ -156,8 +164,8 @@ function recuperaEserciziDallaScheda(){
     req=new XMLHttpRequest();
 
     req.onload = function(){
-        console.log(this.responseText);
         var data = JSON.parse(this.responseText);
+        id_scheda = data.pop();
         scheda(data);
     };
 
@@ -166,5 +174,27 @@ function recuperaEserciziDallaScheda(){
 
     }
 
+// Funzione per verificare se almeno un checkbox è selezionato.
+function check_checkbox(){
+    const form= document.querySelectorAll("input[type=checkbox]");
+    checkedOne=false;
+
+    for(i=0; i<form.length; i++){
+        if(form[i].checked){
+            checkedOne=true;
+            break
+        }
+    }
+    
+    if(checkedOne){
+        allenamento();
+    }else{
+        alert("Selezionare almeno un gruppo muscolare!");
+    }
+
+
+
+    
+}
 
 
