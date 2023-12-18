@@ -18,7 +18,7 @@ var gruppi_selezionati = [];
 
 // Se l'URL corrente corrisponde a 'http://localhost/Progetto_web/allenamento.php',
 // viene eseguita una funzione quando la finestra si carica.
-if(window.location.href == 'http://localhost/Progetto_web/allenamento.php'){
+if(window.location.href == 'http://localhost/Progetto_web/allenamento.php' ||window.location.href == 'http://localhost:8080/Progetto_web/allenamento.php'){
     window.onload = function(){
         recuperaEserciziDallaScheda();
         document.getElementById('modifica_scheda').addEventListener('click', function(){
