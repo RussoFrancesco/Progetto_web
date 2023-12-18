@@ -148,29 +148,23 @@
                         <div class="col-xl-8 col-lg-7">
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
+                                <div class="card-header">
+                                    <h6 class="m-0 font-weight-bold text-primary">Calcola il tuo BMI</h6>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
-                                    </div>
+                                    <form class="user" id="bmi">
+                                        <div class="form-group">
+                                            <label for="peso">Peso in kg:</label>
+                                            <input type="number" id="peso" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="altezza">Altezza in cm:</label>
+                                            <input type="number" id="altezza" class="form-control" required>
+                                        </div>
+                                    </form>
+                                    <button type="button" id="calcola_bmi" class="btn btn-primary">Calcola</button>
+                                    <div id="risultato_bmi"></div>
                                 </div>
                             </div>
                         </div>
@@ -428,15 +422,19 @@
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
 
-    <!-- Page level plugins -->
+    <!-- Page level plugins 
     <script src="vendor/chart.js/Chart.min.js"></script>
 
-    <!-- Page level custom scripts -->
+    Page level custom scripts 
     <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
+    <script src="js/demo/chart-pie-demo.js"></script>-->
 
     <!--Script per la home-->
     <script src="js/home.js"></script>
+
+    <script defer src="js/bmi.js"></script>
+
+
 
 
 </body>
