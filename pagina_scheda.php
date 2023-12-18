@@ -45,7 +45,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col">
-                            <h1>Scheda attuale</h1>
+                            <h1 id='attuale_passata'>Scheda</h1>
                             <form class="user">
                             <div id="scheda_attuale"></div>
                             <br>
@@ -55,7 +55,7 @@
                     </div>
                     <div class="row justify-content-end mt-3">
                         <div class="col-auto">
-                            <button class="btn btn-primary btn-lg" id="modifica_scheda">Modifica Scheda</button>
+                            <button class="btn btn-primary btn-lg" id="modifica_scheda" style="display: none;">Modifica Scheda</button>
                         </div>
                         <div class="col-auto" id="modifica_buttons" style="display: none;">
                             <button class="btn btn-secondary btn-lg" id="annulla_modifica">Annulla Modifica</button>

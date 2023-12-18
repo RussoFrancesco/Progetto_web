@@ -36,7 +36,14 @@ function get_scheda() {
             window.location.href = "schede.php";
         }
         if (data['data_fine']==null){
+            document.getElementById("attuale_passata").innerHTML += " attuale";
             document.getElementById('button_terminazione_scheda').style.display = "block";
+            document.getElementById("modifica_scheda").style.display = 'block';
+        }
+        else{
+            document.getElementById("attuale_passata").innerHTML += " del "+data['data_fine'];
+            document.getElementById("modifica_buttons").style.display = 'none';
+            
         }
         get_esercizi_from_scheda();
     }

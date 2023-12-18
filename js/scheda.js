@@ -60,8 +60,11 @@ function visualizzaSchede(){
                 hiddenInput.id = scheda.id_scheda;
                 card_body.appendChild(hiddenInput);
             
-        
-                h3.innerHTML = "Scheda del "+scheda.data_inizio+", chiusa il "+scheda.data_fine;
+                if(div == storico_schede){
+                    h3.innerHTML = "Scheda del "+scheda.data_inizio+", chiusa il "+scheda.data_fine;
+                }else{
+                    h3.innerHTML = "Scheda del "+scheda.data_inizio;
+                }
             });
         }
     }
