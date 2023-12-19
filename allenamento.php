@@ -66,6 +66,11 @@
                                             <h3 class="card-title" id="gruppo_muscolare"></h3>
                                             <h4 class="card-text" id="singolo_esercizio"></h4>
                                             <img id="gif_esercizio" src="#" style="display: none;" class="img-fluid">
+                                            <div class="col-auto" id="info_esercizio">
+                                                <h5 id="serie"></h5>
+                                                <h5 id="ripetizioni"></h5>
+                                                <h5 id="recupero"></h5>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

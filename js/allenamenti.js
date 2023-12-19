@@ -51,25 +51,35 @@ function allenamento(){
     let indice_gruppi=0; // Indice per i gruppi muscolari selezionati le keys del JSON
     let indice_array_interno_json=0; // Indice per l'array interno value del JSON[key]
     
-
+    //inizializziamo la schermata con esercizio e gruppo 
     h3.innerHTML = gruppi_selezionati[indice_gruppi];
     h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
 
+    let info = getInfoEsercizioFromP(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
+
+    //incrementiamo l'indice dell'array interno del JSON
     indice_array_interno_json++;
+
+    
     
     
     button.addEventListener('click', function() {
-   
-        if(indice_gruppi <= gruppi_selezionati.length-1){
-            if(indice_array_interno_json >= json_all[gruppi_selezionati[indice_gruppi]].length){
-                if(indice_gruppi < gruppi_selezionati.length-1){
-                    indice_array_interno_json = 0;
-                    indice_gruppi++;
-                    h3.innerHTML = gruppi_selezionati[indice_gruppi];
-                    h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
-                }
+        //se l'indice della key attuale è <= del totale delle chiavi del JSON-1 (il -1 serve per evitare di uscire dal massimo indice delle keys disponibili)
+        if (indice_gruppi <= gruppi_selezionati.length - 1) {
+            //se l'indice interno all'array del JSON è >= alla lunghezza dell'array
+            //e continua ad essere verificata la condizione precedente
+            //riporto a 0 l'indice dell'array interno del JSON ed incrementiamo l'indice della key del JSON 
+            //il -1 serve per evitare di uscire dal massimo indice delle keys disponibili
+            // riscriviamo la schermata con esercizio e gruppo
+            if (indice_array_interno_json >= json_all[gruppi_selezionati[indice_gruppi]].length 
+                && indice_gruppi < gruppi_selezionati.length - 1) {
+                indice_array_interno_json = 0;
+                indice_gruppi++;
+                h3.innerHTML = gruppi_selezionati[indice_gruppi];
+                h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
             }
-            else{
+            //altrimenti cambiamo solo l'eserzio 
+            else if (indice_array_interno_json < json_all[gruppi_selezionati[indice_gruppi]].length) {
                 h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
                 indice_array_interno_json++;
             }
@@ -157,7 +167,7 @@ function scheda(esercizi) {
         // Crea un paragrafo per mostrare i dettagli dell'esercizio e lo aggiunge alla card
         const p_esercizio = document.createElement("p");
         p_esercizio.id = esercizi[i]['nome'];
-        p_esercizio.innerHTML = esercizi[i]['nome']+" "+esercizi[i]['serie']+"x"+esercizi[i]['ripetizioni']+" "+esercizi[i]['recupero']+"\"";
+        p_esercizio.innerHTML = esercizi[i]['nome']+": "+esercizi[i]['serie']+"x"+esercizi[i]['ripetizioni']+" "+esercizi[i]['recupero']+"\"";
         div_card.appendChild(p_esercizio);
     };
 
@@ -261,3 +271,20 @@ function createJSON(){
     return jsonText;
 }
 
+function getInfoEsercizioFromP(stringa){
+    console.log(stringa);
+    stringa = document.getElementById(stringa).innerHTML;
+    let arr=stringa.split(":");
+    arr=arr[1];
+    arr=arr.split("x");
+
+    let serie=arr[0].trim();
+    
+    arr= arr[1].split(" ");
+    let ripetizioni = arr[0].trim();
+    let recupero = arr[1].replace("\"", "").trim();
+
+    console.log(serie, ripetizioni, recupero);
+
+    return [serie, ripetizioni, recupero];
+}
