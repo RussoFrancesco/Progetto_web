@@ -15,9 +15,9 @@ if(document.getElementById('inizia_allenamento')){
 
 
 //VARIABILI GLOBALI
-
 var id_scheda = 0;
 var gruppi_selezionati = [];
+var json_pesi={};
 
 // Se l'URL corrente corrisponde a 'http://localhost/Progetto_web/allenamento.php',
 // viene eseguita una funzione quando la finestra si carica.
@@ -58,38 +58,45 @@ function allenamento(){
     //recupero info sull'esercizio selezionato e le imposto sulla pagina
     var info = getInfoEsercizioFromP(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
     setInfoSuEsercizio(info[0], info[1], info[2]);
+    caricaGif(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
 
     //incrementiamo l'indice dell'array interno del JSON
     indice_array_interno_json++;
 
     
     button.addEventListener('click', function() {
-        //se l'indice della key attuale è <= del totale delle chiavi del JSON-1 (il -1 serve per evitare di uscire dal massimo indice delle keys disponibili)
-        if (indice_gruppi <= gruppi_selezionati.length - 1) {
-            //se l'indice interno all'array del JSON è >= alla lunghezza dell'array
-            //e continua ad essere verificata la condizione precedente
-            //riporto a 0 l'indice dell'array interno del JSON ed incrementiamo l'indice della key del JSON 
-            //il -1 serve per evitare di uscire dal massimo indice delle keys disponibili
-            // riscriviamo la schermata con esercizio e gruppo
-            if (indice_array_interno_json >= json_all[gruppi_selezionati[indice_gruppi]].length 
-                && indice_gruppi < gruppi_selezionati.length - 1) {
-                indice_array_interno_json = 0;
-                indice_gruppi++;
-                h3.innerHTML = gruppi_selezionati[indice_gruppi];
-                h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
-                info = getInfoEsercizioFromP(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
-                setInfoSuEsercizio(info[0], info[1], info[2]);
+        if (issetPeso()){
+        
 
+        //se l'indice della key attuale è <= del totale delle chiavi del JSON-1 (il -1 serve per evitare di uscire dal massimo indice delle keys disponibili)
+            if (indice_gruppi <= gruppi_selezionati.length - 1) {
+                //se l'indice interno all'array del JSON è >= alla lunghezza dell'array
+                //e continua ad essere verificata la condizione precedente
+                //riporto a 0 l'indice dell'array interno del JSON ed incrementiamo l'indice della key del JSON 
+                //il -1 serve per evitare di uscire dal massimo indice delle keys disponibili
+                // riscriviamo la schermata con esercizio e gruppo
+                if (indice_array_interno_json >= json_all[gruppi_selezionati[indice_gruppi]].length 
+                    && indice_gruppi < gruppi_selezionati.length - 1) {
+                    indice_array_interno_json = 0;
+                    indice_gruppi++;
+                    h3.innerHTML = gruppi_selezionati[indice_gruppi];
+                    h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
+                    info = getInfoEsercizioFromP(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
+                    setInfoSuEsercizio(info[0], info[1], info[2]);
+                    caricaGif(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
+
+                }
+                //altrimenti cambiamo solo l'eserzio 
+                else if (indice_array_interno_json < json_all[gruppi_selezionati[indice_gruppi]].length) {
+                    h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
+                    let info = getInfoEsercizioFromP(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
+                    setInfoSuEsercizio(info[0], info[1], info[2]);
+                    caricaGif(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
+                    indice_array_interno_json++;
+                    
+                }
             }
-            //altrimenti cambiamo solo l'eserzio 
-            else if (indice_array_interno_json < json_all[gruppi_selezionati[indice_gruppi]].length) {
-                h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
-                let info = getInfoEsercizioFromP(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
-                setInfoSuEsercizio(info[0], info[1], info[2]);
-                indice_array_interno_json++;
-                
-            }
-        }
+        }else alert("Inserisci il peso");
     }); 
                
 }
@@ -303,4 +310,29 @@ function setInfoSuEsercizio(serie, ripetizioni, recupero){
     h5_serie.innerHTML="Numero di serie: "+serie;
     h5_ripetizioni.innerHTML="Numero di ripetizioni: "+ripetizioni;
     h5_recupero.innerHTML="Tempo di recupero: "+recupero;
+}
+
+function caricaGif(esercizio){
+    console.log(esercizio);
+    let gif =document.getElementById("gif_esercizio");
+    esercizio=esercizio.replaceAll(" ","_");
+    esercizio+=".gif";
+
+    gif.src="gif/"+esercizio;
+    gif.style.display="block";
+    
+}
+
+function issetPeso(){
+    let peso=document.getElementById("peso");
+    peso=peso.value;
+    if(peso === ""){
+        return false
+    }
+    return true
+}
+
+function addPeso(esercizio){
+    let peso=document.getElementById("peso").value;
+    json_pesi.esercizio=peso
 }

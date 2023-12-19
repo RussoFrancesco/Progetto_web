@@ -43,8 +43,6 @@
                 <!-- End of Topbar -->
 
                 <div class="container">
-            
-
                     <div class="justify-content-left" id="selezione">
                             <div class="col-auto">
                                 <div class="col">
@@ -55,21 +53,27 @@
                                     </form>
                                 </div>
                             </div>
-                    </div>
-
+                </div>
                     <div class="container">
                         <div class="row justify-content-center" id="allenamento" style="display: none;">
-                            <div class="col-auto">
+                            <div class="col-md-8">
                                 <div class="card">
                                     <div class="card-body text-center">
                                         <div id="esercizio">
                                             <h3 class="card-title" id="gruppo_muscolare"></h3>
                                             <h4 class="card-text" id="singolo_esercizio"></h4>
-                                            <img id="gif_esercizio" src="#" style="display: none;" class="img-fluid">
+                                            <div class="d-flex justify-content-center align-items-center mb-3">
+                                                <img id="gif_esercizio" src="#" style="display: none;" class="img-fluid">
+                                            </div>
                                             <div class="col-auto" id="info_esercizio">
                                                 <h5 id="info_serie"></h5>
                                                 <h5 id="info_ripetizioni"></h5>
                                                 <h5 id="info_recupero"></h5>
+                                            </div>
+                                            <div class="form-check 'd-flex flex-row align-items-center">
+                                                <form class="form-horizontal" id="form_peso">
+                                                    <input type="number" name="peso" id="peso" class="form-control form-control-user" placeholder="Peso" required min="0">
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
@@ -77,6 +81,8 @@
                             </div>
                         </div>
                     </div>
+
+
 
 
 
