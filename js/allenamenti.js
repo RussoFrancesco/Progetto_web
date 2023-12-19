@@ -50,74 +50,33 @@ function allenamento(){
     // Dichiarazione degli indici per tenere traccia della posizione negli array
     let indice_gruppi=0; // Indice per i gruppi muscolari selezionati le keys del JSON
     let indice_array_interno_json=0; // Indice per l'array interno value del JSON[key]
-
-    
     
 
+    h3.innerHTML = gruppi_selezionati[indice_gruppi];
+    h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
+
+    indice_array_interno_json++;
+    
+    
     button.addEventListener('click', function() {
-
-        /*
-        // Verifica se l'array di JSON[key] ha elementi
-        if (json_all[gruppi_selezionati[indice_gruppi]].length > 0) {
-            
-            // Incrementa l'indice interno dell'array in JSON[key]
-            indice_array_interno_json++;
-            
-            // Se siamo alla fine dell'array interno, passa al prossimo gruppo muscolare
-            if (indice_array_interno_json >= json_all[gruppi_selezionati[indice_gruppi]].length) {
-                // Passa al prossimo gruppo muscolare
-                
-                if(gruppi_selezionati.length > 1) {
-                    // Resetta l'indice interno
+   
+        if(indice_gruppi <= gruppi_selezionati.length-1){
+            if(indice_array_interno_json >= json_all[gruppi_selezionati[indice_gruppi]].length){
+                if(indice_gruppi < gruppi_selezionati.length-1){
                     indice_array_interno_json = 0;
                     indice_gruppi++;
+                    h3.innerHTML = gruppi_selezionati[indice_gruppi];
+                    h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
                 }
-                
-                h3.innerHTML = gruppi_selezionati[indice_gruppi];
-
-                h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
-                
-            }else{
-                h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
             }
-            
-            
-        }*/
-
-        h3.innerHTML = gruppi_selezionati[indice_gruppi];
-
-        h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
-
-        if(indice_array_interno_json ==json_all[gruppi_selezionati[indice_gruppi]].length){
-            indice_array_interno_json=0;
-            indice_gruppi++;
-        }else{
-            indice_array_interno_json++;
-        }
-
-
-        // Verifica se l'array di JSON[key] ha elementi
-        if (json_all[gruppi_selezionati[indice_gruppi]].length > 1) {
-            h3.innerHTML = gruppi_selezionati[indice_gruppi];
-            if(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json].length > 0) {
+            else{
                 h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
-                ++indice_array_interno_json;
+                indice_array_interno_json++;
             }
-            if(indice_array_interno_json ==json_all[gruppi_selezionati[indice_gruppi]].length-1){
-                indice_array_interno_json=0;
-                indice_gruppi++;
-            }
-
-
         }
-        
-
-
-            // Stampare i valori attuali nella console per verifica
-            console.log("Gruppo muscolare: " + h3.innerHTML);
-            console.log("Esercizio: " + h4.innerHTML);
-            });    
-        }
+    }); 
+               
+}
 
         
 function scheda(esercizi) {
