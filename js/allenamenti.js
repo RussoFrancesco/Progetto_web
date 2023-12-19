@@ -55,7 +55,9 @@ function allenamento(){
     h3.innerHTML = gruppi_selezionati[indice_gruppi];
     h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
 
-    let info = getInfoEsercizioFromP(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
+    //recupero info sull'esercizio selezionato e le imposto sulla pagina
+    var info = getInfoEsercizioFromP(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
+    setInfoSuEsercizio(info[0], info[1], info[2]);
 
     //incrementiamo l'indice dell'array interno del JSON
     indice_array_interno_json++;
@@ -75,11 +77,15 @@ function allenamento(){
                 indice_gruppi++;
                 h3.innerHTML = gruppi_selezionati[indice_gruppi];
                 h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
+                info = getInfoEsercizioFromP(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
+                setInfoSuEsercizio(info[0], info[1], info[2]);
 
             }
             //altrimenti cambiamo solo l'eserzio 
             else if (indice_array_interno_json < json_all[gruppi_selezionati[indice_gruppi]].length) {
                 h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
+                let info = getInfoEsercizioFromP(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
+                setInfoSuEsercizio(info[0], info[1], info[2]);
                 indice_array_interno_json++;
                 
             }
@@ -284,7 +290,17 @@ function getInfoEsercizioFromP(stringa){
     let ripetizioni = arr[0].trim();
     let recupero = arr[1].replace("\"", "").trim();
 
-    console.log(serie, ripetizioni, recupero);
+    //console.log(serie, ripetizioni, recupero);
 
     return [serie, ripetizioni, recupero];
+}
+
+function setInfoSuEsercizio(serie, ripetizioni, recupero){
+    let h5_serie=document.getElementById("info_serie")
+    let h5_ripetizioni=document.getElementById("info_ripetizioni");
+    let h5_recupero=document.getElementById("info_recupero");
+
+    h5_serie.innerHTML="Numero di serie: "+serie;
+    h5_ripetizioni.innerHTML="Numero di ripetizioni: "+ripetizioni;
+    h5_recupero.innerHTML="Tempo di recupero: "+recupero;
 }
