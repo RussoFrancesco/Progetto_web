@@ -13,6 +13,9 @@ if(document.getElementById('inizia_allenamento')){
     iniziaAllenamento.addEventListener('click', check_checkbox);
 }
 
+
+//VARIABILI GLOBALI
+
 var id_scheda = 0;
 var gruppi_selezionati = [];
 
@@ -28,6 +31,7 @@ if(window.location.href == 'http://localhost/Progetto_web/allenamento.php' ||win
 }
 
 function allenamento(){
+    //cambiamo visualizzazione della pagina
     document.getElementById("selezione").style.display = "none";
     document.getElementById("modifica_scheda").style.display = "none";
     document.getElementById("inizia_allenamento").style.display = "none";
@@ -35,50 +39,88 @@ function allenamento(){
     document.getElementById("termina_allenamento").style.display = "block";
     document.getElementById("continua").style.display = "block";
     const json_all = createJSON();
-   
-    var len_gruppi = gruppi_selezionati.length;
-    //console.log(len_gruppi, len_esercizi_gruppo);
     
-    var indice_gruppi=0;
-    var indice_array_interno_json=0;
-    var len_array_interno_json=json_all[gruppi_selezionati[indice_gruppi]].length;
     
     var h3 = document.getElementById("gruppo_muscolare");
     var gif=document.getElementById("gif_esercizio");
-    var h4 = document.getElementById("esercizio");
+    var h4 = document.getElementById("singolo_esercizio");   
+    const button = document.getElementById('continua');
 
+    //USIAMO LA VARIABILE GLOBALE 'GRUPPI_SELEZIONATI' PER RISALIER ALLE KEYS DEL JSON CONTENENTE L'ALLENAMENTO
+    // Dichiarazione degli indici per tenere traccia della posizione negli array
+    let indice_gruppi=0; // Indice per i gruppi muscolari selezionati le keys del JSON
+    let indice_array_interno_json=0; // Indice per l'array interno value del JSON[key]
 
-    let myPromise = new Promise(function(myresolve) {
-        const button = document.getElementById('continua');
-        button.addEventListener('click', function() {
-            h3.innerHTML = gruppi_selezionati[indice_gruppi];
-            console.log(h3.innerHTML);
-            h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
-            console.log("indice gruppi"+indice_gruppi+" indice array:"+indice_array_interno_json);
-            console.log("JSON"+json_all[indice_gruppi]);
+    
+    
 
-            console.log(h4.innerHTML);
-            myresolve();
-        });
+    button.addEventListener('click', function() {
 
-    });
-        
-    myPromise.then(function(){
-        if (indice_array_interno_json!=len_array_interno_json-1){
-            indice_array_interno_json++;}
-        else if(indice_array_interno_json==len_array_interno_json-1){
+        /*
+        // Verifica se l'array di JSON[key] ha elementi
+        if (json_all[gruppi_selezionati[indice_gruppi]].length > 0) {
+            
+            // Incrementa l'indice interno dell'array in JSON[key]
+            indice_array_interno_json++;
+            
+            // Se siamo alla fine dell'array interno, passa al prossimo gruppo muscolare
+            if (indice_array_interno_json >= json_all[gruppi_selezionati[indice_gruppi]].length) {
+                // Passa al prossimo gruppo muscolare
+                
+                if(gruppi_selezionati.length > 1) {
+                    // Resetta l'indice interno
+                    indice_array_interno_json = 0;
+                    indice_gruppi++;
+                }
+                
+                h3.innerHTML = gruppi_selezionati[indice_gruppi];
+
+                h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
+                
+            }else{
+                h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
+            }
+            
+            
+        }*/
+
+        h3.innerHTML = gruppi_selezionati[indice_gruppi];
+
+        h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
+
+        if(indice_array_interno_json ==json_all[gruppi_selezionati[indice_gruppi]].length){
+            indice_array_interno_json=0;
             indice_gruppi++;
-            len_array_interno_json = json_all[gruppi_selezionati[indice_gruppi]].length;
-            indice_array_interno_json = 0;
+        }else{
+            indice_array_interno_json++;
         }
-    })
-    
-    
+
+
+        // Verifica se l'array di JSON[key] ha elementi
+        if (json_all[gruppi_selezionati[indice_gruppi]].length > 1) {
+            h3.innerHTML = gruppi_selezionati[indice_gruppi];
+            if(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json].length > 0) {
+                h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
+                ++indice_array_interno_json;
+            }
+            if(indice_array_interno_json ==json_all[gruppi_selezionati[indice_gruppi]].length-1){
+                indice_array_interno_json=0;
+                indice_gruppi++;
+            }
+
+
+        }
         
-}
 
+
+            // Stampare i valori attuali nella console per verifica
+            console.log("Gruppo muscolare: " + h3.innerHTML);
+            console.log("Esercizio: " + h4.innerHTML);
+            });    
+        }
+
+        
 function scheda(esercizi) {
-
     // Array contenente i nomi dei gruppi muscolari presenti nei rispoettivi div
     const gruppiDiv = [
         'pettorali',

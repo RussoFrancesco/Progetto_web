@@ -57,19 +57,23 @@
                             </div>
                     </div>
 
-                    <div class="justify-content-center" id="allenamento" style="display: none;">
-                        <div class="col-auto">
-                            <div class="col" id="esercizio">
-                                <div class="card mb-3" id="visualizzazione">
-                                    <div class="card-body" id="card-body">
-                                            <h3 id="gruppo_muscolare"></h3>
-                                            <h4 id="esercizio"></h4>
-                                            <img id="gif_esercizio" src="#" style="display: none;">
+                    <div class="container">
+                        <div class="row justify-content-center" id="allenamento" style="display: none;">
+                            <div class="col-auto">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <div id="esercizio">
+                                            <h3 class="card-title" id="gruppo_muscolare"></h3>
+                                            <h4 class="card-text" id="singolo_esercizio"></h4>
+                                            <img id="gif_esercizio" src="#" style="display: none;" class="img-fluid">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+
 
                     
 
