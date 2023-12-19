@@ -61,8 +61,6 @@ function allenamento(){
     indice_array_interno_json++;
 
     
-    
-    
     button.addEventListener('click', function() {
         //se l'indice della key attuale è <= del totale delle chiavi del JSON-1 (il -1 serve per evitare di uscire dal massimo indice delle keys disponibili)
         if (indice_gruppi <= gruppi_selezionati.length - 1) {
@@ -77,11 +75,13 @@ function allenamento(){
                 indice_gruppi++;
                 h3.innerHTML = gruppi_selezionati[indice_gruppi];
                 h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
+
             }
             //altrimenti cambiamo solo l'eserzio 
             else if (indice_array_interno_json < json_all[gruppi_selezionati[indice_gruppi]].length) {
                 h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
                 indice_array_interno_json++;
+                
             }
         }
     }); 
