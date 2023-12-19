@@ -62,12 +62,15 @@
                             <div class="col" id="esercizio">
                                 <div class="card mb-3" id="visualizzazione">
                                     <div class="card-body" id="card-body">
+                                            <h3 id="gruppo_muscolare"></h3>
+                                            <h4 id="esercizio"></h4>
+                                            <img id="gif_esercizio" src="#" style="display: none;">
                                     </div>
-                                    
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     
 
                     <div class="justify-content-left">
@@ -76,6 +79,7 @@
                                    <button class="btn btn-success" id="inizia_allenamento">Inizia l'allenamento</button>
                                    <button class="btn btn-primary" id="modifica_scheda">Modifica la scheda</button>
                                    <button class="btn btn-danger" id="termina_allenamento" style="display: none;">Termina l'allenamento</button>
+                                   <button class="btn btn-primary" id="continua" style="display: none;">Continua</button>
                                 </div>
                             </div>
                     </div>

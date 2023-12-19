@@ -33,9 +33,48 @@ function allenamento(){
     document.getElementById("inizia_allenamento").style.display = "none";
     document.getElementById("allenamento").style.display = "block";
     document.getElementById("termina_allenamento").style.display = "block";
-    createJSON();
+    document.getElementById("continua").style.display = "block";
+    const json_all = createJSON();
+   
+    var len_gruppi = gruppi_selezionati.length;
+    //console.log(len_gruppi, len_esercizi_gruppo);
+    
+    var indice_gruppi=0;
+    var indice_array_interno_json=0;
+    var len_array_interno_json=json_all[gruppi_selezionati[indice_gruppi]].length;
+    
+    var h3 = document.getElementById("gruppo_muscolare");
+    var gif=document.getElementById("gif_esercizio");
+    var h4 = document.getElementById("esercizio");
+
+
+    let myPromise = new Promise(function(myresolve) {
+        const button = document.getElementById('continua');
+        button.addEventListener('click', function() {
+            h3.innerHTML = gruppi_selezionati[indice_gruppi];
+            console.log(h3.innerHTML);
+            h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
+            console.log("indice gruppi"+indice_gruppi+" indice array:"+indice_array_interno_json);
+            console.log("JSON"+json_all[indice_gruppi]);
+
+            console.log(h4.innerHTML);
+            myresolve();
+        });
+
+    });
+        
+    myPromise.then(function(){
+        if (indice_array_interno_json!=len_array_interno_json-1){
+            indice_array_interno_json++;}
+        else if(indice_array_interno_json==len_array_interno_json-1){
+            indice_gruppi++;
+            len_array_interno_json = json_all[gruppi_selezionati[indice_gruppi]].length;
+            indice_array_interno_json = 0;
+        }
+    })
     
     
+        
 }
 
 function scheda(esercizi) {
@@ -216,6 +255,8 @@ function createJSON(){
     };
     jsonText=jsonText.substring(0, jsonText.length-2);
     jsonText += "}";
-
+    jsonText = JSON.parse(jsonText);
+    console.log(jsonText);
+    return jsonText;
 }
 
