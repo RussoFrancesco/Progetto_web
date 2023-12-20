@@ -53,10 +53,10 @@
                                     </form>
                                 </div>
                             </div>
-                </div>
+                    </div>
                     <div class="container">
                         <div class="row justify-content-center" id="allenamento" style="display: none;">
-                            <div class="col-md-8">
+                            <div class="col-auto">
                                 <div class="card">
                                     <div class="card-body text-center">
                                         <div id="esercizio">
@@ -69,10 +69,15 @@
                                                 <h5 id="info_serie"></h5>
                                                 <h5 id="info_ripetizioni"></h5>
                                                 <h5 id="info_recupero"></h5>
+                                                <h5 id="serie_rimanenti"></h5>
+                                                <button id="recupera" class="btn btn-primary">Recupera</button>
+                                                <div class="progress progress-sm mb-2" id="bar">
+                                                        <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
                                             </div>
-                                            <div class="form-check 'd-flex flex-row align-items-center">
-                                                <form class="form-horizontal" id="form_peso">
-                                                    <input type="number" name="peso" id="peso" class="form-control form-control-user" placeholder="Peso" required min="0">
+                                            <div class="form-check 'd-flex flex-row align-items-center" id="form_peso">
+                                                <form class="form-horizontal">
+                                                    <input type="number" name="peso" id="peso" class="form-control form-control-user" placeholder="Peso" style="display: none;" required min="0">
                                                 </form>
                                             </div>
                                         </div>
@@ -88,18 +93,13 @@
 
                     
 
-                    <div class="justify-content-left">
-                            <div class="col-auto">
-                                <div class="col">
-                                   <button class="btn btn-success" id="inizia_allenamento">Inizia l'allenamento</button>
-                                   <button class="btn btn-primary" id="modifica_scheda">Modifica la scheda</button>
-                                   <button class="btn btn-danger" id="termina_allenamento" style="display: none;">Termina l'allenamento</button>
-                                   <button class="btn btn-primary" id="continua" style="display: none;">Continua</button>
-                                </div>
-                            </div>
+                    <div class="d-flex justify-content-start">
+                        <button class="btn btn-success mr-2" id="inizia_allenamento">Inizia l'allenamento</button>
+                        <button class="btn btn-primary mr-2" id="modifica_scheda">Modifica la scheda</button>
+                        <button class="btn btn-primary" id="continua" style="display: none;">Continua</button>
+                        <button class="btn btn-danger mr-2" id="termina_allenamento" style="display: none;">Termina l'allenamento</button>
                     </div>
                 </div>
-
             </div>
         </div>
 

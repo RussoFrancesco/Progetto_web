@@ -1,5 +1,7 @@
 //aggiunge un event listener al click di un elemento con ID 'add_allenamento',
 // reindirizzando l'utente a 'allenamento.php' quando viene cliccato.
+
+
 //questo serve p
 if(document.getElementById('add_allenamento')){
     const iniziaAllenamento=document.getElementById('add_allenamento');
@@ -18,6 +20,7 @@ if(document.getElementById('inizia_allenamento')){
 var id_scheda = 0;
 var gruppi_selezionati = [];
 var json_pesi={};
+var countdownTimer;
 
 // Se l'URL corrente corrisponde a 'http://localhost/Progetto_web/allenamento.php',
 // viene eseguita una funzione quando la finestra si carica.
@@ -37,14 +40,12 @@ function allenamento(){
     document.getElementById("inizia_allenamento").style.display = "none";
     document.getElementById("allenamento").style.display = "block";
     document.getElementById("termina_allenamento").style.display = "block";
-    document.getElementById("continua").style.display = "block";
+    //document.getElementById("continua").style.display = "block";
     const json_all = createJSON();
-    
-    
-    var h3 = document.getElementById("gruppo_muscolare");
-    var gif=document.getElementById("gif_esercizio");
-    var h4 = document.getElementById("singolo_esercizio");   
+       
     const button = document.getElementById('continua');
+    const button_recupero = document.getElementById('recupera');
+    var serie_rimanenti = document.getElementById("serie_rimanenti");
 
     //USIAMO LA VARIABILE GLOBALE 'GRUPPI_SELEZIONATI' PER RISALIER ALLE KEYS DEL JSON CONTENENTE L'ALLENAMENTO
     // Dichiarazione degli indici per tenere traccia della posizione negli array
@@ -52,21 +53,29 @@ function allenamento(){
     let indice_array_interno_json=0; // Indice per l'array interno value del JSON[key]
     
     //inizializziamo la schermata con esercizio e gruppo 
-    h3.innerHTML = gruppi_selezionati[indice_gruppi];
-    h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
-
-    //recupero info sull'esercizio selezionato e le imposto sulla pagina
-    var info = getInfoEsercizioFromP(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
-    setInfoSuEsercizio(info[0], info[1], info[2]);
-    caricaGif(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
+    set_page(gruppi_selezionati[indice_gruppi], json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
+    
 
     //incrementiamo l'indice dell'array interno del JSON
     indice_array_interno_json++;
 
     
+    button_recupero.addEventListener("click", function(){
+        var progress_bar = document.getElementById('progress-bar');
+        progress_bar.setAttribute('aria-valuenow', '0');
+        progress_bar.style.width = '0%';
+        progress_bar.style.backgroundColor = "#4e73df";
+        var recupero = parseInt(document.getElementById("info_recupero").innerHTML.split(":")[1])
+        
+        let timerData = { seconds: recupero};
+        start_timer(update_timer, timerData, recupero);
+    })
+    
+    
     button.addEventListener('click', function() {
         if (issetPeso()){
-        
+        addPeso(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
+        console.log(json_pesi);
 
         //se l'indice della key attuale è <= del totale delle chiavi del JSON-1 (il -1 serve per evitare di uscire dal massimo indice delle keys disponibili)
             if (indice_gruppi <= gruppi_selezionati.length - 1) {
@@ -79,26 +88,18 @@ function allenamento(){
                     && indice_gruppi < gruppi_selezionati.length - 1) {
                     indice_array_interno_json = 0;
                     indice_gruppi++;
-                    h3.innerHTML = gruppi_selezionati[indice_gruppi];
-                    h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
-                    info = getInfoEsercizioFromP(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
-                    setInfoSuEsercizio(info[0], info[1], info[2]);
-                    caricaGif(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
-
+                    set_page(gruppi_selezionati[indice_gruppi], json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
                 }
                 //altrimenti cambiamo solo l'eserzio 
                 else if (indice_array_interno_json < json_all[gruppi_selezionati[indice_gruppi]].length) {
-                    h4.innerHTML = json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json];
-                    let info = getInfoEsercizioFromP(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
-                    setInfoSuEsercizio(info[0], info[1], info[2]);
-                    caricaGif(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
+                    set_page(null, json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json])
                     indice_array_interno_json++;
-                    
                 }
             }
         }else alert("Inserisci il peso");
     }); 
-               
+    
+    
 }
 
         
@@ -194,6 +195,30 @@ function scheda(esercizi) {
     }
 }
 
+function set_page(gruppo, esercizio){
+    if (gruppo != null){
+        var h3 = document.getElementById("gruppo_muscolare");
+        h3.innerHTML = gruppo;
+    }
+    var progress_bar = document.getElementById('progress-bar');
+    progress_bar.setAttribute('aria-valuenow', '0');
+    progress_bar.style.width = '0%';
+    progress_bar.style.backgroundColor = "#4e73df";
+    var gif=document.getElementById("gif_esercizio");
+    var h4 = document.getElementById("singolo_esercizio");
+    var serie_rimanenti = document.getElementById("serie_rimanenti");   
+    h4.innerHTML = esercizio;
+    info = getInfoEsercizioFromP(esercizio);
+    setInfoSuEsercizio(info[0], info[1], info[2]);
+    serie_rimanenti.innerHTML = "Numero di serie rimanenti: "+info[0];
+    caricaGif(esercizio);
+    document.getElementById("continua").style.display = "none";
+    document.getElementById("peso").style.display = "none";
+    document.getElementById("peso").value = "";
+    document.getElementById('recupera').style.display = "block";
+    progress_bar.style.display = "block";
+
+}
 
 // Funzione per creare un nuovo allenamento inserendolo nel DB con la data attuale.
 function create_allenamento(){
@@ -241,7 +266,7 @@ function recuperaEserciziDallaScheda(){
     req.open("GET", "php/logicaAllenamento.php/schede/", true);
     req.send();
 
-    }
+}
 
 // Funzione per verificare se almeno un checkbox è selezionato.
 function check_checkbox(){
@@ -332,7 +357,44 @@ function issetPeso(){
     return true
 }
 
-function addPeso(esercizio){
+function addPeso(current_esercizio){
     let peso=document.getElementById("peso").value;
-    json_pesi.esercizio=peso
+    
+}
+
+function start_timer(callback, timerData, totalSeconds) {
+    if (!countdownTimer) {
+      countdownTimer = setInterval(function() {
+        callback(timerData, totalSeconds);
+      }, 1000);
+    }
+}
+  
+function update_timer(timerData, totalSeconds) {
+    const progressBar = document.getElementById('progress-bar');
+    console.log(timerData.seconds);
+  
+    if (timerData.seconds > 0) {
+      timerData.seconds--;
+      const percentage = (((totalSeconds - timerData.seconds) / totalSeconds) * 100).toFixed(2); // Calcolo della percentuale basata sul tempo trascorso
+  
+      progressBar.style.width = percentage + '%';
+      progressBar.setAttribute('aria-valuenow', percentage);
+    } else {
+      clearInterval(countdownTimer); // Interrompe il timer
+      countdownTimer = null;
+      progressBar.style.width = '100%';
+      progressBar.style.backgroundColor = "#1cc88a"; // Cambia il colore di sfondo della progress bar quando il tempo è scaduto
+      var serie_rimanenti = document.getElementById("serie_rimanenti");
+
+      let serie_aggiornato = (parseInt(serie_rimanenti.innerHTML.split(":")[1])) - 1;
+      serie_rimanenti.innerHTML = "Numero di serie rimanenti: " + serie_aggiornato;
+
+        if (serie_aggiornato === 0) {
+            document.getElementById('recupera').style.display = "none";
+            document.getElementById('progress-bar').style.display = "none";
+            document.getElementById("continua").style.display = "block";
+            document.getElementById("peso").style.display = "block";
+        }
+    }
 }
