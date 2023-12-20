@@ -72,7 +72,7 @@
                                                 <h5 id="serie_rimanenti"></h5>
                                                 <button id="recupera" class="btn btn-primary">Recupera</button>
                                                 <div class="progress progress-sm mb-2" id="bar">
-                                                        <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%; display: none;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                                 </div>
                                             </div>
                                             <div class="form-check 'd-flex flex-row align-items-center" id="form_peso">

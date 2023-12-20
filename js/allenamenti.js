@@ -1,6 +1,3 @@
-//aggiunge un event listener al click di un elemento con ID 'add_allenamento',
-// reindirizzando l'utente a 'allenamento.php' quando viene cliccato.
-
 
 //questo serve p
 if(document.getElementById('add_allenamento')){
@@ -204,6 +201,7 @@ function set_page(gruppo, esercizio){
     progress_bar.setAttribute('aria-valuenow', '0');
     progress_bar.style.width = '0%';
     progress_bar.style.backgroundColor = "#4e73df";
+    progress_bar.style.display = "block";
     var gif=document.getElementById("gif_esercizio");
     var h4 = document.getElementById("singolo_esercizio");
     var serie_rimanenti = document.getElementById("serie_rimanenti");   
@@ -216,8 +214,6 @@ function set_page(gruppo, esercizio){
     document.getElementById("peso").style.display = "none";
     document.getElementById("peso").value = "";
     document.getElementById('recupera').style.display = "block";
-    progress_bar.style.display = "block";
-
 }
 
 // Funzione per creare un nuovo allenamento inserendolo nel DB con la data attuale.
