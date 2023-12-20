@@ -36,7 +36,8 @@ function allenamento(){
     document.getElementById("modifica_scheda").style.display = "none";
     document.getElementById("inizia_allenamento").style.display = "none";
     document.getElementById("allenamento").style.display = "block";
-    document.getElementById("termina_allenamento").style.display = "block";
+    var termina = document.getElementById("termina_allenamento");
+    termina.style.display = "block";
     //document.getElementById("continua").style.display = "block";
     const json_all = createJSON();
        
@@ -56,6 +57,15 @@ function allenamento(){
     //incrementiamo l'indice dell'array interno del JSON
     indice_array_interno_json++;
 
+    termina.addEventListener("click", function(){
+        if(JSON.stringify(json_pesi).replace("{}", "").length != 0){
+            inserimento_allenamento();
+        }
+        else{
+            window.location.href = "allenamenti.php";
+        }
+    })
+
     
     button_recupero.addEventListener("click", function(){
         var progress_bar = document.getElementById('progress-bar');
@@ -70,12 +80,16 @@ function allenamento(){
     
     
     button.addEventListener('click', function() {
+        /*console.log("gruppi: "+indice_gruppi);
+        console.log("esercizio: "+indice_array_interno_json);
+        console.log("numero di esercizi: "+json_all[gruppi_selezionati[indice_gruppi]].length)
+        console.log("json: "+JSON.stringify(json_all));*/
         if (issetPeso()){
-        addPeso(json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
-        console.log(json_pesi);
-
-        //se l'indice della key attuale è <= del totale delle chiavi del JSON-1 (il -1 serve per evitare di uscire dal massimo indice delle keys disponibili)
-            if (indice_gruppi <= gruppi_selezionati.length - 1) {
+            addPeso();
+            //console.log(json_pesi);
+            
+            //se l'indice della key attuale è <= del totale delle chiavi del JSON-1 (il -1 serve per evitare di uscire dal massimo indice delle keys disponibili)
+            if (indice_gruppi <= gruppi_selezionati.length-1 ) {
                 //se l'indice interno all'array del JSON è >= alla lunghezza dell'array
                 //e continua ad essere verificata la condizione precedente
                 //riporto a 0 l'indice dell'array interno del JSON ed incrementiamo l'indice della key del JSON 
@@ -83,20 +97,47 @@ function allenamento(){
                 // riscriviamo la schermata con esercizio e gruppo
                 if (indice_array_interno_json >= json_all[gruppi_selezionati[indice_gruppi]].length 
                     && indice_gruppi < gruppi_selezionati.length - 1) {
+                    //console.log("if "+indice_gruppi+" "+indice_array_interno_json);
                     indice_array_interno_json = 0;
                     indice_gruppi++;
                     set_page(gruppi_selezionati[indice_gruppi], json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
+                    indice_array_interno_json++;
                 }
                 //altrimenti cambiamo solo l'eserzio 
                 else if (indice_array_interno_json < json_all[gruppi_selezionati[indice_gruppi]].length) {
-                    set_page(null, json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json])
+                    //console.log("else "+indice_gruppi+" "+indice_array_interno_json)
+                    set_page(null, json_all[gruppi_selezionati[indice_gruppi]][indice_array_interno_json]);
                     indice_array_interno_json++;
                 }
-            }
+                //controllo sulla fine dell'allenamento se siamo a fine dei gruppi e l'ultimo esercizio su quel gruppo
+                else{
+                        inserimento_allenamento();
+                    }
+            }   
         }else alert("Inserisci il peso");
     }); 
     
     
+}
+
+function inserimento_allenamento() {
+    const today=new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Aggiunge lo zero iniziale se il mese è inferiore a 10 +1 perchè parte da 0
+    const day = String(today.getDate()).padStart(2, '0'); // Aggiunge lo zero iniziale se il giorno è inferiore a 10
+    const formattedDate = `${year}-${month}-${day}`;
+
+    var req = new XMLHttpRequest();
+
+    req.onload = function(){
+        console.log(this.responseText);
+        if(this.responseText == 'ok'){
+            window.location.href = "allenamenti.php";
+        }
+    }
+
+    req.open('POST', "php/logicaAllenamento.php/allenamenti/"+formattedDate, true);
+    req.send(JSON.stringify(json_pesi));
 }
 
         
@@ -216,39 +257,6 @@ function set_page(gruppo, esercizio){
     document.getElementById('recupera').style.display = "block";
 }
 
-// Funzione per creare un nuovo allenamento inserendolo nel DB con la data attuale.
-function create_allenamento(){
-    //setto la data attuale 
-    const today=new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Aggiunge lo zero iniziale se il mese è inferiore a 10 +1 perchè parte da 0
-    const day = String(today.getDate()).padStart(2, '0'); // Aggiunge lo zero iniziale se il giorno è inferiore a 10
-    const formattedDate = `${year}-${month}-${day}`;
-    
-    console.log(formattedDate);
-    req=new XMLHttpRequest();
-
-    req.onload = function(){
-        /*JSON response:
-        $response=array(
-            "status" => "ok",
-            "id_allenamento" =>  $newAllenamentoID,
-            "user" =>$user,
-            "scheda" =>$scheda,
-            "data_allenamento" =>$data_allenamento,
-        ); */ 
-        var response= JSON.parse(this.responseText);
-        
-        if (response['status']=='ok'){
-           return response;
-        };
-    };
-    req.open("POST", "php/logicaAllenamento.php/allenamenti/"+formattedDate, true);
-    req.send();
-
-}
-
-
 // Funzione per recuperare gli esercizi dalla scheda.
 function recuperaEserciziDallaScheda(){
     req=new XMLHttpRequest();
@@ -334,7 +342,7 @@ function setInfoSuEsercizio(serie, ripetizioni, recupero){
 }
 
 function caricaGif(esercizio){
-    console.log(esercizio);
+    //console.log(esercizio);
     let gif =document.getElementById("gif_esercizio");
     esercizio=esercizio.replaceAll(" ","_");
     esercizio+=".gif";
@@ -353,8 +361,10 @@ function issetPeso(){
     return true
 }
 
-function addPeso(current_esercizio){
+function addPeso(){
+    let esercizio=document.getElementById("singolo_esercizio").innerHTML;
     let peso=document.getElementById("peso").value;
+    json_pesi[esercizio]=peso;
     
 }
 
@@ -368,7 +378,6 @@ function start_timer(callback, timerData, totalSeconds) {
   
 function update_timer(timerData, totalSeconds) {
     const progressBar = document.getElementById('progress-bar');
-    console.log(timerData.seconds);
   
     if (timerData.seconds > 0) {
       timerData.seconds--;

@@ -11,6 +11,7 @@ $user=getUserFromSession($conn);
 if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
     $data_allenamento=array_shift($request);
     $scheda=getSchedaFromUserID($conn,$user);
+    
 
     //echo "scheda: ".$scheda." user:".$user;
     
@@ -22,21 +23,18 @@ if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
     // Recupera l'ID dell'allenamento appena inserito
     $newAllenamentoID = mysqli_insert_id($conn);
 
+    //riempio allenamenti_esercizi
+    $input=json_decode(file_get_contents('php://input'), true);
+    $query="INSERT INTO `a_e`(`allenamento`, `esercizio`, `peso`) VALUES (?,?,?)";
     
-    
-    if (mysqli_stmt_affected_rows($stmt) > 0) {
-        $response=array(
-            "status" => "ok",
-            "id_allenamento" =>  $newAllenamentoID,
-            "user" =>$user,
-            "scheda" =>$scheda,
-            "data_allenamento" =>$data_allenamento,
-        );
-        echo json_encode($response);
+    foreach($input as $esercizio => $peso){
+        $stmt=mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt,"isi", $newAllenamentoID, $esercizio, $peso);
+        mysqli_stmt_execute($stmt);
     }
-    else{
-        echo "ERROR";
-    }
+
+    echo "ok";
+       
 }elseif($method=='GET' && $table=="schede"){
     
     $id_scheda = getSchedaFromUserID($conn,$user);
@@ -54,7 +52,19 @@ if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
     $rows=json_encode($rows);
     echo $rows;
 
-
+}elseif($method=='GET' && $table=="allenamenti" && $request[0]=="storico"){
+    $id_scheda=getSchedaFromUserID($conn,$user);
+    $query="SELECT * FROM allenamenti WHERE user=? ORDER BY `data` DESC";
+    $stmt=mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt,'i',$id_scheda);
+    mysqli_stmt_execute($stmt);
+    $result=mysqli_stmt_get_result($stmt);
+    $rows=[];
+    while($row=mysqli_fetch_assoc($result)){
+        $rows[]=$row;
+    }
+    $rows=json_encode($rows);
+    echo $rows;
 }
 
 
@@ -92,7 +102,5 @@ function getSchedaFromUserID($conn, $id_user){
         return null;
     }
 }
-
-
 
 ?>
