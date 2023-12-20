@@ -5,7 +5,9 @@ window.onload = function() {
 function visualizzazioneStoricoAllenamenti() {
     var req= new XMLHttpRequest();
 
-    req.onload=function(){}
+    req.onload=function(){
+        console.log(req.responseText);
+    }
 
     req.open("GET", "php/logicaAllenamento.php/allenamenti/storico", true);
     req.send();
@@ -13,6 +15,4 @@ function visualizzazioneStoricoAllenamenti() {
 
 function caricaStoricoAllenamentiAll() {
     var div= document.getElementById("storico_allenamenti");
-
-    
 }

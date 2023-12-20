@@ -53,10 +53,10 @@ if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
     echo $rows;
 
 }elseif($method=='GET' && $table=="allenamenti" && $request[0]=="storico"){
-    $id_scheda=getSchedaFromUserID($conn,$user);
+    $id_user=getUserFromSession($conn);
     $query="SELECT * FROM allenamenti WHERE user=? ORDER BY `data` DESC";
     $stmt=mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt,'i',$id_scheda);
+    mysqli_stmt_bind_param($stmt,'i',$id_user);
     mysqli_stmt_execute($stmt);
     $result=mysqli_stmt_get_result($stmt);
     $rows=[];

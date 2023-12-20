@@ -70,7 +70,7 @@
     </div>
 
 
-    <script defer src="js/allenamenti.js"></script>
+    <script defer src="js/storico_allenamenti.js"></script>
     <script defer src="js/home.js"></script>
 
 </body>
