@@ -43,37 +43,27 @@
                 <!-- End of Topbar -->
 
                 <div class="container">
-            
-                    <div class="justify-content-left">
-                        <div class="col-auto">
-                            <div class="col">
-                                <button class="btn btn-primary" id="add_allenamento">
-                                    <i class="fas fa-plus"></i> Inizia allenamento
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="justify-content-left">
-                            <div class="col-auto">
-                                <div class="col">
-                                    <h1>Storico allenamenti</h1>
-                                    <div id="storico_allenamenti">
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                    </div>
+                    <h3>Pettorali</h3>
+                    <div class="row" id="pettorali"></div>
+                    <h3>Dorsali</h3>
+                    <div class="row" id="dorsali"></div>
+                    <h3>Tricipiti</h3>
+                    <div class="row" id="tricipiti"></div>
+                    <h3>Bicipiti</h3>
+                    <div class="row" id="bicipiti"></div>
+                    <h3>Gambe</h3>
+                    <div class="row" id="gambe"></div>
+                    <h3>Spalle</h3>
+                    <div class="row" id="spalle"></div>
+                    <h3>Addome</h3>
+                    <div class="row" id="addome"></div>
                 </div>
 
         </div>
     </div>
 
 
-    <script defer src="js/storico_allenamenti.js"></script>
+    <script defer src="js/esercizi.js"></script>
     <script defer src="js/home.js"></script>
 
 </body>
-
-
-
