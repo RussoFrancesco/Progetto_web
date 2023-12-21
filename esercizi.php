@@ -62,6 +62,33 @@
         </div>
     </div>
 
+    <div class="modal fade" id="insertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Inserisci i dati dell'esercizio</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="esercizio" class="input-hidden">
+                    <label for="num_serie">Numero di serie:</label>
+                    <input type="number" class="form-control" id="num_serie">
+                    <label for="num_serie">Numero di ripetizioni:</label>
+                    <input type="number" class="form-control" id="num_rep">
+                    <label for="num_serie">Secondi di recupero:</label>
+                    <input type="number" class="form-control" id="recupero">
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Annulla</button>
+                    <button class="btn btn-primary"  id='confirm_button'>Invia</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script defer src="js/esercizi.js"></script>
     <script defer src="js/home.js"></script>

@@ -1,6 +1,7 @@
 window.onload = function() {
     get_esercizi();
-    get_esercizi_scheda();
+    //get_esercizi_scheda();
+    document.getElementById("confirm_button").addEventListener("click", checkform);
 }
 
 function get_esercizi() {
@@ -41,9 +42,18 @@ esercizi.forEach(esercizio => {
     const btn = document.createElement('button');
     btn.classList.add('btn', 'btn-primary');
     btn.setAttribute('id', esercizio.nome);
+    btn.setAttribute("data-toggle", "modal");
+    btn.setAttribute("data-target", "#insertModal");
     btn.innerHTML = 'Aggiungi alla scheda';
     card_header.appendChild(btn);
-  
+    btn.addEventListener('click', function(){
+        const modal = document.getElementById("insertModal");
+        const input = modal.querySelector(".input-hidden");
+
+        input.setAttribute("value", this.id);
+        
+    })
+
     const card_body = document.createElement('div');
     card_body.classList.add('card-body');
     card.appendChild(card_body);
@@ -67,4 +77,14 @@ function caricaGif(esercizio){
     
     return gif
     
+}
+
+function checkform(){
+    var form_fields = document.getElementsByTagName("input");
+    var esercizio = form_fields[0];
+    for (var i = 1; i < form_fields.length; i++) {
+        
+        
+    }
+    //insert_esercizi();
 }
