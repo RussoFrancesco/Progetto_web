@@ -108,7 +108,7 @@ function allenamento(){
                         inserimento_allenamento();
                     }
             }   
-        }else alert("Inserisci il peso");
+        }else alert("Inserisci il peso maggiore di 0");
     }); 
     
     
@@ -349,7 +349,7 @@ function caricaGif(esercizio){
 function issetPeso(){
     let peso=document.getElementById("peso");
     peso=peso.value;
-    if(peso === ""){
+    if(peso === "" || peso < 0){
         return false
     }
     return true

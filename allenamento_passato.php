@@ -43,49 +43,50 @@
                 <!-- End of Topbar -->
 
                 <div class="container">
-                                <div class="card mt-3" id="card_pettorali">
+                    <h2 id="allenamento">Allenamento del</h2>
+                                <div class="card mt-3" id="card_pettorali" style="display: none;">
                                     <div class="card-header" >
                                         <h3>Pettorali</h3>
                                     </div>
                                     <div class="card-body" id="pettorali"></div>
                                 </div>
 
-                                <div class="card mt-3" id="card_dorsali">
+                                <div class="card mt-3" id="card_dorsali" style="display: none;">
                                     <div class="card-header">
                                         <h3>Dorsali</h3>
                                     </div>
                                     <div class="card-body" id="dorsali"></div>
                                 </div>
 
-                                <div class="card mt-3" id="card_spalle">
+                                <div class="card mt-3" id="card_spalle" style="display: none;">
                                     <div class="card-header">
                                         <h3>Spalle</h3>
                                     </div>
                                     <div class="card-body" id="spalle"></div>
                                 </div>
 
-                                <div class="card mt-3" id="card_bicipiti">
+                                <div class="card mt-3" id="card_bicipiti" style="display: none;">
                                     <div class="card-header">
                                         <h3>Bicipiti</h3>
                                     </div>
                                     <div class="card-body" id="bicipiti"></div>
                                 </div>
 
-                                <div class="card mt-3" id="card_tricipiti">
+                                <div class="card mt-3" id="card_tricipiti" style="display: none;">
                                     <div class="card-header">
                                         <h3>Tricipiti</h3>
                                     </div>
                                     <div class="card-body" id="tricipiti"></div>
                                 </div>
 
-                                <div class="card mt-3" id="card_gambe">
+                                <div class="card mt-3" id="card_gambe" style="display: none;">
                                     <div class="card-header">
                                         <h3>Gambe</h3>
                                     </div>
                                     <div class="card-body" id="gambe"></div>
                                 </div>
 
-                                <div class="card mt-3" id="card_addome">
+                                <div class="card mt-3" id="card_addome" style="display: none;">
                                     <div class="card-header">
                                         <h3>Addome</h3>
                                     </div>
