@@ -22,7 +22,7 @@ function validaForm() {
 function calcola_bmi(){
     const peso = document.getElementById("peso").value;
     const altezza = document.getElementById("altezza").value/100;
-    const bmi = peso / (altezza*altezza);
+    const bmi = (peso / (altezza*altezza)).toFixed(2);
 
     // Seleziona l'elemento risultato del BMI
     const risultatoBMI = document.getElementById("risultato_bmi");
@@ -63,5 +63,22 @@ function calcola_bmi(){
         h4.style.color = "#e74a3b";
         h4.innerHTML = "Sei estremamente obeso";
     }
+
+    const today=new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Aggiunge lo zero iniziale se il mese è inferiore a 10 +1 perchè parte da 0
+    const day = String(today.getDate()).padStart(2, '0'); // Aggiunge lo zero iniziale se il giorno è inferiore a 10
+    const formattedDate = `${year}-${month}-${day}`;
+
+    var req = new XMLHttpRequest();
+
+    req.onload = function(){
+        if(this.responseText == 'ok'){
+            alert("Inserito il bmi nel database");
+        }
+    };
+
+    req.open("POST", "php/bmi.php/bmi/"+bmi+"/"+formattedDate,true)
+    req.send();
 
 }
