@@ -1,7 +1,9 @@
 window.onload = function() {
     get_esercizi();
-    //get_esercizi_scheda();
+    get_esercizi_scheda();
     document.getElementById("confirm_button").addEventListener("click", checkform);
+    document.getElementById("delete_button").addEventListener("click", elimina_esercizio);
+
 }
 
 function get_esercizi() {
@@ -13,7 +15,21 @@ function get_esercizi() {
         put_esercizi(data);
     }
 
-    req.open('GET','php/esercizi.php/esercizi',true);
+    req.open('GET','php/esercizi.php/esercizi/attuale',true);
+    req.send();
+}
+
+function get_esercizi_scheda() {
+    var req = new XMLHttpRequest();
+
+    req.onload = function() {
+        
+        var data = JSON.parse(req.responseText);
+        console.log(data);
+        modifica_bottoni(data);
+    }
+
+    req.open('GET','php/logicaSchede.php/e_s/attuale',true);
     req.send();
 }
 
@@ -40,19 +56,13 @@ esercizi.forEach(esercizio => {
     card_header.appendChild(h5);
   
     const btn = document.createElement('button');
-    btn.classList.add('btn', 'btn-primary');
+    btn.setAttribute('class', 'btn btn-primary');
     btn.setAttribute('id', esercizio.nome);
     btn.setAttribute("data-toggle", "modal");
     btn.setAttribute("data-target", "#insertModal");
     btn.innerHTML = 'Aggiungi alla scheda';
     card_header.appendChild(btn);
-    btn.addEventListener('click', function(){
-        const modal = document.getElementById("insertModal");
-        const input = modal.querySelector(".hidden_esercizio");
-
-        input.setAttribute("value", this.id);
-        
-    })
+    btn.addEventListener('click', set_modal_insert)
 
     const card_body = document.createElement('div');
     card_body.classList.add('card-body');
@@ -88,10 +98,71 @@ function checkform(){
             }
         }
     }
-    var esercizio = form_fields[0].value;
+    var nome = form_fields[0].value;
     var serie = form_fields[1].value;
     var ripetizioni = form_fields[2].value;
     var recupero = form_fields[3].value;
-    console.log(esercizio, serie, ripetizioni, recupero);
-    //insert_esercizi();
+    console.log(nome, serie, ripetizioni, recupero);
+
+    insert_esercizio(nome, serie, ripetizioni, recupero);
+}
+
+function insert_esercizio(nome, serie, ripetizioni, recupero) {
+    
+    var req = new XMLHttpRequest();
+
+    req.onload = function(){
+        console.log(this.responseText);
+        if(this.responseText == 'ok'){
+            location.reload();
+        }
+    };
+
+    req.open("POST", "php/logicaSchede.php/e_s/"+nome+"/"+serie+"/"+ripetizioni+"/"+recupero, true);
+    req.send(esercizio);
+}
+
+function set_modal_insert(){
+    const modal = document.getElementById("insertModal");
+    const input = modal.querySelector(".hidden_esercizio");
+
+    input.setAttribute("value", this.id);
+}
+
+function set_modal_delete(){
+    const modal = document.getElementById("deleteModal");
+    const input = modal.querySelector(".hidden_esercizio_elimina");
+
+    input.setAttribute("value", this.id);
+}
+
+function modifica_bottoni(data){
+    const buttons = document.querySelectorAll("button");
+    for(let i = 0; i < buttons.length; i++){
+        for(let j = 0; j < data.length; j++){
+            if(buttons[i].id == data[j].esercizio){
+                buttons[i].removeEventListener("click", set_modal_insert);
+                buttons[i].setAttribute("data-target", "#deleteModal");
+                buttons[i].setAttribute("class", "btn btn-danger");
+                buttons[i].innerHTML = "Rimuovi dalla scheda";
+                buttons[i].addEventListener("click", set_modal_delete);
+            }
+        }
+    }
+}
+
+function elimina_esercizio(){
+    const id_esercizio = document.querySelector(".hidden_esercizio_elimina").value;
+
+    var req = new XMLHttpRequest();
+
+    req.onload = function(){
+        if(this.responseText=='ok'){
+            location.reload();
+        }
+    };
+
+    req.open("DELETE", "php/logicaSchede.php/e_s/"+id_esercizio, true);
+    req.send();
+
 }

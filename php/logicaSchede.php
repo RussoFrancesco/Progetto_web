@@ -9,12 +9,11 @@ $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 
 // Recupera la tabella dal percorso
 $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
-
-
+$id_user=getUserFromSession($conn);
 
 if($method=='GET' && $request[0]=="storico" && $table=='schede'){
 
-    $id_user=getUserFromSession($conn);
+    
 
     $query="SELECT schede.id as id_scheda, data_inizio, data_fine
     FROM `schede` 
@@ -38,7 +37,7 @@ if($method=='GET' && $request[0]=="storico" && $table=='schede'){
 elseif($method=='POST' && $table=='scheda'){
 
     //Recupera i dati da insertare nella tabella schede
-    $id_user=getUserFromSession($conn);
+    
     $data_inizio = array_shift($request);
 
     //echo $id_scheda.' data '.$data_inizio.' user '.$id_user;
@@ -68,7 +67,7 @@ elseif($method=='POST' && $table=='scheda'){
 }//RECUPERO SCHEDA CON ID 
 elseif ($method == 'GET' && $table == 'scheda' && isset($request[0]) ) {
 
-    $id_user=getUserFromSession($conn);
+
     $id_scheda = array_shift($request);
     $query = "SELECT * FROM `schede` WHERE id=? AND user=?";
     $stmt = mysqli_prepare($conn, $query);
@@ -105,7 +104,7 @@ elseif ($method == 'GET' && $table == 'e_s' && $request[0]=='schede' && $request
 }elseif ($method == 'PUT' && $table == 'schede' && isset($request[0]) && isset($request[1]) && !isset($request[2])) {
     $id_scheda=array_shift($request);
     $data_fine=array_shift($request);
-    $userId=getUserFromSession($conn);
+    
 
     //echo "ID Scheda: $id_scheda, Data Fine: $data_fine, UserID: $userId";
 
@@ -170,6 +169,60 @@ elseif ($method == 'GET' && $table == 'e_s' && $request[0]=='schede' && $request
 
     echo "ok";
 
+}elseif($method == "POST" && $table == "e_s"){
+    $id_scheda = getSchedaFromUserID($conn, $id_user);
+    
+    $nome = array_shift($request);
+    $serie = array_shift($request);
+    $ripetizioni = array_shift($request);
+    $recupero = array_shift($request);
+    
+
+    $query="INSERT INTO `e_s`(`esercizio`, `scheda`, `serie`, `ripetizioni`, `recupero`) VALUES (?,?,?,?,?)";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "siiii", $nome, $id_scheda, $serie, $ripetizioni, $recupero);
+    $res = mysqli_stmt_execute($stmt);
+    
+    if($res){
+        echo 'ok';
+    }
+    else{
+        echo 'error';
+    }
+}elseif($method == 'GET' && $table == 'e_s' && $request[0]=='attuale'){
+    $id_scheda = getSchedaFromUserID($conn, $id_user);
+
+    $query = "SELECT esercizio FROM e_s WHERE scheda=?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $id_scheda);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $rows = [];
+
+    while($row = mysqli_fetch_array($res)){
+        $rows[] = $row;
+    }
+
+    $rows=json_encode($rows);
+    echo $rows;
+        
+
+}elseif ($method == "DELETE" && $table == "e_s" && isset($request[0])){
+    $id_scheda = getSchedaFromUserID($conn, $id_user);
+    $esercizio = array_shift($request);
+
+    $query = "DELETE FROM e_s WHERE scheda=? AND esercizio=?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "is", $id_scheda, $esercizio);
+    mysqli_stmt_execute($stmt);
+
+    if(mysqli_affected_rows($conn) > 0){
+        echo "ok";
+    }
+    else{
+        echo "ERROR";
+    }
+
 }
 
 
@@ -186,6 +239,25 @@ function getUserFromSession($conn){
     $id_user = $row['id'];
 
     return "$id_user";
+}
+
+function getSchedaFromUserID($conn, $id_user){
+    $query="SELECT `id` FROM `schede` WHERE user = ? AND data_fine IS NULL;";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $id_user);
+    mysqli_stmt_execute($stmt);
+
+    $res = mysqli_stmt_get_result($stmt);
+    $num_rows = mysqli_num_rows($res);
+
+    if ($num_rows==1){
+        $row = mysqli_fetch_array($res);
+        $id_scheda = $row['id'];
+        return $id_scheda;
+    }
+    else{
+        return null;
+    }
 }
 
 

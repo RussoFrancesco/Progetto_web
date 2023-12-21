@@ -89,6 +89,28 @@
         </div>
     </div>
 
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Sei sicuro di voler eliminare l'esercizio dalla scheda?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="esercizio" class="hidden_esercizio_elimina">
+                    Seleziona cancella se vuoi eliminare l'esercizio dalla scheda.
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Annulla</button>
+                    <button class="btn btn-danger"  id='delete_button'>Cancella</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script defer src="js/esercizi.js"></script>
     <script defer src="js/home.js"></script>
