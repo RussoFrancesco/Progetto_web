@@ -53,10 +53,9 @@ if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
     echo $rows;
 
 }elseif($method=='GET' && $table=="allenamenti" && $request[0]=="storico"){
-    $id_user=getUserFromSession($conn);
     $query="SELECT * FROM allenamenti WHERE user=? ORDER BY `data` DESC";
     $stmt=mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt,'i',$id_user);
+    mysqli_stmt_bind_param($stmt,'i',$user);
     mysqli_stmt_execute($stmt);
     $result=mysqli_stmt_get_result($stmt);
     $rows=[];
@@ -65,6 +64,41 @@ if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
     }
     $rows=json_encode($rows);
     echo $rows;
+
+}elseif($method=='GET' && $table=="a_e" && isset($request[0])){
+    $id_allenamento=array_shift($request);
+    
+    //query 1 verfichimo che l'user richieda un allenamento di sua proprietà e salviamo l'id della scheda
+        $query="SELECT scheda FROM allenamenti WHERE id=? AND user=?";
+        $stmt=mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt,'ii',$id_allenamento, $user);
+        mysqli_stmt_execute($stmt);
+
+        $result=mysqli_stmt_get_result($stmt);
+        $num_rows=mysqli_num_rows($result);
+
+        if($num_rows==0){
+            echo "ERROR";
+        }
+
+        $row=mysqli_fetch_assoc($result);
+        $id_scheda=$row['scheda'];
+        
+    //query 2 recuperiamo tutti gli esercizi dell'allenamento
+    $query="SELECT a_e.esercizio,a_e.allenamento,a_e.peso,esercizi.gruppo 
+    FROM `a_e`,esercizi 
+    WHERE esercizi.nome=a_e.esercizio AND allenamento=? ORDER BY esercizi.gruppo";
+
+    $stmt=mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt,'i', $id_allenamento);
+    mysqli_stmt_execute($stmt);
+    $result=mysqli_stmt_get_result($stmt);
+    $rows=[];
+    while($row=mysqli_fetch_assoc($result)){
+        $rows[]=$row;
+    }
+    $json=json_encode($rows);
+    echo $json;
 }
 
 

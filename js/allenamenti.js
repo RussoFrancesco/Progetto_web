@@ -1,10 +1,4 @@
 
-//questo serve p
-if(document.getElementById('add_allenamento')){
-    const iniziaAllenamento=document.getElementById('add_allenamento');
-    iniziaAllenamento.addEventListener('click', function(){  window.location.href = 'allenamento.php'; });
-}
-
 //aggiunto un event listener al click di un elemento con ID 'inizia_allenamento',
 // chiamando la funzione 'allenamento' quando viene cliccato.
 if(document.getElementById('inizia_allenamento')){

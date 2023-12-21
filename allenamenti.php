@@ -59,7 +59,7 @@
                                 <div class="col">
                                     <h1>Storico allenamenti</h1>
                                     <div id="storico_allenamenti">
-
+                                        
                                     </div>
                                 </div>
                             </div>
