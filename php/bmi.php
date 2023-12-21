@@ -27,6 +27,22 @@ if($method == 'POST' && $table="bmi" && isset($request[0]) && isset($request[1])
     }
 
 }
+elseif($method == "GET" && $table="bmi"){
+    $query = "SELECT * FROM bmi WHERE user = ? ORDER by data DESC";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $user);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $rows = [];
+
+    while($row = mysqli_fetch_assoc($res)){
+        $rows[] = $row;
+    }
+
+    $rows = json_encode($rows);
+    echo $rows;
+
+}
 
 function getUserFromSession($conn){
     $query="SELECT id FROM users where session_id =?";
