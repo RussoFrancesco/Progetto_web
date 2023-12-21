@@ -73,7 +73,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="esercizio" class="input-hidden">
+                    <input type="hidden" id="esercizio" class="hidden_esercizio">
                     <label for="num_serie">Numero di serie:</label>
                     <input type="number" class="form-control" id="num_serie">
                     <label for="num_serie">Numero di ripetizioni:</label>

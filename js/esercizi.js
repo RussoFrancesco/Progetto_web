@@ -48,7 +48,7 @@ esercizi.forEach(esercizio => {
     card_header.appendChild(btn);
     btn.addEventListener('click', function(){
         const modal = document.getElementById("insertModal");
-        const input = modal.querySelector(".input-hidden");
+        const input = modal.querySelector(".hidden_esercizio");
 
         input.setAttribute("value", this.id);
         
@@ -81,10 +81,17 @@ function caricaGif(esercizio){
 
 function checkform(){
     var form_fields = document.getElementsByTagName("input");
-    var esercizio = form_fields[0];
-    for (var i = 1; i < form_fields.length; i++) {
-        
-        
+    for (var i = 0; i < form_fields.length; i++) {
+        if(form_fields[i].type=="number"){
+            if(isNaN(form_fields[i].value) || form_fields[i].value<0){
+                return alert("Compilare i campi numerici in modo corretto (valori maggiori o uguali a 1)")
+            }
+        }
     }
+    var esercizio = form_fields[0].value;
+    var serie = form_fields[1].value;
+    var ripetizioni = form_fields[2].value;
+    var recupero = form_fields[3].value;
+    console.log(esercizio, serie, ripetizioni, recupero);
     //insert_esercizi();
 }
