@@ -23,9 +23,21 @@ const chart = new Chart(myCanvas, config);
 getBMI();
 Progressi_su_esercizio();
 
+function getBMI(){
+    let req=new XMLHttpRequest();
+    
+    req.onload=function(){
+        //console.log(this.responseText);
+        //console.log(JSON.parse(this.responseText));
+        chartBMI(JSON.parse(this.responseText));
+        };
+    req.open("GET","php/bmi.php/bmi/getBMI",true);
+    req.send();
+}
+
 function chartBMI(dati){
     let CanvasBMI = document.getElementById("myPieChart");
-    console.log(dati);
+    //console.log(dati);
 
     for(let i=0;i<dati.labels.length;i++){
         dati.labels[i]=formattaData(dati.labels[i]);
@@ -59,16 +71,57 @@ function chartBMI(dati){
     const chart = new Chart(CanvasBMI, config);
 }
 
-function getBMI(){
+
+
+
+function Progressi_su_esercizio(){
     let req=new XMLHttpRequest();
-    
+
     req.onload=function(){
-        //console.log(this.responseText);
-        //console.log(JSON.parse(this.responseText));
-        chartBMI(JSON.parse(this.responseText));
-        };
-    req.open("GET","php/bmi.php/bmi/getBMI",true);
+        console.log(req.responseText);
+        chart_esercizio(JSON.parse(req.responseText));
+    };
+
+    req.open("GET","php/esercizi.php/a_e/progressi",true);
     req.send();
+}
+
+function chart_esercizio(json){
+    let myCanvas=document.getElementById("progressiEsercizio");
+    let esercizio = json.esercizio;
+
+    for(let i=0;i<json.date.length;i++){
+        json.date[i]=formattaData(json.date[i]);
+    }
+
+    data=json.pesi;
+    labels=json.date;
+
+    const dataChart={
+        labels: labels,
+        datasets: [{
+            label: "Peso",
+            data: data,
+            fill: false,
+            borderColor: 'rgb(78, 115, 223)',
+        }]
+    }
+    
+    const config = {
+        type: 'line',
+        data: dataChart,
+        options: {
+          plugins: {
+              legend: {
+                  display: false, 
+              }
+          }
+        }
+      };
+    
+    const chart = new Chart(myCanvas, config);
+
+
 }
 
 function formattaData(dataNonFormattata){
@@ -78,21 +131,4 @@ function formattaData(dataNonFormattata){
     let giorno = partiData[2];
     dataFormattata = `${giorno}-${mese}-${anno}`;
     return dataFormattata;
-}
-
-
-function Progressi_su_esercizio(){
-    let req=new XMLHttpRequest();
-
-    req.onload=function(){
-        chart_esercizio(JSON.parse(req.responseText));
-
-    };
-
-    req.open("GET","php/esercizi.php/a_e/progressi",true);
-    req.send();
-}
-
-function chart_esercizio(json){
-
 }

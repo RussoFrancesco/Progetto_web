@@ -32,11 +32,10 @@ if($method=="GET" && $table=="esercizi"){
     mysqli_stmt_execute($stmt);
     $result=mysqli_stmt_get_result($stmt);
     $rows = mysqli_num_rows($result);
-    echo $rows;
+    
    
     if ($rows > 0) {
         $randomIndex = rand(0, $rows - 1);
-        echo $randomIndex;
         mysqli_data_seek($result, $randomIndex);
 
         $exerciseData = mysqli_fetch_assoc($result);
@@ -62,6 +61,7 @@ if($method=="GET" && $table=="esercizi"){
         ];
 
         echo json_encode($json);
+
     } else {
         echo json_encode(["message" => "Nessun risultato trovato"]);
     }
