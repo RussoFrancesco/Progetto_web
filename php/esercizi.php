@@ -8,9 +8,9 @@ $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
 $user=getUserFromSession($conn);
 
+//echo $method." ".$table." ".$user." ".$request[0];
 
-
-if($method="GET" && $table=="esercizi"){
+if($method=="GET" && $table=="esercizi"){
     $query = "SELECT * FROM esercizi ORDER BY gruppo";
     $res = mysqli_query($conn, $query);
     $rows = [];
@@ -24,9 +24,49 @@ if($method="GET" && $table=="esercizi"){
     $rows = json_encode($rows);
     echo $rows;
 
-}elseif($method=="GET" && $table=="e_s"){
+}elseif($method=="GET" && $table=="a_e" && $request[0]=="progressi"){
     
-}
+    $query="SELECT allenamenti.data, a_e.peso,a_e.esercizio FROM a_e,allenamenti WHERE user =? AND allenamenti.id=a_e.allenamento";
+    $stmt=mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $user);
+    mysqli_stmt_execute($stmt);
+    $result=mysqli_stmt_get_result($stmt);
+    $rows = mysqli_num_rows($result);
+    echo $rows;
+   
+    if ($rows > 0) {
+        $randomIndex = rand(0, $rows - 1);
+        echo $randomIndex;
+        mysqli_data_seek($result, $randomIndex);
+
+        $exerciseData = mysqli_fetch_assoc($result);
+        $selectedExercise = $exerciseData['esercizio'];
+        }
+
+        mysqli_data_seek($result, 0);
+
+        $dates = [];
+        $weights = [];
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            if ($row['esercizio'] === $selectedExercise) {
+                $dates[] = $row['data'];
+                $weights[] = $row['peso'];
+            }
+        }
+
+        $json = [
+            "esercizio" => $selectedExercise,
+            "date" => $dates,
+            "pesi" => $weights
+        ];
+
+        echo json_encode($json);
+    } else {
+        echo json_encode(["message" => "Nessun risultato trovato"]);
+    }
+
+
 
 function getUserFromSession($conn){
     $query="SELECT id FROM users where session_id =?";
