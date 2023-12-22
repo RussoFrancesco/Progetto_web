@@ -89,6 +89,7 @@ function Progressi_su_esercizio(){
 function chart_esercizio(json){
     let myCanvas=document.getElementById("progressiEsercizio");
     let esercizio = json.esercizio;
+    document.getElementById("titolo_esercizio").innerHTML += esercizio;
 
     for(let i=0;i<json.date.length;i++){
         json.date[i]=formattaData(json.date[i]);
@@ -111,13 +112,13 @@ function chart_esercizio(json){
         type: 'line',
         data: dataChart,
         options: {
-          plugins: {
-              legend: {
-                  display: false, 
-              }
-          }
+            plugins: {
+                legend: {
+                    display: false, // Nascondi la legenda
+                }
+            }
         }
-      };
+    };
     
     const chart = new Chart(myCanvas, config);
 
