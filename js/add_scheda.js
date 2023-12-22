@@ -14,7 +14,7 @@ function get_esercizi() {
         insert_esercizi(data);
     }
 
-    req.open('get', 'php/get_esercizi.php/esercizi', true);
+    req.open('get', 'php/esercizi.php/esercizi', true);
     req.send();
 
 }

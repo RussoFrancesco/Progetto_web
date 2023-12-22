@@ -111,7 +111,7 @@ elseif ($method == 'GET' && $table == 'e_s' && $request[0]=='schede' && $request
     
     $query="UPDATE `schede` SET `data_fine`=? WHERE id=? AND user=?";
     $stmt=mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "ssi",$data_fine, $id_scheda, $userId);
+    mysqli_stmt_bind_param($stmt, "ssi",$data_fine, $id_scheda, $id_user);
     mysqli_stmt_execute($stmt);
     if(mysqli_affected_rows($conn) > 0){
         echo "ok";
