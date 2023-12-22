@@ -8,6 +8,8 @@ $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
 $user=getUserFromSession($conn);
 
+
+
 if($method="GET" && $table=="esercizi"){
     $query = "SELECT * FROM esercizi ORDER BY gruppo";
     $res = mysqli_query($conn, $query);
@@ -22,6 +24,8 @@ if($method="GET" && $table=="esercizi"){
     $rows = json_encode($rows);
     echo $rows;
 
+}elseif($method=="GET" && $table=="e_s"){
+    
 }
 
 function getUserFromSession($conn){
