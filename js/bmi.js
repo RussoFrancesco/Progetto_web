@@ -5,16 +5,17 @@ window.onload = function() {
 function validaForm() {
     const form = document.forms['bmi'];
     for(let i = 0; i < form.length; i++) {
-        if(form[i].type == 'number'){
-            const valore = form[i].value;
-            const regex = /^[0-9.]+$/;
-            if (!regex.test(valore)) {
-                return alert("Inserire dei valori maggiori di 0, per i valori decimali usare un punto");
-            }
+        if(!check_input(form[i])){
+            return alert("Inserisci un input valido");
         }
     }
 
     calcola_bmi();
+}
+
+function check_input(input){
+    const regex = /^[0-9]+(\.[0-9]+)?$/;
+    return regex.test(input.value);
 }
 
 
