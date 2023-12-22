@@ -43,6 +43,15 @@
                 <!-- End of Topbar -->
 
                 <div class="container">
+                    <button class="btn btn-primary" onclick="window.location.href='#pettorali'">Pettorali</button>
+                    <button class="btn btn-primary" onclick="window.location.href='#dorsali'">Dorsali</button>
+                    <button class="btn btn-primary" onclick="window.location.href='#tricipiti'">Tricipiti</button>
+                    <button class="btn btn-primary" onclick="window.location.href='#bicipiti'">Bicipiti</button>
+                    <button class="btn btn-primary" onclick="window.location.href='#gambe'">Gambe</button>
+                    <button class="btn btn-primary" onclick="window.location.href='#spalle'">Spalle</button>
+                    <button class="btn btn-primary" onclick="window.location.href='#addome'">Addome</button>
+
+                    
                     <h3>Pettorali</h3>
                     <div class="row" id="pettorali"></div>
                     <h3>Dorsali</h3>
