@@ -2,11 +2,13 @@ var id = window.location.search.substring(0).replace("?id=", "");
 var gruppi = new Set();
 var data;
 
+
 var chiudi_scheda = document.getElementById('button_terminazione_scheda');
 var modifica_scheda = document.getElementById("modifica_scheda");
 var div_modifica = document.getElementById("modifica_buttons");
 var annulla_modifica = document.getElementById("annulla_modifica");
 var conferma_modifica = document.getElementById("conferma_modifica");
+
 
 
 window.onload = function(){
@@ -20,7 +22,7 @@ window.onload = function(){
         location.reload();
     });
 
-    conferma_modifica.addEventListener('click', check_scheda)
+    conferma_modifica.addEventListener('click', check_scheda);
 
 }
 
