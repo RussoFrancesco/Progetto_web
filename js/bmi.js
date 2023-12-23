@@ -1,4 +1,5 @@
 window.onload = function() {
+    home();
     document.getElementById("calcola_bmi").addEventListener("click", validaForm);
 }
 

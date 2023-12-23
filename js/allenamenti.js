@@ -1,3 +1,4 @@
+home();
 
 //aggiunto un event listener al click di un elemento con ID 'inizia_allenamento',
 // chiamando la funzione 'allenamento' quando viene cliccato.

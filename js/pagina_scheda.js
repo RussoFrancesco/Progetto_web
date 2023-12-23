@@ -12,6 +12,7 @@ var conferma_modifica = document.getElementById("conferma_modifica");
 
 
 window.onload = function(){
+    home();
     get_scheda();
 
     modifica_scheda.addEventListener('click', abilita_modifica);

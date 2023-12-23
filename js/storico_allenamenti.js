@@ -1,4 +1,5 @@
 window.onload = function() {
+    home();
     const iniziaAllenamento=document.getElementById('add_allenamento');
     iniziaAllenamento.addEventListener('click', function(){  window.location.href = 'allenamento.php'; });
     visualizzazioneStoricoAllenamenti();

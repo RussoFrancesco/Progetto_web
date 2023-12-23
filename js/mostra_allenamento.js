@@ -1,4 +1,5 @@
 window.onload = function() {
+    home();
     get_data_from_server();
 }
 

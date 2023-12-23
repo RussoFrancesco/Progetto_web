@@ -73,8 +73,9 @@
                         </div>
                 </div>
             </div>
-
-    <script defer src="js/scheda.js"></script>
+            
     <script defer src="js/home.js"></script>
+    <script defer src="js/scheda.js"></script>
+   
 
 </body>

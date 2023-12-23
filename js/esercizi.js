@@ -1,4 +1,5 @@
 window.onload = function() {
+    home();
     get_esercizi();
     get_esercizi_scheda();
     document.getElementById("confirm_button").addEventListener("click", checkform);

@@ -1,4 +1,5 @@
 window.addEventListener('load', function() {
+    home();
     get_esercizi();
     document.getElementById("invio_scheda").addEventListener('click', check_scheda);
 });

@@ -3,6 +3,7 @@ var storico_schede = document.getElementById("storico_schede");
 var scheda_attuale = document.getElementById("scheda_attuale");
 
 function bindEvents() {
+    home();
     visualizzaSchede();
     var add_scheda = document.getElementById("add_scheda");
     

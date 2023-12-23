@@ -7,9 +7,9 @@ phonefield=document.getElementById("Phone");
 
 
 function bindEvent(){
+   home();
    compilaForm();
     
-
 }
 
 

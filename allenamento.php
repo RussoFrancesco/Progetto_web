@@ -93,19 +93,21 @@
 
                     
 
-                    <div class="d-flex justify-content-start">
-                        <button class="btn btn-success mr-2" id="inizia_allenamento">Inizia l'allenamento</button>
-                        <button class="btn btn-primary mr-2" id="modifica_scheda">Modifica la scheda</button>
-                        <button class="btn btn-primary" id="continua" style="display: none;">Continua</button>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button class="btn btn-success mr-2" id="inizia_allenamento">Inizia l'allenamento</button>
+                            <button class="btn btn-primary mr-2" id="modifica_scheda">Modifica la scheda</button>
+                            <button class="btn btn-primary" id="continua" style="display: none;">Continua</button>
+                        </div>
                         <button class="btn btn-danger mr-2" id="termina_allenamento" style="display: none;">Termina l'allenamento</button>
                     </div>
                 </div>
             </div>
         </div>
 
-
-    <script defer src="js/allenamenti.js"></script>
     <script defer src="js/home.js"></script>
+    <script defer src="js/allenamenti.js"></script>
+    
 
 </body>
 
