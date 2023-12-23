@@ -24,7 +24,8 @@ if($method=="GET" && $table=="esercizi"){
     $rows = json_encode($rows);
     echo $rows;
 
-}elseif($method=="GET" && $table=="a_e" && $request[0]=="progressi"){
+}
+elseif($method=="GET" && $table=="a_e" && $request[0]=="progressi"){
     
     $query="SELECT allenamenti.data, a_e.peso,a_e.esercizio FROM a_e,allenamenti WHERE user =? AND allenamenti.id=a_e.allenamento";
     $stmt=mysqli_prepare($conn, $query);
@@ -62,9 +63,26 @@ if($method=="GET" && $table=="esercizi"){
 
         echo json_encode($json);
 
-    } else {
-        echo json_encode(["message" => "Nessun risultato trovato"]);
-    }
+}elseif($method=="GET" && $table=="a_e" && $request[0]=="gruppi"){
+        $query="SELECT esercizi.gruppo, COUNT(*) as occorrenze 
+            FROM `a_e`,allenamenti,esercizi 
+            WHERE esercizi.nome=a_e.esercizio AND a_e.allenamento=allenamenti.id AND allenamenti.user=? 
+            GROUP BY esercizi.gruppo";
+        $stmt=mysqli_prepare($conn,$query);
+        mysqli_stmt_bind_param($stmt,"i",$user);
+        mysqli_stmt_execute($stmt);
+
+        $res = mysqli_stmt_get_result($stmt);
+        
+        $rows=[];
+
+        while ($row = mysqli_fetch_array($res)){
+            $rows[$row["gruppo"]] = $row["occorrenze"];
+        }
+
+        echo json_encode($rows);
+        
+    }  
 
 
 

@@ -22,6 +22,7 @@ const chart = new Chart(myCanvas, config);
 */
 getBMI();
 Progressi_su_esercizio();
+getPercentualiGruppi();
 
 function getBMI(){
     let req=new XMLHttpRequest();
@@ -122,6 +123,61 @@ function chart_esercizio(json){
     
     const chart = new Chart(myCanvas, config);
 
+
+}
+
+function getPercentualiGruppi(){
+    let request = new XMLHttpRequest();
+    request.onload=function(){
+        occorrenze=JSON.parse(this.responseText);
+        Piechart(occorrenze);
+    };
+    request.open('GET',"php/esercizi.php/a_e/gruppi",true);
+    request.send();
+}
+
+function Piechart(json){
+    const occorrenze_gruppi={
+        "pettorali":json.hasOwnProperty("pettorali")? json.pettorali: 0,
+        "dorsali":json.hasOwnProperty("dorsali")? json.dorsali:0,
+        "spalle":json.hasOwnProperty("spalle")? json.spalle:0,
+        "bicipiti":json.hasOwnProperty("bicipiti")? json.bicipiti:0,
+        "tricipiti":json.hasOwnProperty("tricipiti")?json.tricipiti:0,
+        "gambe":json.hasOwnProperty("gambe")?json.gambe:0,
+        "addome":json.hasOwnProperty("addome")?json.addome:0
+    }
+
+    var labels=Object.keys(occorrenze_gruppi);
+    var dati=Object.values(occorrenze_gruppi);
+    
+    console.log(labels);
+    console.log(dati);
+    colors = [
+        'rgb(255, 99, 132)',
+        'rgb(54, 162, 235)',
+        'rgb(255, 205, 86)',
+        'rgb(75, 192, 192)',
+        'rgb(153, 102, 255)',
+        'rgb(255, 159, 64)',
+        'rgb(120, 200, 80)'
+    ];
+
+    const data = {
+        labels: labels,
+        datasets: [{
+          label: 'Numero di allenamenti per il gruppo muscolare',
+          data: dati,
+          backgroundColor: colors,
+          hoverOffset: 4
+        }]
+      };
+    
+    const config = {
+        type: 'doughnut',
+        data: data,
+    };
+    const myCanvas=document.getElementById("canvasDistribuzione");
+    const chart = new Chart(myCanvas, config);
 
 }
 
