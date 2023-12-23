@@ -175,6 +175,22 @@ function Piechart(json){
     const config = {
         type: 'doughnut',
         data: data,
+        options: {
+            plugins: {
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    let label = context.label || '';
+                    if (label) {
+                      label += ': ';
+                    }
+                    label += context.formattedValue + ' (' + ((context.parsed / context.dataset.data.reduce((a, b) => a + b)) * 100).toFixed(2) + '%)';
+                    return label;
+                  }
+                }
+              }
+            }
+          }
     };
     const myCanvas=document.getElementById("canvasDistribuzione");
     const chart = new Chart(myCanvas, config);
