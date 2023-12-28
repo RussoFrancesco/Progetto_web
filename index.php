@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Dashboard</title>
+    <title>FitnessFolio - Dashboard</title>
 
     <!-- Custom fonts for this template-->
     <script src="https://kit.fontawesome.com/35642cd6bb.js" crossorigin="anonymous"></script>
