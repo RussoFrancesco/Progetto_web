@@ -53,27 +53,32 @@
                                     <div class="form-group">
                                         <label class="p">Nome:</label>
                                         <input type="text" class="form-control form-control-user" name="FirstName" id="FirstName"
-                                            placeholder="First Name" readonly required>
+                                            placeholder="First Name"  required>
                                     </div>
                                     <div class="form-group">
                                         <label class="p">Cognome:</label>
                                         <input type="text" class="form-control form-control-user" name="LastName" id="LastName"
-                                            placeholder="Last Name" readonly required> 
+                                            placeholder="Last Name"  required> 
                                     </div>
                                     <div class="form-group">
                                         <label class="p">Email:</label>
                                         <input type="email" class="form-control form-control-user" name="Email" id="Email"
-                                            placeholder="Email Address" readonly required>
+                                            placeholder="Email Address"  required>
                                     </div>
                                     <div class="form-group">
                                         <label class="p">Telefono:</label>
                                         <input type="tel" class="form-control form-control-user" name="Phone" id="Phone"
-                                        placeholder="Phone Number (optional)" readonly required>
+                                        placeholder="Phone Number (optional)"  required>
+                                    </div>
+                                    <div class="form-group" id=modifica>
+                                        <button type="button" class="btn btn-primary" id="button_modifica">Modifica</button>
                                     </div>
                                 </form>
                             </div>
                     </div>
                 </div>
                 <!-- Script per recuperare i dati da mostare-->
+                <script defer src="js/home.js"></script>
                 <script defer src="js/profile.js"></script>
+                
 </body>
