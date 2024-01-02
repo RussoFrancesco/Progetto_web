@@ -8,7 +8,6 @@ var cognomeModificato=false;
 var emailModificata=false;
 var phoneModificato=false;
 
-
 window.onload=bindEvent();
 
 function bindEvent(){
@@ -52,8 +51,11 @@ function modifica(){
         req=new XMLHttpRequest();
         req.onload=function(){
             console.log(req.responseText);
-            if (req.responseText=="OK"){
-                alert ("Modifiche eseguite con successo \n Verrai reindirizzato alla pagina iniziale");
+            if(req.responseText=="email"){
+                alert("Emai già associata a un account");
+            }
+            if(req.responseText=="OK"){
+                alert("Modifiche eseguite con successo \n Verrai reindirizzato alla pagina iniziale");
                 window.location.href="index.php";
             }
         }

@@ -40,19 +40,28 @@ if ($table == "users" and $method =="GET") {
     $phone=$input["phone"];
     $userid=getUserFromSession($conn);
 
-    $query="UPDATE `users` SET `nome`=?,`cognome`=?,`email`=?,`telefono`=? WHERE id=? ";
-    $stmt=mysqli_prepare($conn,$query);
-    mysqli_stmt_bind_param($stmt,"ssssi",$nome,$cognome,$email,$phone,$userid);
+    $query = "SELECT email FROM users WHERE email = ?";
+    $stmt = mysqli_prepare($conn,$query);
+    mysqli_stmt_bind_param($stmt, "s", $email);
     mysqli_stmt_execute($stmt);
     $rows = mysqli_stmt_affected_rows($stmt);
-
-    if ($rows==1){
-        echo "OK";
+    if($rows!=0){
+        echo "email";
     }
     else{
-        echo "ERROR";
-    }
+        $query="UPDATE `users` SET `nome`=?,`cognome`=?,`email`=?,`telefono`=? WHERE id=? ";
+        $stmt=mysqli_prepare($conn,$query);
+        mysqli_stmt_bind_param($stmt,"ssssi",$nome,$cognome,$email,$phone,$userid);
+        mysqli_stmt_execute($stmt);
+        $rows = mysqli_stmt_affected_rows($stmt);
 
+        if ($rows==1){
+            echo "OK";
+        }
+        else{
+            echo "ERROR";
+        }
+    }
 }
 
 
