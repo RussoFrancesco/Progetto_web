@@ -1,26 +1,29 @@
 window.onload = function() {
     home();
+    // Aggiunge un event listener al pulsante "calcola_bmi" che chiama la funzione "validaForm" quando viene cliccato
     document.getElementById("calcola_bmi").addEventListener("click", validaForm);
 }
 
+// Funzione per validare il form
 function validaForm() {
-    const form = document.forms['bmi'];
+    const form = document.forms['bmi']; // Ottiene il form con nome 'bmi' tra tutti i form del documento
     for(let i = 0; i < form.length; i++) {
-        if(!check_input(form[i])){
+        // Itera attraverso gli elementi del modulo per controllare se sono validi
+        if(!check_input(form[i])){ // Controlla se l'input non è valido
             return alert("Inserisci un input valido");
         }
     }
 
-    calcola_bmi();
+    calcola_bmi(); // Se tutti gli input sono validi, calcola il BMI
 }
 
 function check_input(input){
-    const regex = /^[0-9]+(\.[0-9]+)?$/;
-    return regex.test(input.value);
+    const regex = /^[0-9]+(\.[0-9]+)?$/;  // Espressione regolare per controllare i numeri
+    return regex.test(input.value); // Restituisce true se l'input soddisfa la regola
 }
 
 
-
+// Funzione per calcolare il BMI
 function calcola_bmi(){
     const peso = document.getElementById("peso").value;
     const altezza = document.getElementById("altezza").value/100;
@@ -66,12 +69,14 @@ function calcola_bmi(){
         h4.innerHTML = "Sei estremamente obeso";
     }
 
+    //data corrente
     const today=new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0'); // Aggiunge lo zero iniziale se il mese è inferiore a 10 +1 perchè parte da 0
     const day = String(today.getDate()).padStart(2, '0'); // Aggiunge lo zero iniziale se il giorno è inferiore a 10
     const formattedDate = `${year}-${month}-${day}`;
 
+    // Crea una richiesta AJAX per inviare il BMI e la data al server
     var req = new XMLHttpRequest();
 
     req.onload = function(){

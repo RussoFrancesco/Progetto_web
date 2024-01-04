@@ -9,9 +9,9 @@ if(document.getElementById('inizia_allenamento')){
 
 
 //VARIABILI GLOBALI
-var id_scheda = 0;
-var gruppi_selezionati = [];
-var json_pesi={};
+var id_scheda = null; //id_scheda recuperata dopo con recupera esercizi dalla scheda
+var gruppi_selezionati = []; //variable per i gruppi selezionati nella checkbox iniziale
+var json_pesi={}; //json per i pesi utilizzati a fine allenamento
 var countdownTimer;
 
 // Se l'URL corrente corrisponde a 'http://localhost/Progetto_web/allenamento.php',
@@ -252,7 +252,7 @@ function set_page(gruppo, esercizio){
     document.getElementById('recupera').style.display = "block";
 }
 
-// Funzione per recuperare gli esercizi dalla scheda.
+// Funzione per recuperare gli esercizi dalla scheda. E recuperare l'id della scheda
 function recuperaEserciziDallaScheda(){
     req=new XMLHttpRequest();
 
@@ -287,30 +287,31 @@ function check_checkbox(){
     
 }
 
-
+// Funzione per creare un oggetto JSON dai dati ottenuti dall'interfaccia utente
 function createJSON(){
     var jsonText ='{';
 
     for (var i = 0; i < gruppi_selezionati.length; i++) {
-        const gruppo_body = document.getElementById(gruppi_selezionati[i]+"_body");
-        jsonText += '"'+gruppi_selezionati[i]+'": [';
+        const gruppo_body = document.getElementById(gruppi_selezionati[i]+"_body"); 
+        jsonText += '"'+gruppi_selezionati[i]+'": ['; // Inizia la stringa JSON per il gruppo corrente
         const esercizi = gruppo_body.childNodes;
-        for(const esercizio of esercizi){
-            jsonText += '"'+esercizio.id+'", ';
+        for(const esercizio of esercizi){ 
+            jsonText += '"'+esercizio.id+'", '; // Aggiunge gli esercizi al JSON
         };
-        jsonText=jsonText.substring(0, jsonText.length-2);
-        jsonText += "], ";
+        jsonText=jsonText.substring(0, jsonText.length-2); // Rimuove la virgola finale
+        jsonText += "], "; // Chiude la lista di esercizi per il gruppo corrente
     };
-    jsonText=jsonText.substring(0, jsonText.length-2);
-    jsonText += "}";
-    jsonText = JSON.parse(jsonText);
+    jsonText=jsonText.substring(0, jsonText.length-2); // Rimuove la virgola finale
+    jsonText += "}"; // Chiude la stringa JSON
+    jsonText = JSON.parse(jsonText); // Converte la stringa JSON in un oggetto JSON
     console.log(jsonText);
     return jsonText;
 }
 
+// Funzione per ottenere informazioni sull'esercizio da una stringa
 function getInfoEsercizioFromP(stringa){
     console.log(stringa);
-    stringa = document.getElementById(stringa).innerHTML;
+    stringa = document.getElementById(stringa).innerHTML; // Ottiene il contenuto dell'elemento HTML con l'ID corrispondente
     let arr=stringa.split(":");
     arr=arr[1];
     arr=arr.split("x");
@@ -326,6 +327,7 @@ function getInfoEsercizioFromP(stringa){
     return [serie, ripetizioni, recupero];
 }
 
+// Funzione per impostare le informazioni sull'esercizio nell'interfaccia utente
 function setInfoSuEsercizio(serie, ripetizioni, recupero){
     let h5_serie=document.getElementById("info_serie")
     let h5_ripetizioni=document.getElementById("info_ripetizioni");
@@ -338,7 +340,7 @@ function setInfoSuEsercizio(serie, ripetizioni, recupero){
 
 function caricaGif(esercizio){
     //console.log(esercizio);
-    let gif =document.getElementById("gif_esercizio");
+    let gif =document.getElementById("gif_esercizio"); // Ottiene l'elemento HTML per la GIF
     esercizio=esercizio.replaceAll(" ","_");
     esercizio+=".gif";
 
@@ -363,33 +365,38 @@ function addPeso(){
     
 }
 
-function start_timer(callback, timerData, totalSeconds) {
-    if (!countdownTimer) {
-      countdownTimer = setInterval(function() {
-        callback(timerData, totalSeconds);
-      }, 1000);
+// Funzione per avviare un timer di countdown
+function start_timer(callback, timerData, totalSeconds) { 
+    if (!countdownTimer) { // Controlla se il timer non è già attivo
+        // Imposta un intervallo di tempo (ogni secondo) per richiamare la callback fornita
+        countdownTimer = setInterval(function() {
+        callback(timerData, totalSeconds); // Richiama la callback con i dati del timer e i secondi totali
+      }, 1000); // Intervallo di 1000 millisecondi (1 secondo)
     }
 }
-  
+
+// Funzione per aggiornare il timer e la barra di avanzamento
 function update_timer(timerData, totalSeconds) {
-    const progressBar = document.getElementById('progress-bar');
+    const progressBar = document.getElementById('progress-bar'); // Ottiene l'elemento della barra di avanzamento
   
-    if (timerData.seconds > 0) {
-      timerData.seconds--;
+    if (timerData.seconds > 0) { // Se ci sono ancora secondi nel timer
+      timerData.seconds--; // Decrementa il numero di secondi rimanenti
       const percentage = (((totalSeconds - timerData.seconds) / totalSeconds) * 100).toFixed(2); // Calcolo della percentuale basata sul tempo trascorso
   
       progressBar.style.width = percentage + '%';
-      progressBar.setAttribute('aria-valuenow', percentage);
-    } else {
+      progressBar.setAttribute('aria-valuenow', percentage); // Aggiorna il valore della barra di avanzamento per l'accessibilità
+    } else { //quando il tempo è scaduto
       clearInterval(countdownTimer); // Interrompe il timer
       countdownTimer = null;
-      progressBar.style.width = '100%';
+      progressBar.style.width = '100%'; // Imposta la barra di avanzamento al 100% di completamento
       progressBar.style.backgroundColor = "#1cc88a"; // Cambia il colore di sfondo della progress bar quando il tempo è scaduto
       var serie_rimanenti = document.getElementById("serie_rimanenti");
-
+    
+      // Aggiorna il numero di serie rimanenti sottraendo uno
       let serie_aggiornato = (parseInt(serie_rimanenti.innerHTML.split(":")[1])) - 1;
       serie_rimanenti.innerHTML = "Numero di serie rimanenti: " + serie_aggiornato;
 
+      // Verifica se le serie sono finite se si mostro il bottone continua e l'input del peso
         if (serie_aggiornato === 0) {
             document.getElementById('recupera').style.display = "none";
             document.getElementById('progress-bar').style.display = "none";

@@ -1,11 +1,12 @@
 window.addEventListener('load', function() {
-    home();
+    //quando carica la finestra 
+    home(); //funzione per inserire il nome dell'user nella scheda utente e per attivare il logout 
     get_esercizi();
-    document.getElementById("invio_scheda").addEventListener('click', check_scheda);
+    document.getElementById("invio_scheda").addEventListener('click', check_scheda); 
 });
 
 
-
+// funzione per recuperare gli esercizi dal db 
 function get_esercizi() {
     req = new XMLHttpRequest();
     
@@ -20,7 +21,10 @@ function get_esercizi() {
 
 }
 
+//funzione per l'inserimento degli esercizi
 function insert_esercizi(data) {
+
+    // gruppi muscolari in un oggetto utile per inserire l'esercizio nel div
     const gruppiDiv = {
         pettorali: 'pettorali',
         dorsali: 'dorsali',
@@ -31,31 +35,44 @@ function insert_esercizi(data) {
         gambe: 'gambe'
     };
 
+    //ciclo per creare la checkbox degli esercizi dall'oggetto json tornato dal DB con dentro gli esercizi
     data.forEach(esercizio => {
-        const gruppo = esercizio['gruppo'];
+
+        //recupero esercizio e gruppo dell'esercizio
+        const gruppo = esercizio['gruppo']; 
         const nome = esercizio['nome'];
 
+        //creo una checkbox per ogni esercizio con id= al nome dell'esercizio stesso 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.name = nome;
         checkbox.id = nome;
         checkbox.classList.add('form-check-input');
 
+        //Creo la rispettiva label 
         const checkboxLabel = document.createElement('label');
         checkboxLabel.htmlFor = nome;
         checkboxLabel.classList.add('form-check-label');
         checkboxLabel.appendChild(document.createTextNode(nome));
 
+        //recupero il div per il singolo gruppo
         const div = document.getElementById(gruppiDiv[gruppo]);
+
         if (div) {
+
+            //appendo al DOM la checkbox la laber ed un <br>
             div.appendChild(checkbox);
             div.appendChild(checkboxLabel);
             div.appendChild(document.createElement('br'));
 
+            //creo il div hidden per gli input di serie,ripetizioni,recupero e gli metto la classe row
             const hiddenInputGroup = document.createElement('div');
             hiddenInputGroup.classList.add('row');
 
+            //funzione con arrow function per creare hidden input
             const createHiddenInput = (id, label) => {
+
+                //creo 1 un input type number con id uguale al parametro min=1 display=none 
                 const hiddenInput = document.createElement('input');
                 hiddenInput.type = 'number';
                 hiddenInput.id = id;
@@ -64,6 +81,7 @@ function insert_esercizi(data) {
                 hiddenInput.style.display = 'none';
                 hiddenInput.setAttribute('data-checkbox', nome);
 
+                //creo la label 
                 const labelHidden = document.createElement('label');
                 labelHidden.htmlFor = hiddenInput.id;
                 labelHidden.id = "label"+hiddenInput.id;
@@ -72,6 +90,7 @@ function insert_esercizi(data) {
                 labelHidden.setAttribute('data-checkbox', nome);
                 labelHidden.innerHTML = label;
 
+                //creo un div col-auto a cui appendo sia l'hidden input che la label
                 const colDiv = document.createElement('div');
                 colDiv.classList.add('col-auto');
                 colDiv.appendChild(labelHidden);
@@ -80,6 +99,7 @@ function insert_esercizi(data) {
                 return colDiv;
             };
 
+            //utilizzo la funzione appena creata e la utilizzo per appendere gli input al div hiddenInputGroup
             hiddenInputGroup.appendChild(createHiddenInput('n_serie_' + nome, 'Numero di serie'));
             hiddenInputGroup.appendChild(createHiddenInput('n_rep_' + nome, 'Numero di ripetizioni per serie'));
             hiddenInputGroup.appendChild(createHiddenInput('rec_' + nome, 'Recupero tra le serie(sec)'));
