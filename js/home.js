@@ -1,15 +1,16 @@
+//funzione che attiva i 2 comportamenti
 function home(){
-    userinfo();
+    userinfo(); //recupero info dell'user
     document.getElementById("logout_button").addEventListener("click", logoutProcedure);
 }
 
 function userinfo(){    
-    var user=document.getElementById("span_user");
+    var user=document.getElementById("span_user"); //recupero lo span_user nella topbar 
     req=new XMLHttpRequest();
 
     req.onload=function () {
         console.log(this.responseText);
-        user.innerHTML=this.responseText;
+        user.innerHTML=this.responseText; //setto l'inner HTML con il nome ed il cognome tornati dal db
     }
 
     req.open("get","php/home.php/users/",true);
@@ -17,6 +18,7 @@ function userinfo(){
 
 }
 
+//funzione per attivare il bottone di logout, e attivare la procedura di logout
 function logoutProcedure(){
     console.log("logout");
     req=new XMLHttpRequest();

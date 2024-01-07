@@ -47,7 +47,7 @@ function calcola_bmi(){
     const h4 = document.createElement("h4");
     divRisultato.appendChild(h4);
 
-
+    //valuto il risultato per ogni bmi 
     if (bmi <= 18.5){
         h4.style.color = "#4e73df";
         h4.innerHTML = "Sei sottopeso";
@@ -85,7 +85,8 @@ function calcola_bmi(){
         }
     };
 
-    req.open("POST", "php/bmi.php/bmi/"+bmi+"/"+formattedDate,true)
+    
+    req.open("POST", "php/bmi.php/bmi/"+bmi+"/"+formattedDate,true) //Faccio insert nella tabella BMI con data corrente
     req.send();
 
 }

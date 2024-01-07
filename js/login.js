@@ -4,15 +4,16 @@ function bindEvents (){
     document.getElementById("login_button").addEventListener("click", loginProcedure);
 }
 
-
+//funzione per il login 
 function loginProcedure (){
 
     //recupero valori inseriti nel form
     var email=document.getElementById("email").value;
     var password=document.getElementById("password").value;
 
+    //modifico la password col sale e la cifro
     password=email.substring(0,5)+password;
-    password=sha256(password);
+    password=sha256(password); 
 
 
     var req=new XMLHttpRequest();

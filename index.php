@@ -121,7 +121,7 @@
                             <!-- Project Card Example -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary" id="titolo_esercizio">Anadamento sull'esercizio: </h6>
+                                    <h6 class="m-0 font-weight-bold text-primary" id="titolo_esercizio">Andamento sull'esercizio: </h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="chart-area text-center">

@@ -1,6 +1,6 @@
-home();
+home(); //funzione per inserire il logout ed il nome utente nella sezione utente
 
-//aggiunto un event listener al click di un elemento con ID 'inizia_allenamento',
+//aggiungo un event listener al click del bottone con ID 'inizia_allenamento',
 // chiamando la funzione 'allenamento' quando viene cliccato.
 if(document.getElementById('inizia_allenamento')){
     const iniziaAllenamento=document.getElementById('inizia_allenamento');
@@ -15,7 +15,8 @@ var json_pesi={}; //json per i pesi utilizzati a fine allenamento
 var countdownTimer;
 
 // Se l'URL corrente corrisponde a 'http://localhost/Progetto_web/allenamento.php',
-// viene eseguita una funzione quando la finestra si carica.
+// viene eseguita la funzione  recuperaEserciziDallaScheda(); quando la finestra si carica.
+// inoltre rendo attivo il bottone di modifica scheda che riporta alla pagina della scheda con l'id passato tramite url
 if(window.location.href == 'http://localhost/Progetto_web/allenamento.php' ||window.location.href == 'http://localhost:8080/Progetto_web/allenamento.php'){
     window.onload = function(){
         recuperaEserciziDallaScheda();
@@ -25,8 +26,9 @@ if(window.location.href == 'http://localhost/Progetto_web/allenamento.php' ||win
     }
 }
 
+//FUnzione per eseguire l'allenamento
 function allenamento(){
-    //cambiamo visualizzazione della pagina
+    //cambiamo visualizzazione della pagina 
     document.getElementById("selezione").style.display = "none";
     document.getElementById("modifica_scheda").style.display = "none";
     document.getElementById("inizia_allenamento").style.display = "none";
@@ -34,13 +36,13 @@ function allenamento(){
     var termina = document.getElementById("termina_allenamento");
     termina.style.display = "block";
     //document.getElementById("continua").style.display = "block";
-    const json_all = createJSON();
+    const json_all = createJSON(); //creo un oggetto JSON per l'allenamento 
        
     const button = document.getElementById('continua');
     const button_recupero = document.getElementById('recupera');
     var serie_rimanenti = document.getElementById("serie_rimanenti");
 
-    //USIAMO LA VARIABILE GLOBALE 'GRUPPI_SELEZIONATI' PER RISALIER ALLE KEYS DEL JSON CONTENENTE L'ALLENAMENTO
+    //USIAMO LA VARIABILE GLOBALE 'GRUPPI_SELEZIONATI' PER RISALIRE ALLE KEYS DEL JSON CONTENENTE L'ALLENAMENTO
     // Dichiarazione degli indici per tenere traccia della posizione negli array
     let indice_gruppi=0; // Indice per i gruppi muscolari selezionati le keys del JSON
     let indice_array_interno_json=0; // Indice per l'array interno value del JSON[key]
@@ -53,6 +55,7 @@ function allenamento(){
     indice_array_interno_json++;
 
     termina.addEventListener("click", function(){
+        //se il json dei pesi contiene qualche esercizio completato, viene inserito nel db, sennò si ritorna alla pagina di allenamenti
         if(JSON.stringify(json_pesi).replace("{}", "").length != 0){
             inserimento_allenamento();
         }
@@ -61,14 +64,16 @@ function allenamento(){
         }
     })
 
-    
+    //evento sul tasto recupera
     button_recupero.addEventListener("click", function(){
+        //quando viene cliccato si azzera la barra e si recupera i secondi per il timer
         var progress_bar = document.getElementById('progress-bar');
         progress_bar.setAttribute('aria-valuenow', '0');
         progress_bar.style.width = '0%';
         progress_bar.style.backgroundColor = "#4e73df";
         var recupero = parseInt(document.getElementById("info_recupero").innerHTML.split(":")[1])
         
+        //chiamo la funzione start_timer con una funzione di callback, l'oggetto timerData che serve per avere un passaggio di variabili per rifefrimento e i secondi per il timer
         let timerData = { seconds: recupero};
         start_timer(update_timer, timerData, recupero);
     })
@@ -111,7 +116,6 @@ function allenamento(){
             }   
         }else alert("Inserisci il peso maggiore di 0");
     }); 
-    
     
 }
 
@@ -228,6 +232,7 @@ function scheda(esercizi) {
     }
 }
 
+//funzione per il cambio di esercizio e/o di gruppo muscolare
 function set_page(gruppo, esercizio){
     if (gruppo != null){
         var h3 = document.getElementById("gruppo_muscolare");
@@ -349,6 +354,7 @@ function caricaGif(esercizio){
     
 }
 
+//funzione per vedere se l'input del peso è riempito correttamente
 function issetPeso(){
     let peso=document.getElementById("peso");
     peso=peso.value;
@@ -358,6 +364,7 @@ function issetPeso(){
     return true
 }
 
+//funzione per aggiungere il peso al json
 function addPeso(){
     let esercizio=document.getElementById("singolo_esercizio").innerHTML;
     let peso=document.getElementById("peso").value;

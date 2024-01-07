@@ -1,7 +1,7 @@
 window.addEventListener('load', function() {
     //quando carica la finestra 
     home(); //funzione per inserire il nome dell'user nella scheda utente e per attivare il logout 
-    get_esercizi();
+    get_esercizi(); 
     document.getElementById("invio_scheda").addEventListener('click', check_scheda); 
 });
 
@@ -11,17 +11,17 @@ function get_esercizi() {
     req = new XMLHttpRequest();
     
     req.onload = function() {
-        var data = this.responseText;
-        data = JSON.parse(data);
-        insert_esercizi(data);
+        var data = this.responseText; //recupero dati ottenuti dal server in una stringa in formato JSON
+        data = JSON.parse(data);    //li converto con metodo PARSE in un oggetto JavaScript
+        insert_esercizi(data);  
     }
 
-    req.open('get', 'php/esercizi.php/esercizi', true);
+    req.open('get', 'php/esercizi.php/esercizi', true); //Richiesta AJAX con metodo GET (è una select) sulla tabella esercizi
     req.send();
 
 }
 
-//funzione per l'inserimento degli esercizi
+//funzione per l'inserimento degli esercizi nella scheda
 function insert_esercizi(data) {
 
     // gruppi muscolari in un oggetto utile per inserire l'esercizio nel div
@@ -42,7 +42,7 @@ function insert_esercizi(data) {
         const gruppo = esercizio['gruppo']; 
         const nome = esercizio['nome'];
 
-        //creo una checkbox per ogni esercizio con id= al nome dell'esercizio stesso 
+        //creo una checkbox per ogni esercizio con nome ed id= al nome dell'esercizio stesso 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.name = nome;
@@ -51,16 +51,16 @@ function insert_esercizi(data) {
 
         //Creo la rispettiva label 
         const checkboxLabel = document.createElement('label');
-        checkboxLabel.htmlFor = nome;
+        checkboxLabel.htmlFor = nome; //assegno la label alla checkbox
         checkboxLabel.classList.add('form-check-label');
-        checkboxLabel.appendChild(document.createTextNode(nome));
+        checkboxLabel.appendChild(document.createTextNode(nome)); // Aggiunge un nodo di testo contenente il valore di  'nome' al nodo 'checkboxLabel'
 
         //recupero il div per il singolo gruppo
         const div = document.getElementById(gruppiDiv[gruppo]);
 
         if (div) {
 
-            //appendo al DOM la checkbox la laber ed un <br>
+            //appendo all'elemento div appena recuperato dal DOM la checkbox la label ed un <br>
             div.appendChild(checkbox);
             div.appendChild(checkboxLabel);
             div.appendChild(document.createElement('br'));
@@ -109,15 +109,24 @@ function insert_esercizi(data) {
             
             // Aggiungi un event listener al cambio di stato della checkbox
             checkbox.addEventListener('change', function() {
-                const nomeCheckbox = this.id;
+                const nomeCheckbox = this.id; // Ottiene l'ID della checkbox attivata
+
                 //const hiddenFields = div.querySelectorAll('.hidden-fields');
-                const hiddenFields = [];
+
+                const hiddenFields = []; // Crea un array per memorizzare i campi nascosti associati alla checkbox
+
+                // Aggiunge i riferimenti ai campi nascosti nell'array hiddenFields
                 hiddenFields.push(document.getElementById('n_serie_' + nome));
                 hiddenFields.push(document.getElementById('n_rep_' + nome));
                 hiddenFields.push(document.getElementById('rec_' + nome));
+
+                // Per ogni campo nascosto associato alla checkbox
                 hiddenFields.forEach(field => {
+                    // Verifica se il campo corrente è associato alla checkbox attivata
                     if (field.getAttribute('data-checkbox') === nomeCheckbox) {
+                        // Ottiene il riferimento all'elemento di label corrispondente al campo
                         var label = document.getElementById("label"+field.id);
+                        //Imposta lo stile di visualizzazione della label e del campo in base allo stato della checkbox
                         label.style.display = this.checked ? 'block' : 'none';
                         field.style.display = this.checked ? 'block' : 'none';
                     }
@@ -127,9 +136,9 @@ function insert_esercizi(data) {
     });
 }
 
-
+//funzione che valida l'input della scheda
 function check_scheda() {
-    var form_fields = document.getElementsByTagName("input");
+    var form_fields = document.getElementsByTagName("input"); //prende tutti gli elementi input 
     for (var i = 0; i < form_fields.length; i++) {
         /*controllo che gli input siano type checkbox e che sono stati cliccati, se cosi' prendo i dati correlati
             numero di serie, numero di ripetizioni, numero di recupero tra le serie e li metto in un'array*/
@@ -139,51 +148,52 @@ function check_scheda() {
             var n_rep = parseInt(form_fields[i + 2].value);
             var rec = parseInt(form_fields[i + 3].value);
 
+            //se un campo ha un valore non consentito do un alert
             if (isNaN(n_serie) || isNaN(n_rep) || isNaN(rec) || n_serie < 1 || n_rep < 1 || rec < 1) {
                 return alert("Compilare i campi numerici in modo corretto (valori maggiori o uguali a 1)");
             }
         }
     }
-    componiScheda();
+    componiScheda(); 
 }
 
 
 function componiScheda(){
-    //Composizione data inizio
+
+    //Composizione data inizio alla data di oggi 
     const data=new Date();
     var data_inizio=data.toISOString().split('T')[0];
-
-    
 
     //recupero tutti gli input elements 
     var form_fields=document.getElementsByTagName("input");
 
-    var form_data = [];
+    var form_data = []; 
     
     for(var i=0;i<form_fields.length;i++){
         /*controllo che gli input siano type checkbox e che sono stati cliccati, se cosi' prendo i dati correlati
             numero di serie, numero di ripetizioni, numero di recupero tra le serie  e li metto in un'array    */
         if (form_fields[i].type=="checkbox" && form_fields[i].checked == true){
             var esercizio = {};
-            esercizio.nome=form_fields[i].id;
-            esercizio.n_serie = form_fields[i+1].value;
-            esercizio.n_rep = form_fields[i+2].value;
-            esercizio.rec = form_fields[i+3].value;
-            console.log(esercizio);
-            form_data.push(esercizio);
+            esercizio.nome=form_fields[i].id; //prendo l'id della checkbox che sarà il nome dell'esercizio
+            esercizio.n_serie = form_fields[i+1].value; //prendo il valore del campo serie che sarà subito dopo la checkbox
+            esercizio.n_rep = form_fields[i+2].value; //prendo il valore del campo serie che sarà 2 posizioni dopo
+            esercizio.rec = form_fields[i+3].value; //prendo il valore del campo serie che sarà 3 posizioni
+            console.log(esercizio); 
+            form_data.push(esercizio); //infine inserisco l'oggetto esercizio nell'array 
         }
     }
     //console.log("array: ",...form_data);
 
-    var form_data_json = JSON.stringify(form_data);
+    var form_data_json = JSON.stringify(form_data); //rendo un l'array una stringa in formato JSON 
     console.log(form_data_json);
 
-    var req= new XMLHttpRequest();
+    //Mando richiesta al server per inserire la scheda (Invio anche il Json con gli esercizi)
+    var req= new XMLHttpRequest(); 
     req.onload = function() {
         if(this.responseText=='ok'){
-            window.location.href="schede.php";
+            window.location.href="schede.php"; //se va a buon fine ritorno alla pagina che mostra le schede 
         }
     }
-    req.open('post', 'php/logicaSchede.php/scheda/'+data_inizio, true);
-    req.send(form_data_json);
+    req.open('post', 'php/logicaSchede.php/scheda/'+data_inizio, true); //richiesta di insert 
+    req.send(form_data_json); //mando anche i dati in una stringa con formato JSON contenenti gli esercizi
 }

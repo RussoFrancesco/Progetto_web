@@ -20,33 +20,42 @@ const config = {
 
 const chart = new Chart(myCanvas, config);
 */
+//RICHIAMO DELLE FUNZIONI
 getBMI();
 Progressi_su_esercizio();
 getPercentualiGruppi();
 
+//Funzione per creare il grafico del BMI nel tempo
 function getBMI(){
+    //preparo una richiesta AJAX al server
     let req=new XMLHttpRequest();
     
     req.onload=function(){
-        //console.log(this.responseText);
-        //console.log(JSON.parse(this.responseText));
-        chartBMI(JSON.parse(this.responseText));
+        
+        //FORMATO DELLA RISPOSTA : {labels: ["2023-12-21", "2023-12-22"], data: [24.22, 28.22]}
+        //Dove labels sono le date, e data sono i rispettivi volri del BMI misurati
+
+        chartBMI(JSON.parse(this.responseText)); //recupero la risposta e la passo alla funzione che crea il grafico
         };
     req.open("GET","php/bmi.php/bmi/getBMI",true);
     req.send();
 }
 
 function chartBMI(dati){
-    let CanvasBMI = document.getElementById("myPieChart");
+    //recupero l'elemento HTML
+    let CanvasBMI = document.getElementById("myPieChart"); 
     //console.log(dati);
 
+    //per ogni elemento vado a formattare la  data contenuta in labels 
     for(let i=0;i<dati.labels.length;i++){
         dati.labels[i]=formattaData(dati.labels[i]);
     }
 
-    datadb=dati.data;
-    labels=dati.labels;
+    //assegno a degli array i valori di data e labels
+    var datadb=dati.data;
+    var labels=dati.labels;
 
+    //creo I dati per il grafico on labels e dati corrispondenti dati
     const dataChart={
         labels: labels,
         datasets: [{
@@ -57,6 +66,7 @@ function chartBMI(dati){
         }]
     }
 
+    //configuro il grafico con il tipo line
     const config = {
         type: 'line',
         data: dataChart,
@@ -69,36 +79,43 @@ function chartBMI(dati){
         }
       };
     
-    const chart = new Chart(CanvasBMI, config);
+    const chart = new Chart(CanvasBMI, config); //crazione vera e propria del grafico
 }
 
 
 
-
+//Grafico per mostrare i progressi sul peso utilizzato su un esercizio randomico 
 function Progressi_su_esercizio(){
+
+    //richiesta AJAX
     let req=new XMLHttpRequest();
 
     req.onload=function(){
-        console.log(req.responseText);
+
+        //FORMATO DELLA RISPOSTA: {"esercizio":"croci ai cavi","date":["2023-12-20","2023-12-21"],"pesi":[20,15]}
         chart_esercizio(JSON.parse(req.responseText));
     };
 
-    req.open("GET","php/esercizi.php/a_e/progressi",true);
+    req.open("GET","php/esercizi.php/a_e/progressi",true); //alla tabella a_e per i progressi 
     req.send();
 }
 
+//funzione creazione grafico
 function chart_esercizio(json){
-    let myCanvas=document.getElementById("progressiEsercizio");
-    let esercizio = json.esercizio;
-    document.getElementById("titolo_esercizio").innerHTML += esercizio;
 
+    let myCanvas=document.getElementById("progressiEsercizio"); //recuper elemento <canvas>
+    let esercizio = json.esercizio; 
+    document.getElementById("titolo_esercizio").innerHTML += esercizio; //setto il titolo col nome dell'esercizio
+
+    //formatto la data 
     for(let i=0;i<json.date.length;i++){
         json.date[i]=formattaData(json.date[i]);
     }
 
-    data=json.pesi;
-    labels=json.date;
+    var data=json.pesi;
+    var labels=json.date;
 
+    //Setto i dati e le labels per il grafico 
     const dataChart={
         labels: labels,
         datasets: [{
@@ -109,6 +126,7 @@ function chart_esercizio(json){
         }]
     }
     
+    //creo la configurazione 
     const config = {
         type: 'line',
         data: dataChart,
@@ -121,14 +139,16 @@ function chart_esercizio(json){
         }
     };
     
-    const chart = new Chart(myCanvas, config);
-
+    const chart = new Chart(myCanvas, config); //creo il chart 
 
 }
 
+//grafico per mostrare in un grafico a torta la distribuzione degli allenamenti sui gruppi muscolari
 function getPercentualiGruppi(){
+    
     let request = new XMLHttpRequest();
     request.onload=function(){
+        //FORMATO DELLA RISPOSTA: {"pettorali":3,"dorsali":2,"gambe":1,"bicipiti":1}
         occorrenze=JSON.parse(this.responseText);
         Piechart(occorrenze);
     };
@@ -137,6 +157,9 @@ function getPercentualiGruppi(){
 }
 
 function Piechart(json){
+    //creo un oggetto per inserire le occorrenze
+    //uso una notazione per cui se nella risposta c'è un elemento con quel gruppo allora gli metto il valore nel json
+    //altrimenti metto 0
     const occorrenze_gruppi={
         "pettorali":json.hasOwnProperty("pettorali")? json.pettorali: 0,
         "dorsali":json.hasOwnProperty("dorsali")? json.dorsali:0,
@@ -147,11 +170,11 @@ function Piechart(json){
         "addome":json.hasOwnProperty("addome")?json.addome:0
     }
 
+    //recupero labels e keys
     var labels=Object.keys(occorrenze_gruppi);
     var dati=Object.values(occorrenze_gruppi);
     
-    console.log(labels);
-    console.log(dati);
+    //definisco i colori dei vari gruppi
     colors = [
         'rgb(255, 99, 132)',
         'rgb(54, 162, 235)',
@@ -162,6 +185,7 @@ function Piechart(json){
         'rgb(120, 200, 80)'
     ];
 
+    //definisco i dati per il grafico 
     const data = {
         labels: labels,
         datasets: [{
@@ -172,18 +196,24 @@ function Piechart(json){
         }]
       };
     
+    //configuro i valori e calcolo 
     const config = {
         type: 'doughnut',
         data: data,
         options: {
             plugins: {
               tooltip: {
+                
                 callbacks: {
+                  // Callback per personalizzare il testo della label nel tooltip
                   label: function(context) {
+                    // Variabile per il testo della label nel tooltip
                     let label = context.label || '';
+                    // Aggiunge i due punti 
                     if (label) {
                       label += ': ';
                     }
+                    // Aggiunge il valore formattato e la percentuale al testo della label (ci sarebebero le occorrenze altrimenti)
                     label += context.formattedValue + ' (' + ((context.parsed / context.dataset.data.reduce((a, b) => a + b)) * 100).toFixed(2) + '%)';
                     return label;
                   }
