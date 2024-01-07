@@ -1,10 +1,15 @@
+
 window.onload = function() {
     home();
+
+    //recupero il bottone di inizia allenamento e gli bindo l'evento
     const iniziaAllenamento=document.getElementById('add_allenamento');
     iniziaAllenamento.addEventListener('click', function(){  window.location.href = 'allenamento.php'; });
+
     visualizzazioneStoricoAllenamenti();
 }
 
+//funzione per visualizzare lo storico allenamenti dell'utente
 function visualizzazioneStoricoAllenamenti() {
     var req= new XMLHttpRequest();
 
@@ -17,16 +22,18 @@ function visualizzazioneStoricoAllenamenti() {
     req.send();
 }
 
-
+//funzione per creare la visualizzazione dei singoli allenamenti
 function caricaStoricoAllenamentiAll(data) {
     var div= document.getElementById("storico_allenamenti");
     data.forEach(allenamento => {
+        //formattazione della data
         let partiData = allenamento.data.split('-');
         let anno = partiData[0];
         let mese = partiData[1];
         let giorno = partiData[2];
         allenamento.data = `${giorno}-${mese}-${anno}`;
         
+        //creazione dell'elemento card e dei suoi figli
         var card = document.createElement("div");
         card.setAttribute("class", "card mt-2");
         

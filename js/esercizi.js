@@ -24,6 +24,7 @@ function get_esercizi() {
     req.send();
 }
 
+//funzione per recuperare gli esercizi della scheda attuale
 function get_esercizi_scheda() {
     var req = new XMLHttpRequest();
 
@@ -152,6 +153,7 @@ function insert_esercizio(nome, serie, ripetizioni, recupero) {
 }
 
 
+//funzione per settare l'hidden input del modal per l'inserimento
 function set_modal_insert(){
     const modal = document.getElementById("insertModal");
     const input = modal.querySelector(".hidden_esercizio");
@@ -159,6 +161,7 @@ function set_modal_insert(){
     input.setAttribute("value", this.id);
 }
 
+//funzione per settare l'hidden input del modal per l'eliminazione
 function set_modal_delete(){
     const modal = document.getElementById("deleteModal");
     const input = modal.querySelector(".hidden_esercizio_elimina");
@@ -166,22 +169,23 @@ function set_modal_delete(){
     input.setAttribute("value", this.id);
 }
 
+//funzione per modificare i bottoni per gli esercizi già presenti nella scheda
 function modifica_bottoni(data){
     const buttons = document.querySelectorAll("button");
     for(let i = 0; i < buttons.length; i++){
         for(let j = 0; j < data.length; j++){
             if(buttons[i].id == data[j].esercizio){
-                buttons[i].removeEventListener("click", set_modal_insert);
-                buttons[i].setAttribute("data-target", "#deleteModal");
-                buttons[i].setAttribute("class", "btn btn-danger");
-                buttons[i].innerHTML = "Rimuovi dalla scheda";
-                buttons[i].addEventListener("click", set_modal_delete);
+                buttons[i].removeEventListener("click", set_modal_insert); //rimuove l'eventlistener precedente
+                buttons[i].setAttribute("data-target", "#deleteModal"); //setta il target al nuovo modal
+                buttons[i].setAttribute("class", "btn btn-danger"); //cambia colore al botton
+                buttons[i].innerHTML = "Rimuovi dalla scheda"; //cambia l'innerHTML
+                buttons[i].addEventListener("click", set_modal_delete); //setta il nuovo eventlistener
             }
         }
     }
 }
 
-
+//funzione per eliminare gli esercizi della scheda
 function elimina_esercizio(){
     const id_esercizio = document.querySelector(".hidden_esercizio_elimina").value;
 

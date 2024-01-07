@@ -19,7 +19,9 @@ function loginProcedure (){
     var req=new XMLHttpRequest();
     //console.log("req");
     req.onload=function () {
-        
+    
+    // Se lo stato della richiesta è 200 (OK) e la risposta non è "ERROR"
+    // Reindirizza l'utente alla pagina index.php
     if(req.status==200 && this.responseText!= "ERROR"){
             window.location.href="index.php";
         }
@@ -32,7 +34,7 @@ function loginProcedure (){
 
     }
     
-
+    //Richiesta AJAX al server (la password è cifrata)
     req.open("get","php/login.php/users/"+email+"/"+password+"/",true);
 
     console.log("connessione");

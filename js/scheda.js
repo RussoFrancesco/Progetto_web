@@ -1,4 +1,6 @@
 window.onload = bindEvents();
+
+//recupero div della pagina html
 var storico_schede = document.getElementById("storico_schede");
 var scheda_attuale = document.getElementById("scheda_attuale");
 
@@ -17,9 +19,11 @@ function bindEvents() {
     });
 }
 
+//funzione per smistare le schede
 function visualizzaSchede(){
     req = new XMLHttpRequest();
 
+    //richiesta che recupera tutte le schede dell'utente
     req.onload = function(){
         if(req.readyState == 4 && req.status == 200){
             var data = JSON.parse(req.responseText);
@@ -66,6 +70,7 @@ function visualizzaSchede(){
                 const h3 = document.createElement("h3");
                 link.appendChild(h3);
 
+                //a ogni scheda appendo un hidden input con l'id che servirà in seguito(?)
                 const hiddenInput = document.createElement('input');
                 hiddenInput.type = 'hidden';
                 hiddenInput.name = 'id_scheda'; // Nome del campo per identificarlo
@@ -73,6 +78,7 @@ function visualizzaSchede(){
                 hiddenInput.id = scheda.id_scheda;
                 card_body.appendChild(hiddenInput);
             
+                //se il div è quello dello storico visualizzo anche la data di fine sennò no
                 if(div == storico_schede){
                     h3.innerHTML = "Scheda del "+scheda.data_inizio+", chiusa il "+scheda.data_fine;
                 }else{
