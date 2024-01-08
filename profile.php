@@ -45,10 +45,12 @@
                 <div class="justify-content-center">
                     <div class="col-auto">
                         <div class="col">
+                            <!-- Div per la visualizzazione dei dati --> 
                             <div class="p-2">
                                 <div class="text-center">
                                     <h1 class="h4 text-gray-900 mb-4">Il tuo profilo</h1>
                                 </div>
+                                <!-- Form per la modifica dei dati del profilo -->
                                 <form class="user" id="modify" method="PUT">
                                     <div class="form-group">
                                         <label class="p">Nome:</label>
@@ -70,15 +72,16 @@
                                         <input type="tel" class="form-control form-control-user" name="Phone" id="Phone"
                                         placeholder="Phone Number (optional)"  required>
                                     </div>
-                                    <div class="form-group" id=modifica>
+                                    <div class="form-group" id="modifica">
                                         <button type="button" class="btn btn-primary" id="button_modifica">Modifica</button>
                                     </div>
                                 </form>
                             </div>
                     </div>
                 </div>
-                <!-- Script per recuperare i dati da mostare-->
+                <!-- Libreria per funzioni standard -->
                 <script defer src="js/home.js"></script>
-                <script defer src="js/profile.js"></script>
-                
+
+                <!-- Script della pagina-->
+                <script defer src="js/profile.js"></script>      
 </body>

@@ -8,17 +8,20 @@ $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
 $user=getUserFromSession($conn);
 
+//richiesta di inserimento della misurazione
 if($method == 'POST' && $table="bmi" && isset($request[0]) && isset($request[1])){
 
+    //recupero le variabili da inserire
     $bmi = array_shift($request);
     $data = array_shift($request);
 
+    //query per l'inserimento
     $query = "INSERT INTO bmi(user, bmi, data) VALUES (?, ?, ?)";
     $stmt = mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt, "ids", $user, $bmi, $data);
     $res = mysqli_stmt_execute($stmt);
     
-
+    //response del server
     if($res){
         echo 'ok';
     }
@@ -27,12 +30,14 @@ if($method == 'POST' && $table="bmi" && isset($request[0]) && isset($request[1])
     }
 
 }
+//richiesta di recupero delle misurazioni di un certo utente
 elseif($method == "GET" && $table="bmi"){
     $query = "SELECT * FROM bmi WHERE user = ? ORDER by data ASC";
     $stmt = mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt, "i", $user);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
+    
     
     $labels=[];
     $data=[];

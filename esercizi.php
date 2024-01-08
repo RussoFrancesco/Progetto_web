@@ -43,6 +43,7 @@
                 <!-- End of Topbar -->
 
                 <div class="container">
+                    <!-- Bottoni anchor per raggiungere il relativo gruppo muscolare -->
                     <button class="btn btn-primary" onclick="window.location.href='#pettorali'">Pettorali</button>
                     <button class="btn btn-primary" onclick="window.location.href='#dorsali'">Dorsali</button>
                     <button class="btn btn-primary" onclick="window.location.href='#tricipiti'">Tricipiti</button>
@@ -51,7 +52,7 @@
                     <button class="btn btn-primary" onclick="window.location.href='#spalle'">Spalle</button>
                     <button class="btn btn-primary" onclick="window.location.href='#addome'">Addome</button>
 
-                    
+                    <!-- Div per ogni gruppo muscolare -->
                     <h3>Pettorali</h3>
                     <div class="row" id="pettorali"></div>
                     <h3>Dorsali</h3>
@@ -71,6 +72,7 @@
         </div>
     </div>
 
+    <!-- Modal per l'inserimento dell'esercizio nella scheda -->
     <div class="modal fade" id="insertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -98,6 +100,7 @@
         </div>
     </div>
 
+    <!-- Modal per la rimozione dell'esercizio dalla scheda -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -120,8 +123,9 @@
         </div>
     </div>
 
-
-    <script defer src="js/esercizi.js"></script>
+    <!-- Libreria per funzioni standard -->
     <script defer src="js/home.js"></script>
 
+    <!-- Script della pagina -->
+    <script defer src="js/esercizi.js"></script>
 </body>

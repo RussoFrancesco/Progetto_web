@@ -42,10 +42,12 @@
                 <?php include 'topbar.php';?>
                 <!-- End of Topbar -->
 
+                <!-- Div per la visualizzazione della scheda -->
                 <div class="container">
                     <div class="row">
                         <div class="col">
                             <h1 id='attuale_passata'>Scheda</h1>
+                            <!-- Form per la modifica della scheda -->
                             <form class="user">
                             <div id="scheda_attuale"></div>
                             <br>
@@ -86,14 +88,17 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <button class="btn btn-primary"  id='button_terminazione_scheda'>Termina Scheda</button>
+                    <button class="btn btn-danger"  id='modal_terminazione_scheda'>Termina Scheda</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script defer src="js/pagina_scheda.js"></script>
+    <!-- Libreria per funzioni standard -->
     <script defer src="js/home.js"></script>
+
+    <!-- Script della pagina -->
+    <script defer src="js/pagina_scheda.js"></script>
 
 </body>
 

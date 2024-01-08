@@ -3,7 +3,8 @@ var gruppi = new Set();
 var data;
 
 
-var chiudi_scheda = document.getElementById('button_terminazione_scheda');
+var modal_chiudi_scheda = document.getElementById('modal_terminazione_scheda');
+var button_chiudi_scheda = document.getElementById('button_terminazione_scheda');
 var modifica_scheda = document.getElementById("modifica_scheda");
 var div_modifica = document.getElementById("modifica_buttons");
 var annulla_modifica = document.getElementById("annulla_modifica");
@@ -17,7 +18,7 @@ window.onload = function(){
 
     modifica_scheda.addEventListener('click', abilita_modifica);
 
-    chiudi_scheda.addEventListener('click', termina_scheda);
+    modal_chiudi_scheda.addEventListener('click', termina_scheda);
 
     annulla_modifica.addEventListener('click', function(){
         location.reload();

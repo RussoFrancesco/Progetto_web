@@ -46,6 +46,7 @@
                     <div class="justify-content-left">
                         <div class="col-auto">
                             <div class="col">
+                                <!-- Bottone per l'aggiunta della scheda -->
                                 <button class="btn btn-primary" id="add_scheda">
                                     <i class="fas fa-plus"></i> Aggiungi scheda
                                 </button>
@@ -53,6 +54,7 @@
                         </div>
                     </div>      
 
+                    <!-- Div per la scheda attuale -->
                     <div class="justify-content-left">
                         <div class="col-auto">
                             <div class="col">
@@ -62,19 +64,22 @@
                         </div>
                     </div>
             
-                    
-                        <div class="justify-content-left">
-                            <div class="col-auto">
-                                <div class="col">
-                                    <h1>Schede precedenti</h1>
-                                    <div id="storico_schede"></div>
-                                </div>
+                    <!-- Div per le schede passate -->
+                    <div class="justify-content-left">
+                        <div class="col-auto">
+                            <div class="col">
+                                <h1>Schede precedenti</h1>
+                                <div id="storico_schede"></div>
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
             
+    <!-- Libreria per funzioni standard -->
     <script defer src="js/home.js"></script>
+
+    <!-- Script della pagina -->
     <script defer src="js/scheda.js"></script>
    
 

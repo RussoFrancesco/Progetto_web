@@ -9,7 +9,7 @@ $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
 
 
-
+//recupero info dell'utente in base all'id della sessione
 if ($table == "users" and $method =="GET") {
     $query="SELECT nome,cognome FROM users where session_id =?";
     $stmt = mysqli_prepare($conn, $query);

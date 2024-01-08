@@ -11,9 +11,8 @@ $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
 $id_user=getUserFromSession($conn);
 
-if($method=='GET' && $request[0]=="storico" && $table=='schede'){
 
-    
+if($method=='GET' && $request[0]=="storico" && $table=='schede'){
 
     $query="SELECT schede.id as id_scheda, data_inizio, data_fine
     FROM `schede` 

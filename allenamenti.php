@@ -43,7 +43,8 @@
                 <!-- End of Topbar -->
 
                 <div class="container">
-            
+
+                    <!-- Div per il bottone di inizio allenamento  -->
                     <div class="justify-content-left">
                         <div class="col-auto">
                             <div class="col">
@@ -54,6 +55,7 @@
                         </div>
                     </div>
 
+                    <!-- Div per lo storico degli allenamenti -->
                     <div class="justify-content-left">
                             <div class="col-auto">
                                 <div class="col">
@@ -69,10 +71,12 @@
         </div>
     </div>
 
-
-    <script defer src="js/storico_allenamenti.js"></script>
+    <!-- Libreria per funzioni standard -->
     <script defer src="js/home.js"></script>
 
+    <!-- Script della pagina -->
+    <script defer src="js/storico_allenamenti.js"></script>
+    
 </body>
 
 

@@ -42,8 +42,10 @@
                 <?php include 'topbar.php';?>
                 <!-- End of Topbar -->
 
+                <!-- Div dell'allenamento -->
                 <div class="container">
                     <h2 id="allenamento">Allenamento del</h2>
+                        <!-- Card per ogni gruppo muscolare con i relativi esercizi -->
                                 <div class="card mt-3" id="card_pettorali" style="display: none;">
                                     <div class="card-header" >
                                         <h3>Pettorali</h3>
@@ -100,8 +102,11 @@
         </div>
     </div>
 
-
-    <script defer src="js/mostra_allenamento.js"></script>
+    <!-- Libreria per funzioni standard -->
     <script defer src="js/home.js"></script>
+
+    <!-- Script della pagina -->
+    <script defer src="js/mostra_allenamento.js"></script>
+    
 
 </body>

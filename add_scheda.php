@@ -44,7 +44,8 @@
                             <form class='user'>
 
                                 <h1 class="text-center">Seleziona gli esercizi da inserire</h1>
-
+                                
+                                <!-- Card per ogni gruppo muscolare -->
                                 <div class="card">
                                     <div class="card-body">
                                         <h3>Pettorali</h3>
@@ -94,6 +95,7 @@
                                     </div>
                                 </div>
 
+                                <!-- Bottone per l'invio della scheda -->
                                 <div class="text-center mt-3">
                                     <input type="button" class="btn btn-primary" id="invio_scheda" value="Aggiungi scheda"></input>
                                 </div>
@@ -105,8 +107,11 @@
         </div>
     </div>
     
-    
-    <script defer src="js/add_scheda.js"></script>
+    <!-- Libreria per funzioni standard -->
     <script defer src="js/home.js"></script>
+
+    <!-- Script della pagina -->
+    <script defer src="js/add_scheda.js"></script>
+    
 </body>
 </html>

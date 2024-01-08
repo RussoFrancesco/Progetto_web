@@ -8,13 +8,14 @@ $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
 $user=getUserFromSession($conn);
 
-//echo $method." ".$table." ".$user." ".$request[0];
 
+//recupero gli esercizi dalla tabella esercizi
 if($method=="GET" && $table=="esercizi"){
     $query = "SELECT * FROM esercizi ORDER BY gruppo";
     $res = mysqli_query($conn, $query);
     $rows = [];
 
+    //carico l'array rows con i risultati della query
     if($res){
         while($row = mysqli_fetch_array($res)){
             $rows[] = $row;

@@ -8,13 +8,14 @@ $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
 $user=getUserFromSession($conn);
 
+//inserimento dell'allenamento nel db
 if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
     $data_allenamento=array_shift($request);
     $scheda=getSchedaFromUserID($conn,$user);
     
 
     //echo "scheda: ".$scheda." user:".$user;
-    
+    //query di inseriemento nella tabella allenamenti
     $query="INSERT INTO allenamenti (`data`, `user`, `scheda`) VALUES (?,?,?)";
     $stmt = mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt,"sii",$data_allenamento,$user, $scheda);
@@ -27,6 +28,7 @@ if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
     $input=json_decode(file_get_contents('php://input'), true);
     $query="INSERT INTO `a_e`(`allenamento`, `esercizio`, `peso`) VALUES (?,?,?)";
     
+    //eseguo la query per ogni esercizio-peso effettuato
     foreach($input as $esercizio => $peso){
         $stmt=mysqli_prepare($conn, $query);
         mysqli_stmt_bind_param($stmt,"isi", $newAllenamentoID, $esercizio, $peso);
@@ -35,7 +37,8 @@ if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
 
     echo "ok";
        
-}elseif($method=='GET' && $table=="schede"){
+}//recupero esercizi della scheda
+elseif($method=='GET' && $table=="schede"){
     
     $id_scheda = getSchedaFromUserID($conn,$user);
     
@@ -52,7 +55,8 @@ if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
     $rows=json_encode($rows);
     echo $rows;
 
-}elseif($method=='GET' && $table=="allenamenti" && $request[0]=="storico"){
+}//recupero degli allenamenti passati
+elseif($method=='GET' && $table=="allenamenti" && $request[0]=="storico"){
     $query="SELECT * FROM allenamenti WHERE user=? ORDER BY id DESC";
     $stmt=mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt,'i',$user);
@@ -65,7 +69,8 @@ if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
     $rows=json_encode($rows);
     echo $rows;
 
-}elseif($method=='GET' && $table=="a_e" && isset($request[0])){
+}//recupero gli esercizi di un allenamento
+elseif($method=='GET' && $table=="a_e" && isset($request[0])){
     $id_allenamento=array_shift($request);
 
     //query 1 verfichimo che l'user richieda un allenamento di sua proprietà e salviamo l'id della scheda

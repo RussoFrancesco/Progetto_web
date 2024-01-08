@@ -43,6 +43,7 @@
                 <!-- End of Topbar -->
 
                 <div class="container">
+                    <!-- Div della selezione dei gruppi da allenare -->
                     <div class="justify-content-left" id="selezione">
                             <div class="col-auto">
                                 <div class="col">
@@ -54,6 +55,8 @@
                                 </div>
                             </div>
                     </div>
+
+                    <!-- Div della funzione di allenamento -->
                     <div class="container">
                         <div class="row justify-content-center" id="allenamento" style="display: none;">
                             <div class="col-auto">
@@ -87,12 +90,7 @@
                         </div>
                     </div>
 
-
-
-
-
-                    
-
+                    <!-- Div bottoni -->
                     <div class="d-flex justify-content-between">
                         <div>
                             <button class="btn btn-success mr-2" id="inizia_allenamento">Inizia l'allenamento</button>
@@ -105,7 +103,10 @@
             </div>
         </div>
 
+    <!-- Libreria per funzioni standard -->
     <script defer src="js/home.js"></script>
+
+    <!-- Script della pagina -->
     <script defer src="js/allenamenti.js"></script>
     
 
