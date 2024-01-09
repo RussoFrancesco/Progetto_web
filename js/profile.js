@@ -58,7 +58,7 @@ function modifica(){
             console.log(req.responseText);
             //gestione della risposta dal server
             if(req.responseText=="email"){
-                alert("Emai già associata a un account");
+                alert("Email già associata a un account");
             }
             if(req.responseText=="OK"){
                 alert("Modifiche eseguite con successo \n Verrai reindirizzato alla pagina iniziale");
