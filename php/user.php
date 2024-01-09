@@ -10,7 +10,7 @@ $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
 
 
-
+//recupero l'user dal sessionID attuale 
 if ($table == "users" and $method =="GET") {
     $query="SELECT * FROM users where session_id =?";
     $stmt = mysqli_prepare($conn, $query);
@@ -23,7 +23,9 @@ if ($table == "users" and $method =="GET") {
         $num_rows = mysqli_num_rows($res);
 
         if ($num_rows==1){
+            //recuopero i dati restituiti dal db 
             $user_data = mysqli_fetch_assoc($res);
+            //li metto in una stringa in formato JSON
             $user_object = json_encode($user_data);
             echo $user_object;
         }
@@ -35,6 +37,7 @@ if ($table == "users" and $method =="GET") {
     }
 }//modifica User
 elseif($table=="users" and $method=="PUT"){
+    //recuoero l'input e lo assegno alle variabili 
     $input = json_decode(file_get_contents('php://input'),true);
     $nome=$input["nome"];
     $cognome=$input["cognome"];
@@ -42,7 +45,7 @@ elseif($table=="users" and $method=="PUT"){
     $phone=$input["phone"];
     $userid=getUserFromSession($conn);
 
-    //Controllo che la nuova mail non sia gia presente nel db 
+    //Controllo che se è stata inserita, la nuova mail non sia gia presente nel db 
     $query = "SELECT email,id as user FROM users WHERE email=?";
     $stmt = mysqli_prepare($conn,$query);
     mysqli_stmt_bind_param($stmt, "s", $email);
@@ -53,6 +56,7 @@ elseif($table=="users" and $method=="PUT"){
     if($row['user']!=$userid){
         echo "email";
     }
+    //altrimenti faccio la query di update 
     else{
         //faccio la query di Update
         $query="UPDATE `users` SET `nome`=?,`cognome`=?,`email`=?,`telefono`=? WHERE id=? ";
@@ -68,7 +72,8 @@ elseif($table=="users" and $method=="PUT"){
             echo "ERROR";
         }
     }
-}elseif($table == "users" and $method=="DELETE"){
+}//query per eliminare l'utente
+elseif($table == "users" and $method=="DELETE"){
     $userid = getUserFromSession($conn);
 
     $query = "DELETE FROM `users` WHERE id=?";
