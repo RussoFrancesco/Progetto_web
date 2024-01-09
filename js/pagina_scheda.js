@@ -1,8 +1,9 @@
-var id = window.location.search.substring(0).replace("?id=", "");
-var gruppi = new Set();
+
+var id = window.location.search.substring(0).replace("?id=", ""); //recupero l'id dall'url
+var gruppi = new Set(); //set per i gruppi
 var data;
 
-
+//bottoni
 var modal_chiudi_scheda = document.getElementById('modal_terminazione_scheda');
 var button_chiudi_scheda = document.getElementById('button_terminazione_scheda');
 var modifica_scheda = document.getElementById("modifica_scheda");
@@ -10,11 +11,9 @@ var div_modifica = document.getElementById("modifica_buttons");
 var annulla_modifica = document.getElementById("annulla_modifica");
 var conferma_modifica = document.getElementById("conferma_modifica");
 
-
-
 window.onload = function(){
     home();
-    get_scheda();
+    get_scheda(); //setta i bottoni
 
     modifica_scheda.addEventListener('click', abilita_modifica);
 
@@ -25,7 +24,6 @@ window.onload = function(){
     });
 
     conferma_modifica.addEventListener('click', check_scheda);
-
 }
 
 function get_scheda() {
@@ -40,12 +38,12 @@ function get_scheda() {
             alert("Errore");
             window.location.href = "schede.php";
         }
-        if (data['data_fine']==null){
+        if (data['data_fine']==null){ //se la data_fine è null imposto la pagina per la scheda attuale
             document.getElementById("attuale_passata").innerHTML += " attuale";
             document.getElementById('button_terminazione_scheda').style.display = "block";
             document.getElementById("modifica_scheda").style.display = 'block';
         }
-        else{
+        else{//sennò nascondo i bottoni per le schede passate
             let partiData = data['data_fine'].split('-');
             let anno = partiData[0];
             let mese = partiData[1];
@@ -55,7 +53,8 @@ function get_scheda() {
             document.getElementById("modifica_buttons").style.display = 'none';
             
         }
-        get_esercizi_from_scheda();
+
+    get_esercizi_from_scheda(); //recupera gli esercizi della scheda
     }
 
 
@@ -63,11 +62,12 @@ function get_scheda() {
     req.send();
 }
 
-
+//funzione per recuperare gli esercizi dalla scheda
 function get_esercizi_from_scheda(){
     var req = new XMLHttpRequest();
 
     req.onload = function(){
+
         console.log(this.responseText);
         data = JSON.parse(req.responseText);
 
@@ -76,14 +76,14 @@ function get_esercizi_from_scheda(){
             gruppi.add(data[i]['gruppo']);
         }
 
-        crea_div();
-
+        crea_div(); //creazione dei div per ogni gruppo muscolare
     }
 
     req.open('GET', "php/logicaSchede.php/e_s/schede/esercizi/"+id, true);
     req.send();
 }
 
+//funzione che manda una richiesta per terminare la scheda con la data di oggi
 function termina_scheda(){
 
     var req = new XMLHttpRequest();
@@ -110,6 +110,7 @@ function termina_scheda(){
 
 }
 
+//creazione dei div per ogni gruppo muscolare presente nella scheda
 function crea_div(){
     // Trasformazione del set in un array
     gruppi_array = Array.from(gruppi);
@@ -148,6 +149,7 @@ function crea_div(){
     }
 }
 
+//funzione che abilita la modifica della scheda. trasforma gli elenchi puntati in checkbox e aggiunge i campi input
 function abilita_modifica() {
     for (var i = 0; i < data.length; i++) {
         var esercizio = document.getElementById(data[i]['esercizio']); // Recupera l'elemento esercizio
@@ -215,28 +217,30 @@ function abilita_modifica() {
 
     modifica_scheda.style.display = 'none';
     div_modifica.style.display = 'block';
-    get_esercizi_from_db();
+    get_esercizi_from_db(); //recupero gli esercizi mancanti dal db
 }
 
+//funzione che recupera gli esercizi mancanti dal db
 function get_esercizi_from_db(){
     var req = new XMLHttpRequest();
 
     req.onload = function(){
             console.log('get_esercizi_from_db');
-            var h3 = document.createElement('h3');
+            var h3 = document.createElement('h3'); //creo l'intestazione per gli esercizi mancanti
             h3.innerHTML = "Esercizi non presenti nella tua scheda";
             document.getElementById('esercizi_mancanti').appendChild(h3);
             var add_esercizi = JSON.parse(this.responseText);
-            put_esercizi_mancanti(add_esercizi);
+            put_esercizi_mancanti(add_esercizi); //aggiungo gli esercizi che mancano
     }
 
     req.open('GET', 'php/logicaSchede.php/esercizi/'+id, true);
     req.send();
 }
 
+//funzione che aggiunge gli esercizi che non sono presenti nella cheda
 function put_esercizi_mancanti(esercizi){
 
-
+    //div dei gruppi
     const gruppiDiv = {
         pettorali: 'pettorali',
         dorsali: 'dorsali',
@@ -247,12 +251,14 @@ function put_esercizi_mancanti(esercizi){
         gambe: 'gambe'
     };
 
+    //aggiungo al set dei gruppi i gruppi che mancano
     for(i = 0; i < esercizi.length; i++){
         gruppi.add(esercizi[i]['gruppo']);
     }
 
     gruppi_array = Array.from(gruppi);
 
+    //per ogni gruppo creo una card
     gruppi_array.forEach(gruppo => {
         var card = document.createElement("div");
         card.setAttribute("class", "card mt-3");
@@ -271,6 +277,7 @@ function put_esercizi_mancanti(esercizi){
         document.getElementById("esercizi_mancanti").appendChild(card);
     });
 
+    //ogni esercizio viene smistato alla relativa card del gruppo muscolare appartente
     esercizi.forEach(esercizio => {
 
         const container = document.createElement('div');
@@ -299,6 +306,7 @@ function put_esercizi_mancanti(esercizi){
             const hiddenInputGroup = document.createElement('div');
             hiddenInputGroup.classList.add('row');
 
+            //creo i campi input con la classe .hidden-input che servirà successivamente per la comparsa/scomparsa
             const createHiddenInput = (id, label) => {
                 const hiddenInput = document.createElement('input');
                 hiddenInput.type = 'number';
@@ -333,7 +341,7 @@ function put_esercizi_mancanti(esercizi){
             div.appendChild(container);
 
             
-            // Aggiungi un event listener al cambio di stato della checkbox
+            // Aggiungi un event listener al cambio di stato della checkbox con classe .hidden-input
             checkbox.addEventListener('change', function() {
                 const nomeCheckbox = this.id;
                 //const hiddenFields = div.querySelectorAll('.hidden-fields');
@@ -354,6 +362,7 @@ function put_esercizi_mancanti(esercizi){
 
 }
 
+//funzione che controlla il corretto completamneto del form di modifica della scheda
 function check_scheda() {
     var form_fields = document.getElementsByTagName("input");
     for (var i = 0; i < form_fields.length; i++) {
@@ -370,9 +379,10 @@ function check_scheda() {
             }
         }
     }
-    componiScheda();
+    componiScheda(); //chiama la funzione per mandare la richiesta al db
 }
 
+//funzione che manda la richiesta al db per la modifica
 function componiScheda(){
     //Composizione data inizio
     const data=new Date();
