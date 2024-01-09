@@ -1,4 +1,4 @@
-
+//VARIABILI GLOBALI
 var id = window.location.search.substring(0).replace("?id=", ""); //recupero l'id dall'url
 var gruppi = new Set(); //set per i gruppi
 var data;
@@ -10,6 +10,7 @@ var modifica_scheda = document.getElementById("modifica_scheda");
 var div_modifica = document.getElementById("modifica_buttons");
 var annulla_modifica = document.getElementById("annulla_modifica");
 var conferma_modifica = document.getElementById("conferma_modifica");
+
 
 window.onload = function(){
     home();
@@ -26,6 +27,7 @@ window.onload = function(){
     conferma_modifica.addEventListener('click', check_scheda);
 }
 
+//utilizzato in scheda.php
 function get_scheda() {
     var req = new XMLHttpRequest();
     
@@ -44,12 +46,13 @@ function get_scheda() {
             document.getElementById("modifica_scheda").style.display = 'block';
         }
         else{//sennò nascondo i bottoni per le schede passate
+            //formatto la data 
             let partiData = data['data_fine'].split('-');
             let anno = partiData[0];
             let mese = partiData[1];
             let giorno = partiData[2];
             data['data_fine'] = `${giorno}-${mese}-${anno}`;
-            document.getElementById("attuale_passata").innerHTML += " del "+data['data_fine'];
+            document.getElementById("attuale_passata").innerHTML += " del "+data['data_fine']; 
             document.getElementById("modifica_buttons").style.display = 'none';
             
         }
@@ -57,10 +60,11 @@ function get_scheda() {
     get_esercizi_from_scheda(); //recupera gli esercizi della scheda
     }
 
-
+    //Richesta per ottenere la scheda con id specifico 
     req.open('GET', "php/logicaSchede.php/scheda/"+id, true);
     req.send();
 }
+
 
 //funzione per recuperare gli esercizi dalla scheda
 function get_esercizi_from_scheda(){
@@ -69,9 +73,11 @@ function get_esercizi_from_scheda(){
     req.onload = function(){
 
         console.log(this.responseText);
+        //creo oggettto JSON 
         data = JSON.parse(req.responseText);
 
         // Creazione di un set di gruppi unici dai dati ricevuti per dividere la scheda in gruppi muscolari separati
+        //viene fatto poichè non è detto che una scheda abbia tutti i gruppi muscolari 
         for(var i=0; i<data.length; i++){
             gruppi.add(data[i]['gruppo']);
         }
@@ -88,6 +94,7 @@ function termina_scheda(){
 
     var req = new XMLHttpRequest();
 
+    //fomattazione data 
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0'); // Aggiunge lo zero iniziale se il mese è inferiore a 10
