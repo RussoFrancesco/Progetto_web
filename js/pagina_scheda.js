@@ -1,7 +1,7 @@
 //VARIABILI GLOBALI
 var id = window.location.search.substring(0).replace("?id=", ""); //recupero l'id dall'url
 var gruppi = new Set(); //set per i gruppi
-var data;
+var data; //conterrà il JSON della scheda
 
 //bottoni
 var modal_chiudi_scheda = document.getElementById('modal_terminazione_scheda');
@@ -27,7 +27,7 @@ window.onload = function(){
     conferma_modifica.addEventListener('click', check_scheda);
 }
 
-//utilizzato in scheda.php
+//utilizzato in pagina_scheda.php
 function get_scheda() {
     var req = new XMLHttpRequest();
     
