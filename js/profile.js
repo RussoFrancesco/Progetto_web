@@ -68,6 +68,4 @@ function modifica(){
         req.open('PUT',"php/user.php/users",true);
         req.send(JSON.stringify(oggetto));
     }
-
-    
 }

@@ -83,5 +83,8 @@
                 <script defer src="js/home.js"></script>
 
                 <!-- Script della pagina-->
-                <script defer src="js/profile.js"></script>      
+                <script defer src="js/profile.js"></script>
+                
+                <!-- Custom scripts for all pages-->
+                <script src="js/sb-admin-2.min.js"></script>
 </body>

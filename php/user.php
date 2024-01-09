@@ -47,11 +47,10 @@ elseif($table=="users" and $method=="PUT"){
     $stmt = mysqli_prepare($conn,$query);
     mysqli_stmt_bind_param($stmt, "s", $email);
     mysqli_stmt_execute($stmt);
-    $rows = mysqli_stmt_affected_rows($stmt);
-    $result=mysqli_sttmt_get_result($stmt);
-    $row=mysqli_fetch_assoc($stmt);
+    $result=mysqli_stmt_get_result($stmt);
+    $row=mysqli_fetch_assoc($result);
     //se c'è gia nel db ritorno l'email
-    if($rows!=0 && $row['id']!=$userid){
+    if($row['user']!=$userid){
         echo "email";
     }
     else{

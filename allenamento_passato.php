@@ -108,5 +108,7 @@
     <!-- Script della pagina -->
     <script defer src="js/mostra_allenamento.js"></script>
     
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
 
 </body>
