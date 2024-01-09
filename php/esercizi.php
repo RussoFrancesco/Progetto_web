@@ -4,6 +4,7 @@ session_start();
 //includo i file per connesione e quello con la funzione per ottenere l'user id dal session id corrente
 include 'conn.php';
 include 'getUserFromSession.php';
+include 'getSchedaFromUserID.php';
 
 // Verifica il metodo e il percorso inseriti
 $method = $_SERVER['REQUEST_METHOD'];
@@ -99,28 +100,5 @@ elseif($method=="GET" && $table=="a_e" && $request[0]=="progressi"){
         echo json_encode($rows);
         
     }  
-
-
-
-
-
-function getSchedaFromUserID($conn, $id_user){
-    $query="SELECT `id` FROM `schede` WHERE user = ? AND data_fine IS NULL;";
-    $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "i", $id_user);
-    mysqli_stmt_execute($stmt);
-
-    $res = mysqli_stmt_get_result($stmt);
-    $num_rows = mysqli_num_rows($res);
-
-    if ($num_rows==1){
-        $row = mysqli_fetch_array($res);
-        $id_scheda = $row['id'];
-        return $id_scheda;
-    }
-    else{
-        return null;
-    }
-}
 
 ?>

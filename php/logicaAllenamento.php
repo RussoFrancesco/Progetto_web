@@ -39,40 +39,52 @@ if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
 
     echo "ok";
        
-}//recupero esercizi della scheda
+}//recupero esercizi della scheda 
 elseif($method=='GET' && $table=="schede"){
     
+    //recupero dell'id della scheda attiva dell'user attuale 
     $id_scheda = getSchedaFromUserID($conn,$user);
     
+    //query per le info della scheda
     $query="SELECT nome, serie, ripetizioni, recupero, gruppo FROM e_s,esercizi WHERE scheda=? AND esercizi.nome=e_s.esercizio";
     $stmt=mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt,"i", $id_scheda);
     mysqli_stmt_execute($stmt);
     $result=mysqli_stmt_get_result($stmt);
+    //creo l'array rows in cui metterò tutti i record
     $rows=[];
+    //ciclo per inseire i record in rows
     while($row=mysqli_fetch_assoc($result)){
         $rows[]=$row;
     }
+    //inserisco l'id della scheda
     $rows[] = $id_scheda;
+    //converto in stringa in formato JSON
     $rows=json_encode($rows);
+    //lo ritorno
     echo $rows;
 
 }//recupero degli allenamenti passati
 elseif($method=='GET' && $table=="allenamenti" && $request[0]=="storico"){
+    //query 
     $query="SELECT * FROM allenamenti WHERE user=? ORDER BY id DESC";
     $stmt=mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt,'i',$user);
     mysqli_stmt_execute($stmt);
     $result=mysqli_stmt_get_result($stmt);
+    //array per metterci i record
     $rows=[];
+    //ciclo per insierli 
     while($row=mysqli_fetch_assoc($result)){
         $rows[]=$row;
     }
+    //formattazione in JSON e risposta al client
     $rows=json_encode($rows);
     echo $rows;
 
 }//recupero gli esercizi di un allenamento
 elseif($method=='GET' && $table=="a_e" && isset($request[0])){
+    //recupero l'id dall'URI
     $id_allenamento=array_shift($request);
 
     //query 1 verfichimo che l'user richieda un allenamento di sua proprietà e salviamo l'id della scheda
@@ -101,10 +113,13 @@ elseif($method=='GET' && $table=="a_e" && isset($request[0])){
     mysqli_stmt_bind_param($stmt,'i', $id_allenamento);
     mysqli_stmt_execute($stmt);
     $result=mysqli_stmt_get_result($stmt);
+    //array rows per salvare i record
     $rows=[];
+    //ciclo per inserirli 
     while($row=mysqli_fetch_assoc($result)){
         $rows[]=$row;
     }
+    //creo il json e lo ritorno
     $json=json_encode($rows);
     echo $json;
 }
