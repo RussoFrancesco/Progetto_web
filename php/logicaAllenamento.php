@@ -1,6 +1,7 @@
 <?php 
 session_start();
 include 'conn.php';
+include 'getUserFromSession.php';
 
 // Verifica il metodo e il percorso inseriti
 $method = $_SERVER['REQUEST_METHOD'];
@@ -105,42 +106,6 @@ elseif($method=='GET' && $table=="a_e" && isset($request[0])){
     }
     $json=json_encode($rows);
     echo $json;
-}
-
-
-
-
-function getUserFromSession($conn){
-    $query="SELECT id FROM users where session_id =?";
-    $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "s", session_id());
-    mysqli_stmt_execute($stmt);
-
-    $res = mysqli_stmt_get_result($stmt);
-    $num_rows = mysqli_num_rows($res);
-    $row = mysqli_fetch_array($res);
-    $id_user = $row['id'];
-
-    return $id_user;
-}
-
-function getSchedaFromUserID($conn, $id_user){
-    $query="SELECT `id` FROM `schede` WHERE user = ? AND data_fine IS NULL;";
-    $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "i", $id_user);
-    mysqli_stmt_execute($stmt);
-
-    $res = mysqli_stmt_get_result($stmt);
-    $num_rows = mysqli_num_rows($res);
-
-    if ($num_rows==1){
-        $row = mysqli_fetch_array($res);
-        $id_scheda = $row['id'];
-        return $id_scheda;
-    }
-    else{
-        return null;
-    }
 }
 
 ?>
