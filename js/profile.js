@@ -23,6 +23,7 @@ function bindEvent(){
     phonefield.addEventListener("change",function(){phoneModificato=true;});
 
     document.getElementById("button_modifica").addEventListener("click", modifica);
+    document.getElementById("button_elimina").addEventListener("click", elimina);
 }
 
 //funzione per recuperare le info dell'utente
@@ -39,8 +40,9 @@ function compilaForm(){
     }
     
 
-    req.open("get","php/user.php/users/profile",true);
-    req.send();}
+    req.open("get","php/user.php/users",true);
+    req.send();
+}
 
 //funzione per inviare le modifiche all'utente
 function modifica(){
@@ -68,4 +70,18 @@ function modifica(){
         req.open('PUT',"php/user.php/users",true);
         req.send(JSON.stringify(oggetto));
     }
+}
+
+function elimina(){
+    var req = new XMLHttpRequest();
+
+    req.onload = function(){
+        console.log(this.responseText);
+        if(this.responseText == "eseguita"){
+            window.location.href="register.html";
+        }
+    }
+
+    req.open('DELETE', "php/user.php/users", true);
+    req.send();
 }

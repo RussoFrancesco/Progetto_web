@@ -2,6 +2,7 @@
 session_start();
 include 'conn.php';
 include 'getUserFromSession.php';
+include 'getSchedaFromUserID.php';
 
 // Verifica il metodo e il percorso inseriti
 $method = $_SERVER['REQUEST_METHOD'];

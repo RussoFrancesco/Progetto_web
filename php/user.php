@@ -68,6 +68,27 @@ elseif($table=="users" and $method=="PUT"){
             echo "ERROR";
         }
     }
+}elseif($table == "users" and $method=="DELETE"){
+    $userid = getUserFromSession($conn);
+
+    $query = "DELETE FROM `users` WHERE id=?";
+    $stmt = mysqli_prepare($conn, $query);
+
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "i", $userid);
+        mysqli_stmt_execute($stmt);
+        $rows = mysqli_stmt_affected_rows($stmt);
+
+        if ($rows == 1) {
+            echo "eseguita";
+        } else {
+            echo "Nessuna riga eliminata";
+        }
+
+        mysqli_stmt_close($stmt);
+    } else {
+        echo "Errore nella preparazione dello statement: " . mysqli_error($conn);
+    }
 }
 
 

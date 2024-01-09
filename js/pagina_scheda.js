@@ -156,6 +156,9 @@ function abilita_modifica() {
         var container = document.createElement('div');
         container.classList.add('form-check', 'd-flex', 'flex-row', 'align-items-center');
 
+        var div_row = document.createElement('div');
+        div_row.classList.add('row');
+
         // Creazione della checkbox
         var checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
@@ -196,10 +199,11 @@ function abilita_modifica() {
             return colDiv;
         };
 
-        container.appendChild(createInput('n_serie_'+data[i]['esercizio'], 'Numero di serie', data[i]['serie']));
-        container.appendChild(createInput('n_rep_'+data[i]['esercizio'], 'Numero di ripetizioni per serie', data[i]['ripetizioni']));
-        container.appendChild(createInput('rec_'+data[i]['esercizio'], 'Recupero tra le serie(sec)', data[i]['recupero']));
+        div_row.appendChild(createInput('n_serie_'+data[i]['esercizio'], 'Numero di serie', data[i]['serie']));
+        div_row.appendChild(createInput('n_rep_'+data[i]['esercizio'], 'Numero di ripetizioni per serie', data[i]['ripetizioni']));
+        div_row.appendChild(createInput('rec_'+data[i]['esercizio'], 'Recupero tra le serie(sec)', data[i]['recupero']));
         
+        container.appendChild(div_row);
 
         // Sostituzione del paragrafo dell'esercizio con il contenitore della checkbox, della label e dei campi input
         if (esercizio && esercizio.getElementsByTagName('p').length > 0) {

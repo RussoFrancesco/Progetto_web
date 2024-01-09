@@ -262,6 +262,7 @@ function recuperaEserciziDallaScheda(){
     req=new XMLHttpRequest();
 
     req.onload = function(){
+        console.log(this.responseText);
         var data = JSON.parse(this.responseText);
         id_scheda = data.pop();
         scheda(data);
