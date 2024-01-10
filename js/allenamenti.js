@@ -17,7 +17,7 @@ var countdownTimer;
 // Se l'URL corrente corrisponde a 'http://localhost/Progetto_web/allenamento.php',
 // viene eseguita la funzione  recuperaEserciziDallaScheda(); quando la finestra si carica.
 // inoltre rendo attivo il bottone di modifica scheda che riporta alla pagina della scheda con l'id passato tramite url
-if(window.location.href == 'http://localhost/Progetto_web/allenamento.php' ||window.location.href == 'http://localhost:8080/Progetto_web/allenamento.php'){
+if(window.location.href.indexOf('/allenamento.php') !== -1){
     window.onload = function(){
         recuperaEserciziDallaScheda();
         document.getElementById('modifica_scheda').addEventListener('click', function(){
