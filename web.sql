@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Creato il: Gen 09, 2024 alle 15:38
+-- Creato il: Gen 10, 2024 alle 15:37
 -- Versione del server: 8.0.32
 -- Versione PHP: 8.1.19
 
@@ -94,7 +94,9 @@ CREATE TABLE `bmi` (
 
 INSERT INTO `bmi` (`id`, `user`, `bmi`, `data`) VALUES
 (2, 3, 24.22, '2023-12-21'),
-(3, 3, 28.22, '2023-12-22');
+(3, 3, 28.22, '2023-12-22'),
+(4, 3, 24.22, '2024-01-10'),
+(5, 3, 19.39, '2024-01-10');
 
 -- --------------------------------------------------------
 
@@ -206,6 +208,7 @@ INSERT INTO `e_s` (`scheda`, `esercizio`, `serie`, `ripetizioni`, `recupero`) VA
 (33, 'squatt', 1, 1, 1),
 (34, 'croci ai cavi', 1, 1, 1),
 (34, 'trazioni', 1, 1, 1),
+(37, 'panca declinata', 1, 1, 1),
 (37, 'spinte', 1, 1, 1);
 
 -- --------------------------------------------------------
@@ -270,7 +273,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `nome`, `cognome`, `pswrd`, `email`, `telefono`, `session_id`) VALUES
 (2, 'domenico', 'villari', 'c6e4478835f3171c957c0976dc4ee6c68906ec51c79d8dcdf64f37255c8005fd', 'domenico@example.com', '3889012346', '7enut4430savinf4nre0le97b5'),
-(3, 'Francesco', 'Russo', '0c64a5de4e73621e2a897ab683823b9323e935110e3d11877d0461b7c9b61c0a', 'francesco@gmail.com', '', 'af57ad7c6ea12d512bb1883ff54d17e6');
+(3, 'Francesco', 'Russo', '0c64a5de4e73621e2a897ab683823b9323e935110e3d11877d0461b7c9b61c0a', 'francesco@gmail.com', '', '237ff92c8dfe4cc945ee58a41a661711');
 
 --
 -- Indici per le tabelle scaricate
@@ -339,7 +342,7 @@ ALTER TABLE `allenamenti`
 -- AUTO_INCREMENT per la tabella `bmi`
 --
 ALTER TABLE `bmi`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT per la tabella `schede`
