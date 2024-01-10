@@ -82,6 +82,7 @@ function calcola_bmi(){
     req.onload = function(){
         if(this.responseText == 'ok'){
             alert("Inserito il bmi nel database");
+            window.location.reload();
         }
     };
 
