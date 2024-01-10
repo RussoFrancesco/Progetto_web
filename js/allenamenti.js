@@ -14,7 +14,7 @@ var gruppi_selezionati = []; //variable per i gruppi selezionati nella checkbox 
 var json_pesi={}; //json per i pesi utilizzati a fine allenamento
 var countdownTimer;
 
-// Se l'URL corrente corrisponde a 'http://localhost/Progetto_web/allenamento.php',
+// Se l'URL corrente contiene 'allenamento.php',
 // viene eseguita la funzione  recuperaEserciziDallaScheda(); quando la finestra si carica.
 // inoltre rendo attivo il bottone di modifica scheda che riporta alla pagina della scheda con l'id passato tramite url
 if(window.location.href.indexOf('/allenamento.php') !== -1){
