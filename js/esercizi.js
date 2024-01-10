@@ -149,7 +149,7 @@ function insert_esercizio(nome, serie, ripetizioni, recupero) {
 
     //richiesta AJAX post con i dati nell'URI
     req.open("POST", "php/logicaSchede.php/e_s/"+nome+"/"+serie+"/"+ripetizioni+"/"+recupero, true);
-    req.send(esercizio);
+    req.send();
 }
 
 
