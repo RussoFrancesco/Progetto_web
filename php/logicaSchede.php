@@ -171,12 +171,6 @@ elseif($method == 'PUT' && $table == 'schede' && isset($request[0]) && isset($re
     mysqli_stmt_bind_param($stmt, "i", $id_scheda);
     mysqli_stmt_execute($stmt);
 
-    //Query che inserisce i dati nel database nella tabella schede
-    $query = "INSERT INTO `schede` (`id`,`data_inizio`,`user`) VALUES (?,?,?)";
-    $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "isi",$id_scheda,$data_inizio, $id_user);
-    mysqli_stmt_execute($stmt);
-
     $query="INSERT INTO `e_s`(`esercizio`, `scheda`, `serie`, `ripetizioni`, `recupero`) VALUES (?,?,?,?,?)";
     
     for($i=0; $i<count($input); $i++){
