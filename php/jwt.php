@@ -1,5 +1,5 @@
 <?php
-require "vendor/autoload.php";
+require "../vendor/autoload.php";
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
@@ -21,15 +21,10 @@ function validateToken($jwt){
     global $key;
     try{
         $decoded = JWT::decode($jwt, new Key($key, 'HS256'));
-        echo json_encode(array( 
-			"message" => "Access granted:"
-		));
+        return true;
     }
     catch(Exception $e){
-        echo json_encode(array( 
-			"message" => "Access denied.", 
-			"error" => $e->getMessage() 
-		)); 
+        return false;
     }
 }
 

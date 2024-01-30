@@ -24,8 +24,8 @@ function loginProcedure (){
     // Reindirizza l'utente alla pagina index.php
     if(req.status==200 && this.responseText!= "ERROR"){
             console.log(this.responseText);
-            document.cookie = this.responseText;
-            //window.location.href="index.php";
+            document.cookie = "token="+this.responseText;
+            window.location.href="index.php";
         }
     else{
             var divElement = document.getElementById("messaggio_errore");
