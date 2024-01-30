@@ -62,6 +62,7 @@ function get_scheda() {
 
     //Richesta per ottenere la scheda con id specifico 
     req.open('GET', "php/logicaSchede.php/scheda/"+id, true);
+    req.setRequestHeader('Token', token);
     req.send();
 }
 
@@ -86,6 +87,7 @@ function get_esercizi_from_scheda(){
     }
 
     req.open('GET', "php/logicaSchede.php/e_s/schede/esercizi/"+id, true);
+    req.setRequestHeader('Token', token);
     req.send();
 }
 
@@ -113,6 +115,7 @@ function termina_scheda(){
     }
 
     req.open('PUT', "php/logicaSchede.php/schede/"+id+"/"+formattedDate, true);
+    req.setRequestHeader('Token', token);
     req.send();
 
 }
@@ -241,6 +244,7 @@ function get_esercizi_from_db(){
     }
 
     req.open('GET', 'php/logicaSchede.php/esercizi/'+id, true);
+    req.setRequestHeader('Token', token);
     req.send();
 }
 
@@ -426,6 +430,7 @@ function componiScheda(){
         }
     }
     req.open('put', 'php/logicaSchede.php/schede/'+id+'/'+data_inizio+'/modifica', true);
+    req.setRequestHeader('Token', token);
     req.send(form_data_json);
 }
 

@@ -17,6 +17,7 @@ function get_esercizi() {
     }
 
     req.open('get', 'php/esercizi.php/esercizi', true); //Richiesta AJAX con metodo GET (è una select) sulla tabella esercizi
+    req.setRequestHeader('Token', token);
     req.send();
 
 }
@@ -194,6 +195,7 @@ function componiScheda(){
             window.location.href="schede.php"; //se va a buon fine ritorno alla pagina che mostra le schede 
         }
     }
-    req.open('post', 'php/logicaSchede.php/scheda/'+data_inizio, true); //richiesta di insert 
+    req.open('post', 'php/logicaSchede.php/scheda/'+data_inizio, true); //richiesta di insert
+    req.setRequestHeader('Token', token); 
     req.send(form_data_json); //mando anche i dati in una stringa con formato JSON contenenti gli esercizi
 }

@@ -26,6 +26,7 @@ function get_data_from_server() {
 
     //richiedo l'allenamento dalla tabella a_e 
     req.open('GET',"php/logicaAllenamento.php/a_e/"+id,true);
+    req.setRequestHeader('Token', token);
     req.send();
 }
 

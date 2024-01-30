@@ -136,6 +136,7 @@ function inserimento_allenamento() {
     }
 
     req.open('POST', "php/logicaAllenamento.php/allenamenti/"+formattedDate, true);
+    req.setRequestHeader('Token', token);
     req.send(JSON.stringify(json_pesi));
 }
 
@@ -269,6 +270,7 @@ function recuperaEserciziDallaScheda(){
     };
 
     req.open("GET", "php/logicaAllenamento.php/schede/", true);
+    req.setRequestHeader('Token', token);
     req.send();
 
 }

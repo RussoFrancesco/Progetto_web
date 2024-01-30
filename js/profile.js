@@ -41,6 +41,7 @@ function compilaForm(){
     
 
     req.open("get","php/user.php/users",true);
+    req.setRequestHeader('Token', token);
     req.send();
 }
 
@@ -68,6 +69,7 @@ function modifica(){
             }
         }
         req.open('PUT',"php/user.php/users",true);
+        req.setRequestHeader('Token', token);
         req.send(JSON.stringify(oggetto));
     }
 }
@@ -83,5 +85,6 @@ function elimina(){
     }
 
     req.open('DELETE', "php/user.php/users", true);
+    req.setRequestHeader('Token', token);
     req.send();
 }

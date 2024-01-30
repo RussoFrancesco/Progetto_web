@@ -1,9 +1,8 @@
 //funzione che attiva i 2 comportamenti
 let token;
+token = document.cookie.split(';')[0].split('=')[1];
 function home(){
-    token = document.cookie.split(';')[0].split('=')[1];
     userinfo(); //recupero info dell'user
-    console.log(token);
     document.getElementById("logout_button").addEventListener("click", logoutProcedure);
 }
 
@@ -32,5 +31,6 @@ function logoutProcedure(){
         } 
     }
     req.open("get","php/logout.php",true);
+    req.setRequestHeader('Token', token);
     req.send();
 }

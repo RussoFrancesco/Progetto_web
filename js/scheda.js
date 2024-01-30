@@ -91,6 +91,7 @@ function visualizzaSchede(){
 
 
     req.open("GET", "php/logicaSchede.php/schede/storico", true);
+    req.setRequestHeader('Token', token);
     req.send();
 
 

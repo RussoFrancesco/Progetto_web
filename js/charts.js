@@ -38,6 +38,7 @@ function getBMI(){
         chartBMI(JSON.parse(this.responseText)); //recupero la risposta e la passo alla funzione che crea il grafico
         };
     req.open("GET","php/bmi.php/bmi/getBMI",true);
+    req.setRequestHeader('Token', token);
     req.send();
 }
 
@@ -96,7 +97,8 @@ function Progressi_su_esercizio(){
         chart_esercizio(JSON.parse(req.responseText));
     };
 
-    req.open("GET","php/esercizi.php/a_e/progressi",true); //alla tabella a_e per i progressi 
+    req.open("GET","php/esercizi.php/a_e/progressi",true); //alla tabella a_e per i progressi
+    req.setRequestHeader('Token', token); 
     req.send();
 }
 
@@ -153,6 +155,7 @@ function getPercentualiGruppi(){
         Piechart(occorrenze);
     };
     request.open('GET',"php/esercizi.php/a_e/gruppi",true);
+    req.setRequestHeader('Token', token);
     request.send();
 }
 

@@ -21,6 +21,7 @@ function get_esercizi() {
     }
 
     req.open('GET','php/esercizi.php/esercizi/attuale',true);
+    req.setRequestHeader('Token', token);
     req.send();
 }
 
@@ -36,6 +37,7 @@ function get_esercizi_scheda() {
     }
 
     req.open('GET','php/logicaSchede.php/e_s/attuale',true);
+    req.setRequestHeader('Token', token);
     req.send();
 }
 
@@ -149,6 +151,7 @@ function insert_esercizio(nome, serie, ripetizioni, recupero) {
 
     //richiesta AJAX post con i dati nell'URI
     req.open("POST", "php/logicaSchede.php/e_s/"+nome+"/"+serie+"/"+ripetizioni+"/"+recupero, true);
+    req.setRequestHeader('Token', token);
     req.send();
 }
 
@@ -198,6 +201,7 @@ function elimina_esercizio(){
     };
 
     req.open("DELETE", "php/logicaSchede.php/e_s/"+id_esercizio, true);
+    req.setRequestHeader('Token', token);
     req.send();
 
 }

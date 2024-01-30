@@ -19,6 +19,7 @@ function visualizzazioneStoricoAllenamenti() {
     }
 
     req.open("GET", "php/logicaAllenamento.php/allenamenti/storico", true);
+    req.setRequestHeader('Token', token);
     req.send();
 }
 

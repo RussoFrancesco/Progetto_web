@@ -88,6 +88,7 @@ function calcola_bmi(){
 
     
     req.open("POST", "php/bmi.php/bmi/"+bmi+"/"+formattedDate,true) //Faccio insert nella tabella BMI con data corrente
+    req.setRequestHeader('Token', token);
     req.send();
 
 }
