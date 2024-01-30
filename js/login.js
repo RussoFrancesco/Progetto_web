@@ -23,7 +23,9 @@ function loginProcedure (){
     // Se lo stato della richiesta è 200 (OK) e la risposta non è "ERROR"
     // Reindirizza l'utente alla pagina index.php
     if(req.status==200 && this.responseText!= "ERROR"){
-            window.location.href="index.php";
+            console.log(this.responseText);
+            document.cookie = this.responseText;
+            //window.location.href="index.php";
         }
     else{
             var divElement = document.getElementById("messaggio_errore");

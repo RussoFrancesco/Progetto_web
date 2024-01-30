@@ -1,6 +1,7 @@
 <?php
 // Connessione al database
 include 'conn.php';
+include 'jwt.php';
 
 // Verifica il metodo e il percorso inseriti
 $method = $_SERVER['REQUEST_METHOD'];
@@ -52,7 +53,7 @@ if ($table == "users") {
             $_SESSION['login'] =true;
 
             //messaggio all'user 
-            echo "OK";
+            echo createToken($id, $email);
 
         } 
         //caso d'errore
