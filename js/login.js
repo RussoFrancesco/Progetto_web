@@ -1,6 +1,7 @@
 window.onload=bindEvents();
 
 function bindEvents (){
+    console.log(document.cookie);
     document.getElementById("login_button").addEventListener("click", loginProcedure);
 }
 

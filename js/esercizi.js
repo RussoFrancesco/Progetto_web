@@ -12,12 +12,17 @@ function get_esercizi() {
     var req = new XMLHttpRequest();
     
     req.onload = function() {
+        if (this.responseText == "Denied"){
+            invalid_token();
+        }
+        else{
         var data = JSON.parse(req.responseText);
         //FORMATO DELLA RISPOSTA: array con tutti fli esercizi nel formato
         //{0: "plank", 1: "addome", nome: "plank", gruppo: "addome"}
         //questo formato consente di accedere sia in con indice numerico che indice associativo
         //console.log(data);
         put_esercizi(data);
+        }
     }
 
     req.open('GET','php/esercizi.php/esercizi/attuale',true);

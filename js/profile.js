@@ -30,7 +30,10 @@ function bindEvent(){
 function compilaForm(){
     req=new XMLHttpRequest();
     req.onload=function () {
-        if (req.status==200 ){
+        if (this.responseText == "Denied"){
+            invalid_token();
+        }
+        else if (req.status==200 ){
             user=JSON.parse(req.responseText);
             firstNamefield.value=user.nome;
             lastnamefield.value=user.cognome;
@@ -58,7 +61,9 @@ function modifica(){
         console.log(JSON.stringify(oggetto));
         req=new XMLHttpRequest();
         req.onload=function(){
-            console.log(req.responseText);
+            if (this.responseText == "Denied"){
+                invalid_token();
+            }
             //gestione della risposta dal server
             if(req.responseText=="email"){
                 alert("Email già associata a un account");
@@ -78,7 +83,9 @@ function elimina(){
     var req = new XMLHttpRequest();
 
     req.onload = function(){
-        console.log(this.responseText);
+        if (this.responseText == "Denied"){
+            invalid_token();
+        }
         if(this.responseText == "eseguita"){
             window.location.href="register.html";
         }

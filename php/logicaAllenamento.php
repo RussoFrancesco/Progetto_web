@@ -3,6 +3,7 @@ session_start();
 include 'conn.php';
 include 'getUserFromSession.php';
 include 'getSchedaFromUserID.php';
+include 'jwt.php';
 
 // Verifica il metodo e il percorso inseriti
 $method = $_SERVER['REQUEST_METHOD'];
@@ -10,7 +11,11 @@ $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
 $user=getUserFromSession($conn);
 
+if(!validateToken()){
+    echo "Denied";
+}
 //inserimento dell'allenamento nel db
+else{
 if ($method=='POST' && $table=="allenamenti" && isset($request[0])){
     $data_allenamento=array_shift($request);
     $scheda=getSchedaFromUserID($conn,$user);
@@ -123,5 +128,5 @@ elseif($method=='GET' && $table=="a_e" && isset($request[0])){
     $json=json_encode($rows);
     echo $json;
 }
-
+}
 ?>

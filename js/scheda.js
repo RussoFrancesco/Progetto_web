@@ -25,7 +25,10 @@ function visualizzaSchede(){
 
     //richiesta che recupera tutte le schede dell'utente
     req.onload = function(){
-        if(req.readyState == 4 && req.status == 200){
+        if(this.responseText == 'Denied'){
+            invalid_token();
+        }
+        else if(req.readyState == 4 && req.status == 200){
             var data = JSON.parse(req.responseText);
 
             console.log(data);

@@ -129,8 +129,10 @@ function inserimento_allenamento() {
     var req = new XMLHttpRequest();
 
     req.onload = function(){
-        console.log(this.responseText);
-        if(this.responseText == 'ok'){
+        if(this.responseText == "Denied"){
+            invalid_token();
+        }
+        else if(this.responseText == 'ok'){
             window.location.href = "allenamenti.php";
         }
     }
@@ -263,10 +265,15 @@ function recuperaEserciziDallaScheda(){
     req=new XMLHttpRequest();
 
     req.onload = function(){
-        console.log(this.responseText);
-        var data = JSON.parse(this.responseText);
-        id_scheda = data.pop();
-        scheda(data);
+        if(this.responseText=="Denied"){
+            invalid_token();
+        }
+        else
+        {
+            var data = JSON.parse(this.responseText);
+            id_scheda = data.pop();
+            scheda(data);
+        }
     };
 
     req.open("GET", "php/logicaAllenamento.php/schede/", true);

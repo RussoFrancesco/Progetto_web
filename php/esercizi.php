@@ -5,6 +5,7 @@ session_start();
 include 'conn.php';
 include 'getUserFromSession.php';
 include 'getSchedaFromUserID.php';
+include 'jwt.php';
 
 // Verifica il metodo e il percorso inseriti
 $method = $_SERVER['REQUEST_METHOD'];
@@ -12,9 +13,12 @@ $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
 $user=getUserFromSession($conn);
 
-
+if(!validateToken()){
+    echo "Denied";
+}
 //recupero gli esercizi dalla tabella esercizi
 // Se il metodo è GET e la tabella è "esercizi"
+else{
 if($method=="GET" && $table=="esercizi"){
     // Query per selezionare tutti i dati dalla tabella 'esercizi' ordinati per 'gruppo'
     $query = "SELECT * FROM esercizi ORDER BY gruppo";
@@ -100,5 +104,5 @@ elseif($method=="GET" && $table=="a_e" && $request[0]=="progressi"){
         echo json_encode($rows);
         
     }  
-
+}
 ?>

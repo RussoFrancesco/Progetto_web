@@ -14,6 +14,10 @@ function visualizzazioneStoricoAllenamenti() {
     var req= new XMLHttpRequest();
 
     req.onload=function(){
+        if(this.responseText == 'Denied'){
+            invalid_token();
+        }
+
         console.log(req.responseText);
         caricaStoricoAllenamentiAll(JSON.parse(req.responseText));
     }

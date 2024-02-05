@@ -6,6 +6,7 @@ session_start();
 include 'conn.php'; 
 //includiamo il file con la funzione per ottenre l'user id con il session id corrente
 include 'getUserFromSession.php';
+include 'jwt.php';
 
 // Verifica il metodo e il percorso inseriti
 $method = $_SERVER['REQUEST_METHOD'];
@@ -17,6 +18,9 @@ $user=getUserFromSession($conn);
 
 //richiesta di inserimento della misurazione
 //METODO : POST (insert), controllo se sono impostati i valori di reuqest 
+if(!validateToken()){
+    echo "Denied";
+}else{
 if($method == 'POST' && $table="bmi" && isset($request[0]) && isset($request[1])){
 
     //recupero le variabili da inserire
@@ -69,7 +73,7 @@ elseif($method == "GET" && $table=="bmi"){
     echo $rows;
 
 }
-
+}
 
 
 

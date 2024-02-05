@@ -6,6 +6,7 @@ include 'conn.php';
 //import delle funzioni uili
 include 'getUserFromSession.php';
 include 'getSchedaFromUserID.php';
+include 'jwt.php';
 
 // Verifica il metodo e il percorso inseriti
 $method = $_SERVER['REQUEST_METHOD'];
@@ -16,6 +17,10 @@ $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
 //recupero l'id dell'user
 $id_user=getUserFromSession($conn);
 
+if(!validateToken()){
+    echo "Denied";
+}
+else{
 //RECUPERO STORICO DELLE SCHEDE (da mostrare nella pagina schede.php)
 if($method=='GET' && $request[0]=="storico" && $table=='schede'){
 
@@ -244,5 +249,5 @@ elseif ($method == "DELETE" && $table == "e_s" && isset($request[0])){
     }
 
 }
-
+}
 ?>

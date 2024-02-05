@@ -31,12 +31,17 @@ function getBMI(){
     let req=new XMLHttpRequest();
     
     req.onload=function(){
-        
+        if(this.responseText == 'Denied'){
+            invalid_token();
+        }
+        else{
+            console.log(this.responseText);
         //FORMATO DELLA RISPOSTA : {labels: ["2023-12-21", "2023-12-22"], data: [24.22, 28.22]}
         //Dove labels sono le date, e data sono i rispettivi volri del BMI misurati
 
         chartBMI(JSON.parse(this.responseText)); //recupero la risposta e la passo alla funzione che crea il grafico
-        };
+        }
+    };
     req.open("GET","php/bmi.php/bmi/getBMI",true);
     req.setRequestHeader('Token', token);
     req.send();
@@ -92,9 +97,13 @@ function Progressi_su_esercizio(){
     let req=new XMLHttpRequest();
 
     req.onload=function(){
-
+        if(this.responseText == 'Denied'){
+            invalid_token();
+        }
+        else{
         //FORMATO DELLA RISPOSTA: {"esercizio":"croci ai cavi","date":["2023-12-20","2023-12-21"],"pesi":[20,15]}
         chart_esercizio(JSON.parse(req.responseText));
+        }
     };
 
     req.open("GET","php/esercizi.php/a_e/progressi",true); //alla tabella a_e per i progressi
@@ -150,12 +159,18 @@ function getPercentualiGruppi(){
     
     let request = new XMLHttpRequest();
     request.onload=function(){
+        if(this.responseText == 'Denied'){
+            invalid_token();
+        }
+
+        else{
         //FORMATO DELLA RISPOSTA: {"pettorali":3,"dorsali":2,"gambe":1,"bicipiti":1}
         occorrenze=JSON.parse(this.responseText);
         Piechart(occorrenze);
+        }
     };
     request.open('GET',"php/esercizi.php/a_e/gruppi",true);
-    req.setRequestHeader('Token', token);
+    request.setRequestHeader('Token', token);
     request.send();
 }
 

@@ -80,7 +80,10 @@ function calcola_bmi(){
     var req = new XMLHttpRequest();
 
     req.onload = function(){
-        if(this.responseText == 'ok'){
+        if(this.responseText == 'Denied'){
+            invalid_token();
+        }
+        else if(this.responseText == 'ok'){
             alert("Inserito il bmi nel database");
             window.location.reload();
         }

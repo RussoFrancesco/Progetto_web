@@ -12,6 +12,10 @@ function get_data_from_server() {
     var req=new XMLHttpRequest();
 
     req.onload=function() {
+        if(this.responseText == 'Denied'){
+            invalid_token();
+        }
+        
         // Se la risposta indica un errore, reindirizza l'utente a 'allenamenti.php'
         if(this.responseText == "ERROR"){
             window.location.href = "allenamenti.php";

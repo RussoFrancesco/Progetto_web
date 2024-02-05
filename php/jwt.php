@@ -17,10 +17,12 @@ function createToken($id, $email){
 }
 
 
-function validateToken($jwt){
+function validateToken(){
+    $header = apache_request_headers();
+    $token = $header['Token'];
     global $key;
     try{
-        $decoded = JWT::decode($jwt, new Key($key, 'HS256'));
+        $decoded = JWT::decode($token, new Key($key, 'HS256'));
         return true;
     }
     catch(Exception $e){

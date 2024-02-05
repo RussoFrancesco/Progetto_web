@@ -34,6 +34,11 @@ function get_scheda() {
     console.log(id);
 
     req.onload = function(){
+
+        if(this.responseText == 'Denied'){
+            invalid_token();
+        }
+
         data = JSON.parse(this.responseText);
 
         if (this.responseText == 'ERROR'){
@@ -73,6 +78,10 @@ function get_esercizi_from_scheda(){
 
     req.onload = function(){
 
+        if(this.responseText == 'Denied'){
+            invalid_token();
+        }
+
         console.log(this.responseText);
         //creo oggettto JSON 
         data = JSON.parse(req.responseText);
@@ -105,6 +114,10 @@ function termina_scheda(){
     console.log(formattedDate);
 
     req.onload = function(){
+
+        if(this.responseText == 'Denied'){
+            invalid_token();
+        }
 
         console.log("risposta server: "+this.responseText);
 
@@ -235,6 +248,11 @@ function get_esercizi_from_db(){
     var req = new XMLHttpRequest();
 
     req.onload = function(){
+
+            if(this.responseText == 'Denied'){
+                invalid_token();
+            }
+
             console.log('get_esercizi_from_db');
             var h3 = document.createElement('h3'); //creo l'intestazione per gli esercizi mancanti
             h3.innerHTML = "Esercizi non presenti nella tua scheda";
@@ -424,6 +442,11 @@ function componiScheda(){
 
     var req= new XMLHttpRequest();
     req.onload = function() {
+
+        if(this.responseText == 'Denied'){
+            invalid_token();
+        }
+
         console.log(this.responseText);
         if(this.responseText=='ok'){
             window.location.href="schede.php";

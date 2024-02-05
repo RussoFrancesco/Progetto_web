@@ -8,10 +8,8 @@ include 'jwt.php';
 $method = $_SERVER['REQUEST_METHOD'];
 $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
-$header = apache_request_headers();
-$token = $header['Token'];
 
-if(validateToken($token)){ 
+if(validateToken()){ 
     //recupero info dell'utente in base all'id della sessione
     if ($table == "users" and $method =="GET") {
         $query="SELECT nome,cognome FROM users where session_id =?";
@@ -35,7 +33,7 @@ if(validateToken($token)){
     }
 }
 else{
-    echo "Token non valido";
+    echo "Denied";
 }
 
 ?>

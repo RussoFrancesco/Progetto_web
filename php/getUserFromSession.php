@@ -1,4 +1,5 @@
 <?php
+
 function getUserFromSession($conn){
     $query="SELECT id FROM users where session_id =?";
     $stmt = mysqli_prepare($conn, $query);

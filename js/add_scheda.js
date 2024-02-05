@@ -11,9 +11,14 @@ function get_esercizi() {
     req = new XMLHttpRequest();
     
     req.onload = function() {
+        if(this.responseText == 'Denied'){
+            invalid_token();
+        }
+        else{
         var data = this.responseText; //recupero dati ottenuti dal server in una stringa in formato JSON
         data = JSON.parse(data);    //li converto con metodo PARSE in un oggetto JavaScript
-        insert_esercizi(data);  
+        insert_esercizi(data); 
+        } 
     }
 
     req.open('get', 'php/esercizi.php/esercizi', true); //Richiesta AJAX con metodo GET (è una select) sulla tabella esercizi
@@ -191,7 +196,10 @@ function componiScheda(){
     //Mando richiesta al server per inserire la scheda (Invio anche il Json con gli esercizi)
     var req= new XMLHttpRequest(); 
     req.onload = function() {
-        if(this.responseText=='ok'){
+        if(this.responseText == "Denied"){
+            invalid_token();
+        }
+        else if(this.responseText=='ok'){
             window.location.href="schede.php"; //se va a buon fine ritorno alla pagina che mostra le schede 
         }
     }

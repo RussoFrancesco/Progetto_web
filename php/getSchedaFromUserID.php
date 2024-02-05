@@ -1,4 +1,5 @@
 <?php
+
 function getSchedaFromUserID($conn, $id_user){
     $query="SELECT `id` FROM `schede` WHERE user = ? AND data_fine IS NULL;";
     $stmt = mysqli_prepare($conn, $query);
