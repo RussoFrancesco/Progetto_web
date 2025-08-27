@@ -1,23 +1,52 @@
 <?php
-//inizio la sessione 
+// Inizio la sessione 
 session_start();
-//includo la connesione al db
+
+// Includo la connessione al db
 include 'conn.php';
-//rendo il session id del db NULL
-$query="UPDATE users SET session_id=NULL WHERE session_id =?";
-$stmt=mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, "s", session_id());
-mysqli_stmt_execute($stmt);
 
+try {
+    // Ottieni session ID corrente per evitare il warning "Only variables should be passed by reference"
+    $current_session_id = session_id();
+    
+    // Verifica che ci sia una connessione database
+    if (!$conn) {
+        error_log("Database connection failed during logout");
+    } else {
+        // Rendi il session id del db NULL
+        $query = "UPDATE users SET session_id=NULL WHERE session_id=?";
+        $stmt = mysqli_prepare($conn, $query);
+        
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "s", $current_session_id);
+            mysqli_stmt_execute($stmt);
+            
+            // Log per debug (opzionale)
+            $affected_rows = mysqli_affected_rows($conn);
+            if ($affected_rows > 0) {
+                error_log("Session cleared for user with session_id: $current_session_id");
+            }
+        } else {
+            error_log("Failed to prepare statement for session cleanup");
+        }
+    }
+    
+} catch (mysqli_sql_exception $e) {
+    error_log("Database error during logout: " . $e->getMessage());
+} catch (Exception $e) {
+    error_log("General error during logout: " . $e->getMessage());
+}
 
-// rimuovo le variabili di sessione 
+// Rimuovi le variabili di sessione 
 session_unset();
-//distruggo la sessione
+
+// Distruggi la sessione
 session_destroy();
 
-session_abort();
+// session_abort() è deprecato in PHP 8.2, sostituito da session_destroy()
+// Non è più necessario chiamarlo dopo session_destroy()
 
-//Reindirizza alla home page
+// Response al client (mantiene struttura originale)
 echo "SESSION_CLOSED";
 
 ?>

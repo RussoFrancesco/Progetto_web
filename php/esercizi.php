@@ -1,108 +1,159 @@
 <?php 
-//Inizio la sessione
+// Inizio la sessione
 session_start();
-//includo i file per connesione e quello con la funzione per ottenere l'user id dal session id corrente
+
+// Includo i file necessari
 include 'conn.php';
 include 'getUserFromSession.php';
 include 'getSchedaFromUserID.php';
 include 'jwt.php';
 
-// Verifica il metodo e il percorso inseriti
-$method = $_SERVER['REQUEST_METHOD'];
-$request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
-$table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
-$user=getUserFromSession($conn);
-
-if(!validateToken()){
-    echo "Denied";
+// Parsing robusto del PATH_INFO per PHP 8.2
+function getPathInfo(): string {
+    $pi = $_SERVER['PATH_INFO'] ?? '';
+    if ($pi !== '' && $pi !== '/') return $pi;
+    
+    $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+    $script = $_SERVER['SCRIPT_NAME'] ?? '';
+    if ($script !== '' && strpos($uri, $script) === 0) {
+        $rest = substr($uri, strlen($script));
+    } else {
+        $base = rtrim(dirname($script), '/');
+        $rest = ($base && strpos($uri, $base) === 0) ? substr($uri, strlen($base)) : $uri;
+    }
+    $rest = '/'.ltrim($rest, '/');
+    return $rest === '/' ? '' : $rest;
 }
-//recupero gli esercizi dalla tabella esercizi
-// Se il metodo è GET e la tabella è "esercizi"
-else{
-if($method=="GET" && $table=="esercizi"){
-    // Query per selezionare tutti i dati dalla tabella 'esercizi' ordinati per 'gruppo'
+
+// Verifica metodo e percorso
+$method = $_SERVER['REQUEST_METHOD'];
+$pathInfo = getPathInfo();
+$segments = array_values(array_filter(explode('/', trim($pathInfo, '/'))));
+
+// Estrai tabella dal primo segmento
+$table = isset($segments[0]) ? preg_replace('/[^a-z0-9_]+/i', '', $segments[0]) : '';
+if ($table === '') {
+    exit('Missing table in path');
+}
+
+// Rimuovi il primo elemento e tieni il resto come $request
+$request = array_slice($segments, 1);
+
+// Recupera user dalla sessione
+$user = getUserFromSession($conn);
+
+// Verifica token JWT
+if (!validateToken()) {
+    echo "Denied";
+    exit;
+}
+
+// Gestisci le richieste
+
+// GET /esercizi - Lista tutti gli esercizi
+if ($method == "GET" && $table == "esercizi") {
+    
     $query = "SELECT * FROM esercizi ORDER BY gruppo";
     $res = mysqli_query($conn, $query);
     $rows = [];
 
-    // Carica l'array 'rows' con i risultati della query
-    if($res){
-        while($row = mysqli_fetch_array($res)){
+    if ($res) {
+        while ($row = mysqli_fetch_array($res)) {
             $rows[] = $row;
         }
     }
 
-    //
-    $rows = json_encode($rows);
-    echo $rows;
-
+    echo json_encode($rows);
 }
-//se il metodo è get la tabella è a_e e l'elemento dell'uri successivo alla table
-//metodo utilizzato per il grafico della dashboard sui progressi
-elseif($method=="GET" && $table=="a_e" && $request[0]=="progressi"){
-    //eseguo query
-    $query="SELECT allenamenti.data, a_e.peso,a_e.esercizio FROM a_e,allenamenti WHERE user =? AND allenamenti.id=a_e.allenamento";
-    $stmt=mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "i", $user);
-    mysqli_stmt_execute($stmt);
-    $result=mysqli_stmt_get_result($stmt);
-    $rows = mysqli_num_rows($result);
+
+// GET /a_e/progressi - Progressi per esercizio random
+elseif ($method == "GET" && $table == "a_e" && isset($request[0]) && $request[0] == "progressi") {
     
-   //se ci sono record tornati dalla query
-    if ($rows > 0) {
-        //vado a prendere un indice random
-        $randomIndex = rand(0, $rows - 1);
-        //con mysqli_data_seek vado a trovare il record in posizione i 
-        mysqli_data_seek($result, $randomIndex);
-        //recupero i dati dell'eserzio 
-        $exerciseData = mysqli_fetch_assoc($result);
-        $selectedExercise = $exerciseData['esercizio'];
-        }
-
-        mysqli_data_seek($result, 0);
-
-        //recupero date ed pesi utilizzati per l'esercizio
-        $date = [];
-        $weights = [];
-
-        //controllo tutti i record tornati
-        while ($row = mysqli_fetch_assoc($result)) {
-            //se l'esercizio coinvolto nel record è quello selezionato
-            if ($row['esercizio'] === $selectedExercise) {
-                //Salvo i dati negli array
-                $dates[] = $row['data'];
-                $weights[] = $row['peso'];
-            }
-        }
-        //creo un json del tipio {esercizio:"nome",date:["d1","d2"], pesi:["2","3"]}
-        $json = [
-            "esercizio" => $selectedExercise,
-            "date" => $dates,
-            "pesi" => $weights
-        ];
-
-        //ritorno la stringa in formato JSON 
-        echo json_encode($json);
-
-}elseif($method=="GET" && $table=="a_e" && $request[0]=="gruppi"){
-        $query="SELECT esercizi.gruppo, COUNT(*) as occorrenze 
-            FROM `a_e`,allenamenti,esercizi 
-            WHERE esercizi.nome=a_e.esercizio AND a_e.allenamento=allenamenti.id AND allenamenti.user=? 
-            GROUP BY esercizi.gruppo";
-        $stmt=mysqli_prepare($conn,$query);
-        mysqli_stmt_bind_param($stmt,"i",$user);
+    try {
+        $query = "SELECT allenamenti.data, a_e.peso, a_e.esercizio 
+                  FROM a_e, allenamenti 
+                  WHERE allenamenti.user = ? AND allenamenti.id = a_e.allenamento";
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "i", $user);
         mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        
+        // Raccoglie tutti i dati in un array invece di usare mysqli_data_seek
+        $allData = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $allData[] = $row;
+        }
+        $rows = count($allData);
+        
+        if ($rows > 0) {
+            // Seleziona un indice random
+            $randomIndex = rand(0, $rows - 1);
+            $selectedExercise = $allData[$randomIndex]['esercizio'];
+            
+            // Filtra i dati per l'esercizio selezionato
+            $dates = []; // Fix: era $date nel codice originale
+            $weights = [];
+            
+            foreach ($allData as $row) {
+                if ($row['esercizio'] === $selectedExercise) {
+                    $dates[] = $row['data'];
+                    $weights[] = $row['peso'];
+                }
+            }
+            
+            // Mantiene la struttura JSON originale
+            $json = [
+                "esercizio" => $selectedExercise,
+                "date" => $dates,
+                "pesi" => $weights
+            ];
+            
+            echo json_encode($json);
+        } else {
+            // Return empty structure se nessun dato
+            echo json_encode([
+                "esercizio" => "",
+                "date" => [],
+                "pesi" => []
+            ]);
+        }
+        
+    } catch (mysqli_sql_exception $e) {
+        // Return empty structure in caso di errore
+        echo json_encode([
+            "esercizio" => "",
+            "date" => [],
+            "pesi" => []
+        ]);
+    }
+}
 
+// GET /a_e/gruppi - Statistiche gruppi muscolari
+elseif ($method == "GET" && $table == "a_e" && isset($request[0]) && $request[0] == "gruppi") {
+    
+    try {
+        $query = "SELECT esercizi.gruppo, COUNT(*) as occorrenze 
+                  FROM `a_e`, allenamenti, esercizi 
+                  WHERE esercizi.nome = a_e.esercizio 
+                  AND a_e.allenamento = allenamenti.id 
+                  AND allenamenti.user = ? 
+                  GROUP BY esercizi.gruppo";
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "i", $user);
+        mysqli_stmt_execute($stmt);
         $res = mysqli_stmt_get_result($stmt);
         
-        $rows=[];
-
-        while ($row = mysqli_fetch_array($res)){
+        $rows = [];
+        while ($row = mysqli_fetch_array($res)) {
             $rows[$row["gruppo"]] = $row["occorrenze"];
         }
-
+        
         echo json_encode($rows);
         
-    }  
+    } catch (mysqli_sql_exception $e) {
+        // Return empty object in caso di errore
+        echo json_encode(new stdClass());
+    }
 }
+
 ?>

@@ -11,12 +11,41 @@ class ComposerStaticInit20fad51902f91e7fd3039e016a6556b5
         array (
             'Firebase\\JWT\\' => 13,
         ),
+        'E' => 
+        array (
+            'Elliptic\\' => 9,
+        ),
+        'C' => 
+        array (
+            'CircularProtocol\\Api\\' => 21,
+        ),
+        'B' => 
+        array (
+            'BN\\' => 3,
+            'BI\\' => 3,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
         'Firebase\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
+        'Elliptic\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/simplito/elliptic-php/lib',
+        ),
+        'CircularProtocol\\Api\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/circular-protocol/circular-protocol-api/lib',
+        ),
+        'BN\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/simplito/bn-php/lib',
+        ),
+        'BI\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/simplito/bigint-wrapper-php/lib',
         ),
     );
 

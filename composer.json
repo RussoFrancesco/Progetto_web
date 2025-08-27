@@ -1,0 +1,6 @@
+{
+    "require": {
+        "circular-protocol/circular-protocol-api": "^1.0",
+        "firebase/php-jwt": "^6.11"
+    }
+}

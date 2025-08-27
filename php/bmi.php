@@ -1,82 +1,125 @@
 <?php 
 
-//Avviamo la sessione 
+// Avviamo la sessione 
 session_start();
-//includiamo il file con la connesione al DB 
+
+// Includiamo i file necessari
 include 'conn.php'; 
-//includiamo il file con la funzione per ottenre l'user id con il session id corrente
 include 'getUserFromSession.php';
 include 'jwt.php';
 
-// Verifica il metodo e il percorso inseriti
-$method = $_SERVER['REQUEST_METHOD'];
-$request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
-//recupero il 1o elemento di request che corrisponde alla tabella, (viene validato)
-$table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
-//recupero l'user sulla base della 
-$user=getUserFromSession($conn);
-
-//richiesta di inserimento della misurazione
-//METODO : POST (insert), controllo se sono impostati i valori di reuqest 
-if(!validateToken()){
-    echo "Denied";
-}else{
-if($method == 'POST' && $table="bmi" && isset($request[0]) && isset($request[1])){
-
-    //recupero le variabili da inserire
-    $bmi = array_shift($request);
-    $data = array_shift($request);
-
-    //query per l'inserimento
-    $query = "INSERT INTO bmi(user, bmi, data) VALUES (?, ?, ?)";
-    $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "ids", $user, $bmi, $data);
-    $res = mysqli_stmt_execute($stmt);
+// Parsing robusto del PATH_INFO per PHP 8.2
+function getPathInfo(): string {
+    $pi = $_SERVER['PATH_INFO'] ?? '';
+    if ($pi !== '' && $pi !== '/') return $pi;
     
-    //response del server
-    if($res){
-        echo 'ok';
+    $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+    $script = $_SERVER['SCRIPT_NAME'] ?? '';
+    if ($script !== '' && strpos($uri, $script) === 0) {
+        $rest = substr($uri, strlen($script));
+    } else {
+        $base = rtrim(dirname($script), '/');
+        $rest = ($base && strpos($uri, $base) === 0) ? substr($uri, strlen($base)) : $uri;
     }
-    else{
+    $rest = '/'.ltrim($rest, '/');
+    return $rest === '/' ? '' : $rest;
+}
+
+// Verifica metodo e percorso
+$method = $_SERVER['REQUEST_METHOD'];
+$pathInfo = getPathInfo();
+$segments = array_values(array_filter(explode('/', trim($pathInfo, '/'))));
+
+// Estrai tabella dal primo segmento
+$table = isset($segments[0]) ? preg_replace('/[^a-z0-9_]+/i', '', $segments[0]) : '';
+if ($table === '') {
+    exit('Missing table in path');
+}
+
+// Rimuovi il primo elemento e tieni il resto come $request
+$request = array_slice($segments, 1);
+
+// Recupera user dalla sessione
+$user = getUserFromSession($conn);
+
+// Verifica token JWT
+if (!validateToken()) {
+    echo "Denied";
+    exit;
+}
+
+// Gestisci le richieste
+
+// POST /bmi/{valore}/{data} - Inserimento BMI
+if ($method == 'POST' && $table === 'bmi' && isset($request[0]) && isset($request[1])) {
+    
+    $bmi = $request[0];
+    $data = $request[1];
+    
+    try {
+        // Query di inserimento
+        $query = "INSERT INTO bmi(user, bmi, data) VALUES (?, ?, ?)";
+        $stmt = mysqli_prepare($conn, $query);
+        
+        if (!$stmt) {
+            echo 'error';
+            exit;
+        }
+        
+        mysqli_stmt_bind_param($stmt, "ids", $user, $bmi, $data);
+        $res = mysqli_stmt_execute($stmt);
+        
+        // Response del server (mantiene struttura originale)
+        if ($res) {
+            echo 'ok';
+        } else {
+            echo 'error';
+        }
+        
+    } catch (mysqli_sql_exception $e) {
         echo 'error';
     }
-
 }
-//richiesta di recupero delle misurazioni di un certo utente
-//METODO GET (SELECT)
-elseif($method == "GET" && $table=="bmi"){
-    // Prepara la query SQL per selezionare i dati dalla tabella 'bmi' per un utente specifico e ordinarli per 'data'
-    $query = "SELECT * FROM bmi WHERE user = ? ORDER by data ASC";
-    $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "i", $user);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
+
+// GET /bmi - Recupero misurazioni BMI dell'utente
+elseif ($method == "GET" && $table == "bmi") {
     
-    // Inizializza gli array per memorizzare labels e dati
-    $labels=[];
-    $data=[];
-
-     // Recupera i dati dal database e memorizzali negli array
-    while($row = mysqli_fetch_assoc($res)){
-        $labels[]=$row['data'];
-        $data[]=$row['bmi'];
+    try {
+        // Query per recuperare dati BMI
+        $query = "SELECT * FROM bmi WHERE user = ? ORDER BY data ASC";
+        $stmt = mysqli_prepare($conn, $query);
+        
+        if (!$stmt) {
+            echo json_encode(["labels" => [], "data" => []]);
+            exit;
+        }
+        
+        mysqli_stmt_bind_param($stmt, "i", $user);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        
+        // Inizializza array per labels e dati
+        $labels = [];
+        $data = [];
+        
+        // Recupera dati dal database
+        while ($row = mysqli_fetch_assoc($res)) {
+            $labels[] = $row['data'];
+            $data[] = $row['bmi'];
+        }
+        
+        // Mantiene la struttura JSON originale
+        $rows = [
+            "labels" => $labels,
+            "data" => $data
+        ];
+        
+        echo json_encode($rows);
+        
+    } catch (mysqli_sql_exception $e) {
+        // Return empty structure in caso di errore
+        echo json_encode(["labels" => [], "data" => []]);
     }
-
-    // Memorizza labels e dati in un array 'rows' per poi formattarlo in formato JSON
-    $rows=[
-        "labels"=>$labels,
-        "data"=>$data
-    ];
-
-    $rows = json_encode($rows);
-    //Torno al client il risultato 
-    echo $rows;
-
 }
-}
-
-
-
-
 
 ?>

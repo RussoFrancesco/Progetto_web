@@ -16,7 +16,8 @@ if(validateToken()){
         $stmt = mysqli_prepare($conn, $query);
 
         if ($stmt) {
-            mysqli_stmt_bind_param($stmt, "s", session_id());
+            $session = session_id();
+            mysqli_stmt_bind_param($stmt, "s", $session);
             mysqli_stmt_execute($stmt);
 
             $res = mysqli_stmt_get_result($stmt);

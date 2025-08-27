@@ -3,7 +3,8 @@
 function getUserFromSession($conn){
     $query="SELECT id FROM users where session_id =?";
     $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "s", session_id());
+    $session = session_id();
+    mysqli_stmt_bind_param($stmt, "s", $session);
     mysqli_stmt_execute($stmt);
 
     $res = mysqli_stmt_get_result($stmt);

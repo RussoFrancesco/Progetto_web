@@ -7,4 +7,8 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
+    'Elliptic\\' => array($vendorDir . '/simplito/elliptic-php/lib'),
+    'CircularProtocol\\Api\\' => array($vendorDir . '/circular-protocol/circular-protocol-api/lib'),
+    'BN\\' => array($vendorDir . '/simplito/bn-php/lib'),
+    'BI\\' => array($vendorDir . '/simplito/bigint-wrapper-php/lib'),
 );
