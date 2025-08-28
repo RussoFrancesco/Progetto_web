@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -12,7 +11,7 @@
     <title>FitnessFolio - Register</title>
 
     <!-- Custom fonts for this template-->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <!--<link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">-->
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
@@ -20,9 +19,73 @@
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
 
-
+    <!-- CSS minimo per i badge d'ordine -->
+    <style>
+        .btn-selectable {
+            position: relative;
+            transition: all 0.2s ease;
+            /* AGGIUNGI QUESTE REGOLE PER IL TESTO PIÙ GRANDE E CENTRATO */
+            font-size: 16px !important;  /* Aumenta la dimensione del testo */
+            font-weight: 500 !important; /* Testo leggermente più grassetto */
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            padding: 12px 8px !important; /* Aumenta il padding per più spazio */
+            line-height: 1.2 !important;
+            min-height: 45px !important; /* Altezza minima per i bottoni */
+        }
+        
+        /* RIMUOVE LE ICONE */
+        .btn-selectable::before,
+        .btn-selectable::after {
+            display: none !important;
+            content: none !important;
+        }
+        
+        .btn-selectable i,
+        .btn-selectable .fa,
+        .btn-selectable .fas,
+        .btn-selectable .far,
+        .btn-selectable .fab {
+            display: none !important;
+        }
+        
+        /* Assicura che solo il testo sia visibile */
+        .btn-selectable {
+            font-family: inherit !important;
+            text-decoration: none !important;
+        }
+        
+        .order-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #28a745;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            border: 2px solid white;
+        }
+        
+        #selected-count {
+            font-weight: bold;
+            color: #4e73df;
+        }
+        
+        .selection-buttons {
+            margin-top: 20px;
+        }
+    </style>
+    
 </head>
-
 
 <body class="bg-gradient-primary">
 
@@ -70,23 +133,88 @@
                                             id="RepeatPassword" placeholder="Repeat Password" required>
                                     </div>
                                 </div>
+                                
+                                <!-- Sezione Pulsanti Selezionabili con Bootstrap puro -->
+                                <div class="selection-buttons">
+                                    <div class="text-center mb-3">
+                                        <h6 class="text-gray-700">Seleziona le tue parole seed:</h6>
+                                    </div>
+                                    
+                                    <!-- Container per i 12 pulsanti Bootstrap -->
+                                    <div class="row" id="word-buttons-container">
+                                        <div class="col-sm-4 col-6 mb-2">
+                                            <button type="button" class="btn btn-outline-primary btn-sm btn-block btn-selectable" data-value="">
+                                                Caricamento...
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-4 col-6 mb-2">
+                                            <button type="button" class="btn btn-outline-primary btn-sm btn-block btn-selectable" data-value="">
+                                                Caricamento...
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-4 col-6 mb-2">
+                                            <button type="button" class="btn btn-outline-primary btn-sm btn-block btn-selectable" data-value="">
+                                                Caricamento...
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-4 col-6 mb-2">
+                                            <button type="button" class="btn btn-outline-primary btn-sm btn-block btn-selectable" data-value="">
+                                                Caricamento...
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-4 col-6 mb-2">
+                                            <button type="button" class="btn btn-outline-primary btn-sm btn-block btn-selectable" data-value="">
+                                                Caricamento...
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-4 col-6 mb-2">
+                                            <button type="button" class="btn btn-outline-primary btn-sm btn-block btn-selectable" data-value="">
+                                                Caricamento...
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-4 col-6 mb-2">
+                                            <button type="button" class="btn btn-outline-primary btn-sm btn-block btn-selectable" data-value="">
+                                                Caricamento...
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-4 col-6 mb-2">
+                                            <button type="button" class="btn btn-outline-primary btn-sm btn-block btn-selectable" data-value="">
+                                                Caricamento...
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-4 col-6 mb-2">
+                                            <button type="button" class="btn btn-outline-primary btn-sm btn-block btn-selectable" data-value="">
+                                                Caricamento...
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-4 col-6 mb-2">
+                                            <button type="button" class="btn btn-outline-primary btn-sm btn-block btn-selectable" data-value="">
+                                                Caricamento...
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-4 col-6 mb-2">
+                                            <button type="button" class="btn btn-outline-primary btn-sm btn-block btn-selectable" data-value="">
+                                                Caricamento...
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-4 col-6 mb-2">
+                                            <button type="button" class="btn btn-outline-primary btn-sm btn-block btn-selectable" data-value="">
+                                                Caricamento...
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Indicatore parole selezionate -->
+                                    <div class="text-center mt-3">
+                                        <small class="text-muted">
+                                            <span id="selected-count">0</span>/12 parole selezionate
+                                        </small>
+                                    </div>
+                                </div>
+
                                 <input type="button" id="form_invio" value="Register Account" class="btn btn-primary btn-user btn-block" onclick="validateForm();">
-                                <!--
-                                <hr>
-                                <a href="index.php" class="btn btn-google btn-user btn-block">
-                                    <i class="fab fa-google fa-fw"></i> Register with Google
-                                </a>
-                                <a href="index.php" class="btn btn-facebook btn-user btn-block">
-                                    <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook
-                                </a>
-                                -->
                             </form>
                             <hr>
-                            <!--
-                            <div class="text-center">
-                                <a class="small" href="forgot-password.html">Forgot Password?</a>
-                            </div>
-                            -->
                             <div class="text-center">
                                 <a class="small" href="login.html">Already have an account? Login!</a>
                             </div>
@@ -113,7 +241,6 @@
 
     <!-- Script per la criptazione-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
-
 
 </body>
 
