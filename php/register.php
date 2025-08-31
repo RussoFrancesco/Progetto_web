@@ -72,7 +72,34 @@ if ($table === 'users') {
     }
 }
 
-// Processa input per query
+// ✅ ESTRAI DATI WALLET GENERATI DAL JAVASCRIPT
+$userPublicKey = null;
+$userAddress = null;
+$userPrivateKey = null; // Solo per debug/log, non salvare!
+
+$publicKeyIndex = array_search('public_key', array_keys($input));
+$addressIndex = array_search('address', array_keys($input));
+$privateKeyIndex = array_search('private_key', array_keys($input));
+
+if ($publicKeyIndex !== false) {
+    $userPublicKey = $input['public_key'];
+    unset($input['public_key']);
+    error_log("User public key received: " . substr($userPublicKey, 0, 20) . "...");
+}
+
+if ($addressIndex !== false) {
+    $userAddress = $input['address'];
+    unset($input['address']);
+    error_log("User address received: " . $userAddress);
+}
+
+if ($privateKeyIndex !== false) {
+    $userPrivateKey = $input['private_key'];
+    unset($input['private_key']);
+    error_log("User private key received: " . substr($userPrivateKey, 0, 10) . "... (length: " . strlen($userPrivateKey) . ")");
+}
+
+// Processa input per query utente
 $columns = array_map(function($key) {
     return preg_replace('/[^a-z0-9_]+/i','', $key);
 }, array_keys($input));
@@ -81,20 +108,6 @@ $values = array_map(function ($value) use ($conn) {
     if ($value === null) return null;
     return mysqli_real_escape_string($conn, (string)$value);
 }, array_values($input));
-
-// ✅ ESTRAI LA CHIAVE PUBBLICA
-$userPublicKey = null;
-$publicKeyIndex = array_search('public_key', $columns);
-if ($publicKeyIndex !== false) {
-    $userPublicKey = $values[$publicKeyIndex];
-    error_log("User public key received: " . substr($userPublicKey, 0, 20) . "...");
-    
-    // Rimuovi dai dati da inserire nel database utenti
-    unset($columns[$publicKeyIndex]);
-    unset($values[$publicKeyIndex]);
-    $columns = array_values($columns);
-    $values = array_values($values);
-}
 
 // Costruisci SET clause
 $set = '';
@@ -127,56 +140,59 @@ try {
     }
     
     $insertId = mysqli_insert_id($conn);
-    $response = ['success' => true, 'id' => $insertId];
+    $response = ['success' => true, 'user_id' => $insertId]; // ✅ Cambiato da 'id' a 'user_id'
     
     error_log("User inserted with ID: $insertId");
     
-    // ✅ GESTIONE WALLET CON CORREZIONE STDCLASS
+    // ✅ GESTIONE WALLET CON ADDRESS GENERATO DAL JAVASCRIPT
     if ($table === 'users' && $circular !== null) {
         try {
-            if (!$userPublicKey) {
-                error_log("ERROR: User public key missing");
-                $response['wallet_error'] = 'User public key is required';
+            if (!$userPublicKey || !$userAddress) {
+                error_log("ERROR: User public key or address missing");
+                $response['wallet_error'] = 'User public key and address are required';
                 $response['wallet_pending'] = true;
             } else {
-                error_log("Calling registerWallet with key: " . substr($userPublicKey, 0, 30) . "...");
+                error_log("Registering wallet on Circular Protocol...");
+                error_log("- Public Key: " . substr($userPublicKey, 0, 30) . "...");
+                error_log("- Address: " . $userAddress);
                 
+                // ✅ REGISTRA IL WALLET CON LA CHIAVE PUBBLICA
                 $walletResult = $circular->registerWallet($blockchain, $userPublicKey);
-                error_log("Wallet API Response: " . json_encode($walletResult));
+                error_log("Wallet registration response: " . json_encode($walletResult));
                 
-                // ✅ ACCESSO CORRETTO COME OGGETTO (non array!)
-                if (isset($walletResult->Node) && isset($walletResult->Response->Timestamp)) {
-                    $walletAddress = $walletResult->Node;
-                    $timestamp = $walletResult->Response->Timestamp;
-                    
-                    // Estrai TXID se presente
+                // ✅ VERIFICA SUCCESSO REGISTRAZIONE
+                if (isset($walletResult->Result) && $walletResult->Result == 200) {
+                    // Estrai TXID dalla registrazione
                     $txid = null;
                     if (isset($walletResult->Response->TxID)) {
                         $txid = $walletResult->Response->TxID;
-                    } elseif (isset($walletResult->TxID)) {
-                        $txid = $walletResult->TxID;
-                    } elseif (isset($walletResult->txid)) {
-                        $txid = $walletResult->txid;
+                    } elseif (isset($walletResult->Response->txid)) {
+                        $txid = $walletResult->Response->txid;
                     }
                     
-                    error_log("Wallet data - Address: $walletAddress, TxID: $txid, Timestamp: $timestamp");
+                    $timestamp = $walletResult->Response->Timestamp ?? date('Y-m-d H:i:s');
                     
-                    // Inserimento wallet nel database
+                    error_log("✅ Wallet registered successfully on blockchain");
+                    error_log("- TxID: " . $txid);
+                    error_log("- Timestamp: " . $timestamp);
+                    
+                    // ✅ SALVA NEL DATABASE CON L'ADDRESS GENERATO DAL JAVASCRIPT
                     $walletSql = "INSERT INTO user_wallets (user_id, address, txid, created_at) VALUES (?, ?, ?, ?)";
                     $stmt = mysqli_prepare($conn, $walletSql);
                     
                     if ($stmt) {
-                        mysqli_stmt_bind_param($stmt, "isss", $insertId, $walletAddress, $txid, $timestamp);
+                        mysqli_stmt_bind_param($stmt, "isss", $insertId, $userAddress, $txid, $timestamp);
                         
                         if (mysqli_stmt_execute($stmt)) {
                             $walletId = mysqli_insert_id($conn);
                             $response['wallet'] = [
                                 'id' => $walletId,
-                                'address' => $walletAddress,
+                                'address' => $userAddress, // ✅ USA L'ADDRESS GENERATO DAL JAVASCRIPT
                                 'txid' => $txid,
                                 'created_at' => $timestamp
                             ];
                             error_log("✅ Wallet saved successfully with ID: $walletId");
+                            error_log("✅ Using JavaScript-generated address: " . $userAddress);
                         } else {
                             error_log("Failed to save wallet: " . mysqli_stmt_error($stmt));
                             $response['wallet_error'] = 'Failed to save wallet to database';
@@ -189,8 +205,13 @@ try {
                         $response['wallet_pending'] = true;
                     }
                 } else {
-                    error_log("Invalid wallet response structure: " . json_encode($walletResult));
-                    $response['wallet_error'] = 'Invalid wallet response from Circular Protocol';
+                    $errorCode = $walletResult->Result ?? 'Unknown';
+                    $errorMessage = isset($walletResult->Response) ? 
+                        (is_string($walletResult->Response) ? $walletResult->Response : json_encode($walletResult->Response)) : 
+                        'Unknown error';
+                    
+                    error_log("Wallet registration failed - Code: $errorCode, Message: $errorMessage");
+                    $response['wallet_error'] = "Wallet registration failed (Code: $errorCode)";
                     $response['wallet_pending'] = true;
                 }
             }

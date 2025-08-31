@@ -25,76 +25,105 @@ function hexToBytes(hex) {
     return new Uint8Array(bytes);
 }
 
+// ============================================================================= 
+// FUNZIONI CRITTOGRAFICHE CORRETTE (compatibili con elliptic.js)
+// =============================================================================
+
+// ✅ GENERA CHIAVE PUBBLICA USANDO ELLIPTIC.JS (come il tuo collega)
 async function generatePublicKeyFromSeed(selectedWords) {
-  const seedPhrase = selectedWords.join(' ');
-  console.log('Seed phrase:', seedPhrase);
-  
-  const encoder = new TextEncoder();
-  const data = encoder.encode(seedPhrase);
-  
-  // ❌ QUESTO È SBAGLIATO - genera solo un hash
-  // const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  
-  // ✅ CORRETTO - Genera una vera chiave pubblica ellittica
-  try {
-      // Genera una chiave privata dal seed
-      const privateKeyBuffer = await crypto.subtle.digest('SHA-256', data);
-      
-      // Importa come chiave privata per ECDSA
-      const privateKey = await crypto.subtle.importKey(
-          'raw',
-          privateKeyBuffer,
-          {
-              name: 'ECDSA',
-              namedCurve: 'P-256'
-          },
-          true,
-          ['sign']
-      );
-      
-      // Deriva la chiave pubblica
-      const publicKey = await crypto.subtle.exportKey('raw', privateKey);
-      const publicKeyHex = bytesToHex(new Uint8Array(publicKey));
-      
-      // ✅ Aggiungi il prefisso per chiave non compressa
-      const formattedPublicKey = '0x04' + publicKeyHex;
-      
-      console.log('Chiave pubblica generata (corretta):', formattedPublicKey);
-      return formattedPublicKey;
-      
-  } catch (error) {
-      console.error('Errore generazione chiave:', error);
-      
-      // ✅ FALLBACK: Usa il metodo precedente ma con prefisso corretto
-      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-      const hashArray = new Uint8Array(hashBuffer);
-      
-      // Duplica l'hash per ottenere 64 bytes (128 hex chars)
-      const extendedKey = new Uint8Array(64);
-      extendedKey.set(hashArray, 0);
-      extendedKey.set(hashArray, 32);
-      
-      const publicKeyHex = bytesToHex(extendedKey);
-      const formattedPublicKey = '0x04' + publicKeyHex;
-      
-      console.log('Chiave pubblica generata (fallback):', formattedPublicKey);
-      return formattedPublicKey;
-  }
+    const seedPhrase = selectedWords.join(' ');
+    console.log('Seed phrase:', seedPhrase);
+    
+    try {
+        // ✅ USA ELLIPTIC.JS come nel codice del tuo collega
+        const EC = elliptic.ec;
+        const ec = new EC('secp256k1');
+        
+        // ✅ STESSO PROCESSO del tuo collega
+        const hash = sha256.sha256.array(seedPhrase);
+        const keyPair = ec.keyFromPrivate(hash);
+        
+        // ✅ CHIAVE PUBBLICA (formato uncompressed, senza 0x)
+        const publicKey = keyPair.getPublic(false, 'hex');
+        
+        console.log('✅ Chiave pubblica elliptic.js:', publicKey);
+        return publicKey; // SENZA 0x prefix
+        
+    } catch (error) {
+        console.error('❌ Errore generazione chiave pubblica:', error);
+        throw error;
+    }
 }
 
-
+// ✅ GENERA CHIAVE PRIVATA USANDO ELLIPTIC.JS (come il tuo collega)
 async function generatePrivateKeyFromPublic(publicKey) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(publicKey);
+    const seedPhrase = selectedWords.join(' ');
     
-    const firstHash = await crypto.subtle.digest('SHA-256', data);
-    const secondHash = await crypto.subtle.digest('SHA-256', firstHash);
-    const privateKeyArray = new Uint8Array(secondHash);
-    const privateKey = bytesToHex(privateKeyArray);
-    
-    console.log('Chiave privata generata:', privateKey);
-    return privateKey;
+    try {
+        // ✅ USA ELLIPTIC.JS come nel codice del tuo collega
+        const EC = elliptic.ec;
+        const ec = new EC('secp256k1');
+        
+        // ✅ STESSO PROCESSO del tuo collega
+        const hash = sha256.sha256.array(seedPhrase);
+        const keyPair = ec.keyFromPrivate(hash);
+        
+        // ✅ CHIAVE PRIVATA (formato hex, senza 0x)
+        const privateKey = keyPair.getPrivate('hex');
+        
+        console.log('✅ Chiave privata elliptic.js:', privateKey);
+        return privateKey; // SENZA 0x prefix
+        
+    } catch (error) {
+        console.error('❌ Errore generazione chiave privata:', error);
+        throw error;
+    }
 }
+
+// ✅ CALCOLA INDIRIZZO COME IL TUO COLLEGA
+function calculateAddressFromPublicKey(publicKey) {
+    try {
+        // ✅ STESSO METODO del tuo collega: SHA256 della chiave pubblica
+        const address = sha256.sha256(publicKey);
+        console.log('✅ Indirizzo calcolato:', address);
+        return address; // SENZA 0x prefix
+        
+    } catch (error) {
+        console.error('❌ Errore calcolo indirizzo:', error);
+        throw error;
+    }
+}
+
+async function generateWalletKeys() {
+    try {
+        showProgress('Generazione chiavi crittografiche...', 20);
+        
+        // ✅ Genera chiave pubblica con elliptic.js
+        const publicKey = await generatePublicKeyFromSeed(selectedWords);
+        
+        // ✅ Genera chiave privata con elliptic.js  
+        const privateKey = await generatePrivateKeyFromPublic(publicKey);
+        
+        // ✅ Calcola indirizzo con SHA256 della chiave pubblica
+        const address = calculateAddressFromPublicKey(publicKey);
+        
+        console.log('✅ Chiavi generate:');
+        console.log('- Public Key:', publicKey);
+        console.log('- Private Key:', privateKey);
+        console.log('- Address:', address);
+        
+        return {
+            publicKey: publicKey,
+            privateKey: privateKey,
+            address: address
+        };
+        
+    } catch (error) {
+        console.error('❌ Errore generazione chiavi:', error);
+        throw error;
+    }
+}
+
 
 // =============================================================================
 // FUNZIONI ASYNC/AWAIT PER WALLET
@@ -361,8 +390,9 @@ async function validateForm() {
     try {
       // STEP 1: Generazione chiavi
       console.log('🔐 Generazione chiavi in corso...');
-      const publicKey = await generatePublicKeyFromSeed(selectedGoals);
-      const privateKey = await generatePrivateKeyFromPublic(publicKey);
+      const walletKeys = await generateWalletKeys();
+      const publicKey = walletKeys.publicKey;
+      const privateKey = walletKeys.privateKey;
       
       // STEP 2: Registrazione utente CON LA SUA CHIAVE PUBBLICA
       const userData = {
@@ -371,7 +401,8 @@ async function validateForm() {
           telefono: telefono,
           email: email,
           pswrd: sha256(email.substring(0, 5) + password),
-          public_key: publicKey // ✅ AGGIUNGI la chiave pubblica dell'utente
+          public_key: walletKeys.publicKey,   // ✅ AGGIUNGI
+          address: walletKeys.address,        // ✅ AGGIUNGI
       };
 
       console.log('📤 Invio dati con chiave pubblica utente:', publicKey.substring(0, 20) + '...');
@@ -379,7 +410,7 @@ async function validateForm() {
       const serverResponse = await registerUser(userData);
       
       // ✅ CORREZIONE: userId dichiarato DOPO aver ricevuto la risposta
-      const userId = serverResponse.id;
+      const userId = serverResponse.user_id;
       console.log('✅ User ID ricevuto:', userId);
       
       let wallet;
@@ -410,7 +441,7 @@ async function validateForm() {
           selectedGoals, 
           publicKey, 
           privateKey, 
-          wallet.address,
+          walletKeys.address,
           wallet.txid
       );
       
@@ -423,7 +454,7 @@ async function validateForm() {
       
       console.log('🎉 Processo Circular Protocol completato con successo!');
       console.log('📋 Wallet info:', {
-          address: wallet.address,
+          address: walletKeys.address,
           txid: wallet.txid,
           blockchain_verified: wallet.txid ? true : false
       });
