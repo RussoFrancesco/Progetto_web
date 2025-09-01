@@ -5,6 +5,10 @@ include 'getUserFromSession.php';
 include 'getSchedaFromUserID.php';
 include 'jwt.php';
 
+require "../vendor/autoload.php";
+
+use CircularProtocol\Api\CircularProtocolAPI;
+
 // Parsing robusto del PATH_INFO per PHP 8.2
 function getPathInfo(): string {
     $pi = $_SERVER['PATH_INFO'] ?? '';
@@ -114,11 +118,13 @@ if ($method == 'POST' && $table == "allenamenti" && isset($request[0])) {
         
         mysqli_commit($conn);
         echo "ok";
+        exit;
         
     } catch (Exception $e) {
         mysqli_rollback($conn);
         error_log("Errore inserimento allenamento: " . $e->getMessage());
         echo "error";
+        exit;
     }
 }
 
@@ -154,9 +160,11 @@ elseif ($method == 'GET' && $table == "schede") {
         $rows[] = $id_scheda;
         
         echo json_encode($rows);
+        exit;
         
     } catch (mysqli_sql_exception $e) {
         echo "ERROR";
+        exit;
     }
 }
 
@@ -176,9 +184,11 @@ elseif ($method == 'GET' && $table == "allenamenti" && isset($request[0]) && $re
         }
         
         echo json_encode($rows);
+        exit;
         
     } catch (mysqli_sql_exception $e) {
         echo json_encode([]);
+        exit;
     }
 }
 
@@ -226,9 +236,11 @@ elseif ($method == 'GET' && $table == "a_e" && isset($request[0])) {
         }
         
         echo json_encode($rows);
+        exit;
         
     } catch (mysqli_sql_exception $e) {
         echo "ERROR";
+        exit;
     }
 }
 
@@ -244,13 +256,88 @@ elseif ($method == 'GET' && $table == 'user_wallets'){
         
         if ($wallet) {
             echo json_encode(['success' => true, 'wallet' => $wallet]);
+            exit;
         } else {
             echo json_encode(['success' => false, 'message' => 'Wallet not found']);
+            exit;
         }
         
     } catch (mysqli_sql_exception $e) {
         echo json_encode(['success' => false, 'message' => 'Database error']);
+        exit;
     }
 }
+elseif ($method == 'GET' && $table == 'allenamenti_blocks' && isset($request[0])){
+    $id_allenamento = (int)$request[0];
 
+    try {
+        $query = "SELECT txid FROM allenamenti_blocks WHERE id_allenamento=? LIMIT 1";
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, 'i', $id_allenamento);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_assoc($result);
+        
+        if ($row) {
+            $circular = new CircularProtocolAPI();
+            $blockchain = "8a20baa40c45dc5055aeb26197c203e576ef389d9acb171bd62da11dc5ad72b2";
+            $txid = $row['txid'];
+            
+            $blockData = $circular->getTransactionOutcome($blockchain, $txid, 10);
+            error_log("BlockData ricevuto: " . json_encode($blockData));
+            
+            if ($blockData && isset($blockData->Status)) {
+                
+                // ✅ CONTROLLO STATUS E AGGIORNAMENTO BLOCK ID
+                if ($blockData->Status === "Executed" && isset($blockData->BlockID)) {
+                    error_log("Transazione Executed - Aggiornamento BlockID: " . $blockData->BlockID);
+                    
+                    $updateQuery = "UPDATE allenamenti_blocks SET block = ? WHERE id_allenamento = ?";
+                    $updateStmt = mysqli_prepare($conn, $updateQuery);
+                    
+                    if ($updateStmt) {
+                        mysqli_stmt_bind_param($updateStmt, 'si', $blockData->BlockID, $id_allenamento);
+                        
+                        if (mysqli_stmt_execute($updateStmt)) {
+                            error_log("✅ BlockID aggiornato con successo per ID allenamento: " . $id_allenamento);
+                        } else {
+                            error_log("❌ Errore update BlockID: " . mysqli_stmt_error($updateStmt));
+                        }
+                        
+                        mysqli_stmt_close($updateStmt);
+                    } else {
+                        error_log("❌ Errore prepare update query: " . mysqli_error($conn));
+                    }
+                }
+                
+                echo json_encode([
+                    'success' => true, 
+                    'blockData' => $blockData
+                ]);
+                exit;
+                
+            } else {
+                error_log("Risposta blockchain non valida - Status mancante");
+                echo json_encode([
+                    'success' => false, 
+                    'message' => 'Invalid blockchain response - no Status'
+                ]);
+                exit;
+            }
+        } else {
+            echo json_encode([
+                'success' => false, 
+                'message' => 'No blockchain record for this workout'
+            ]);
+            exit;
+        }
+    } catch (Exception $e) {
+        error_log("Eccezione getTransactionOutcome: " . $e->getMessage());
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Error checking transaction status: ' . $e->getMessage()
+        ]);
+        exit;
+    }
+}
 ?>

@@ -94,7 +94,11 @@
                                     </div>
                                     <div class="card-body" id="addome"></div>  
                                 </div>
-                
+                    <div class="text-center mt-4">
+                        <button id="download-certificate" class="btn btn-primary">
+                            <i class="fas fa-download"></i> Scarica Certificato
+                        </button>
+                    </div>
 
                     
                 </div>
@@ -105,6 +109,7 @@
     <!-- Libreria per funzioni standard -->
     <script defer src="js/home.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
     <!-- Script della pagina -->
     <script defer src="js/mostra_allenamento.js"></script>
     
