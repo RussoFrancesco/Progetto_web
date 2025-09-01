@@ -120,27 +120,29 @@ function allenamento(){
 }
 
 function inserimento_allenamento() {
-    const today=new Date();
+    const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Aggiunge lo zero iniziale se il mese è inferiore a 10 +1 perchè parte da 0
-    const day = String(today.getDate()).padStart(2, '0'); // Aggiunge lo zero iniziale se il giorno è inferiore a 10
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
     const formattedDate = `${year}-${month}-${day}`;
-
-    var req = new XMLHttpRequest();
-
-    req.onload = function(){
-        if(this.responseText == "Denied"){
-            invalid_token();
-        }
-        else if(this.responseText == 'ok'){
+    
+    json_pesi["data"] = formattedDate;
+    
+    // ✅ SOLO CERTIFICAZIONE - già salva tutto nel database
+    richiesta_certificato(json_pesi)
+        .then((result) => {
+            // ✅ La richiesta_certificato() già salva tutto nel database
+            alert("Allenamento certificato e salvato correttamente!");
             window.location.href = "allenamenti.php";
-        }
-    }
-
-    req.open('POST', "php/logicaAllenamento.php/allenamenti/"+formattedDate, true);
-    req.setRequestHeader('Token', token);
-    req.send(JSON.stringify(json_pesi));
+        })
+        .catch((error) => {
+            alert("Certificazione fallita, allenamento non salvato: " + error);
+            console.error("Errore inserimento allenamento:", error);
+        });
 }
+
+
+
 
         
 function scheda(esercizi) {
@@ -422,3 +424,118 @@ function update_timer(timerData, totalSeconds) {
         }
     }
 }
+
+
+
+async function richiesta_certificato(payload) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // ✅ PARAMETRI INIZIALI (seguendo la documentazione)
+            const blockchain = "8a20baa40c45dc5055aeb26197c203e576ef389d9acb171bd62da11dc5ad72b2";
+            const circular = CircularProtocolAPI;
+
+            // ✅ CHIEDI LA CHIAVE PRIVATA
+            const privateKey = prompt("Inserisci la tua chiave privata per certificare l'allenamento:");
+            if (!privateKey) {
+                reject("Chiave privata richiesta!");
+                return;
+            }
+
+            // ✅ OTTIENI INDIRIZZO WALLET
+            const response = await fetch('php/logicaAllenamento.php/user_wallets', {
+                headers: { 'Token': token }
+            });
+            const walletData = await response.json();
+            
+            if (!walletData.success || !walletData.wallet || !walletData.wallet.address) {
+                throw new Error('Indirizzo wallet non trovato');
+            }
+            
+            const address = walletData.wallet.address;
+
+            // ✅ APPLICA hexFix COME NELLA DOCUMENTAZIONE
+            const blockchainFixed = circular.hexFix(blockchain);
+            const from = circular.hexFix(address);
+            const to = circular.hexFix(address); // Stesso indirizzo per certificati
+            const pk = circular.hexFix(privateKey.replace('0x', ''));
+
+            // ✅ TIMESTAMP E NONCE (seguendo la documentazione)
+            const timestamp = circular.getFormattedTimestamp();
+            const nonceResult = await circular.getWalletNonce(blockchainFixed, from);
+            
+            if (!nonceResult || nonceResult.Result !== 200) {
+                throw new Error('Errore nel recupero del nonce');
+            }
+            
+            const nonce = nonceResult.Response.Nonce + 1;
+
+            // ✅ PAYLOAD HEX
+            const hexPayload = circular.stringToHex(JSON.stringify(payload));
+
+            // ✅ CALCOLA ID ESATTAMENTE COME NELLA DOCUMENTAZIONE
+            const idString = blockchainFixed + from + to + hexPayload + nonce + timestamp;
+            const hashedID = sha256(idString);
+
+            // ✅ FIRMA (seguendo la documentazione)
+            const signature = circular.signMessage(hashedID, pk);
+
+            // ✅ TIPO TRANSAZIONE
+            const type = "C_TYPE_CERTIFICATE";
+
+            // ✅ INVIA TRANSAZIONE (metodo della documentazione JavaScript)
+            const result = await circular.sendTransaction(
+                hashedID,        // ID con hash
+                from,           // From address (dopo hexFix)
+                to,             // To address (dopo hexFix)
+                timestamp,      // Timestamp formato CircularProtocol
+                type,           // Tipo transazione
+                hexPayload,     // Payload in hex
+                nonce,          // Nonce + 1
+                signature,      // Firma del messaggio
+                blockchainFixed // Blockchain (dopo hexFix)
+            );
+
+            console.log("Risultato transazione:", result);
+
+            if (result.Result == 200) {
+                const txid = result.Response.TxID;
+
+                // ✅ SALVA ALLENAMENTO + TXID IN UNA SOLA RICHIESTA
+                const combinedData = {
+                    allenamento: payload,
+                    txid: txid,
+                    block_hash: hashedID
+                };
+
+                const saveReq = new XMLHttpRequest();
+                saveReq.onload = function() {
+                    if (this.responseText == "ok") {
+                        alert("Allenamento certificato e salvato correttamente. ID transazione: " + txid);
+                        resolve({ success: true, txid: txid });
+                    } else {
+                        reject("Errore salvataggio nel database");
+                    }
+                };
+                
+                saveReq.onerror = function() {
+                    reject("Errore di connessione al database");
+                };
+
+                saveReq.open('POST', "php/logicaAllenamento.php/allenamenti/" + payload.data, true);
+                saveReq.setRequestHeader('Token', token);
+                saveReq.setRequestHeader('Content-Type', 'application/json');
+                saveReq.send(JSON.stringify(combinedData));
+
+            } else {
+                throw new Error("Errore transazione blockchain: " + (result.Response || result.Result));
+            }
+
+        } catch (error) {
+            console.error("Errore certificazione:", error);
+            reject(error.message || error);
+        }
+    });
+}
+
+
+

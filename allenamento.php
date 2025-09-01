@@ -106,6 +106,11 @@
     <!-- Libreria per funzioni standard -->
     <script defer src="js/home.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/elliptic/6.5.4/elliptic.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.9.0/build/sha256.min.js"></script>
+    <script src="js/CircularProtocolAPI.js"></script>
+
     <!-- Script della pagina -->
     <script defer src="js/allenamenti.js"></script>
     

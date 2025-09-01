@@ -26,6 +26,7 @@ function getPathInfo(): string {
 $method = $_SERVER['REQUEST_METHOD'];
 $pathInfo = getPathInfo();
 $segments = array_values(array_filter(explode('/', trim($pathInfo, '/'))));
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 // Estrai tabella dal primo segmento
 $table = isset($segments[0]) ? preg_replace('/[^a-z0-9_]+/i', '', $segments[0]) : '';
@@ -60,6 +61,8 @@ if ($method == 'POST' && $table == "allenamenti" && isset($request[0])) {
     }
     
     try {
+        mysqli_begin_transaction($conn);
+        
         // Inserimento allenamento
         $query = "INSERT INTO allenamenti (`data`, `user`, `scheda`) VALUES (?,?,?)";
         $stmt = mysqli_prepare($conn, $query);
@@ -68,26 +71,60 @@ if ($method == 'POST' && $table == "allenamenti" && isset($request[0])) {
         
         $newAllenamentoID = mysqli_insert_id($conn);
         
-        // Decodifica JSON input per esercizi
+        // Decodifica JSON input
         $input = json_decode(file_get_contents('php://input'), true);
         
-        if (is_array($input)) {
-            // Inserimento esercizi
+        // ✅ USA LA CHIAVE 'allenamento' PER OTTENERE GLI ESERCIZI
+        $esercizi = $input['allenamento'] ?? [];
+        
+        if (is_array($esercizi)) {
             $query = "INSERT INTO `a_e`(`allenamento`, `esercizio`, `peso`) VALUES (?,?,?)";
             
-            foreach($input as $esercizio => $peso) {
-                $stmt = mysqli_prepare($conn, $query);
-                mysqli_stmt_bind_param($stmt, "isi", $newAllenamentoID, $esercizio, $peso);
-                mysqli_stmt_execute($stmt);
+            // ✅ LOOP SULL'ARRAY DEGLI ESERCIZI, NON SU TUTTO L'INPUT
+            foreach($esercizi as $esercizio => $peso) {
+                if ($esercizio !== 'data') { // Escludi solo il campo data interno
+                    // Verifica se l'esercizio esiste
+                    $check_query = "SELECT nome FROM esercizi WHERE nome = ?";
+                    $check_stmt = mysqli_prepare($conn, $check_query);
+                    mysqli_stmt_bind_param($check_stmt, "s", $esercizio);
+                    mysqli_stmt_execute($check_stmt);
+                    $check_result = mysqli_stmt_get_result($check_stmt);
+                    
+                    if (mysqli_num_rows($check_result) == 0) {
+                        throw new Exception("Esercizio '$esercizio' non esiste nella tabella esercizi");
+                    }
+                    
+                    // Se esiste, inserisci
+                    $stmt = mysqli_prepare($conn, $query);
+                    mysqli_stmt_bind_param($stmt, "isi", $newAllenamentoID, $esercizio, $peso);
+                    mysqli_stmt_execute($stmt);
+                }
+            }
+            
+            // ✅ INSERIMENTO TRANSAZIONE BLOCKCHAIN
+            $txid = $input['txid'] ?? null;
+            
+            if ($txid) {
+                $query2 = "INSERT INTO allenamenti_blocks (id_allenamento, txid) VALUES (?, ?)";
+                $stmt2 = mysqli_prepare($conn, $query2);
+                mysqli_stmt_bind_param($stmt2, "is", $newAllenamentoID, $txid);
+                mysqli_stmt_execute($stmt2);
             }
         }
         
+        mysqli_commit($conn);
         echo "ok";
         
-    } catch (mysqli_sql_exception $e) {
+    } catch (Exception $e) {
+        mysqli_rollback($conn);
+        error_log("Errore inserimento allenamento: " . $e->getMessage());
         echo "error";
     }
 }
+
+
+
+
 
 // GET /schede - Recupero esercizi della scheda attiva
 elseif ($method == 'GET' && $table == "schede") {
@@ -194,5 +231,47 @@ elseif ($method == 'GET' && $table == "a_e" && isset($request[0])) {
         echo "ERROR";
     }
 }
+
+elseif ($method == 'GET' && $table == 'user_wallets'){
+    try {
+        $query = "SELECT address FROM user_wallets WHERE user_id=? LIMIT 1";
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, 'i', $user);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        
+        $wallet = mysqli_fetch_assoc($result);
+        
+        if ($wallet) {
+            echo json_encode(['success' => true, 'wallet' => $wallet]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Wallet not found']);
+        }
+        
+    } catch (mysqli_sql_exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Database error']);
+    }
+}
+
+/*elseif ($method == 'POST' && $table == 'allenamenti_blocks' && isset($request[0])){
+    $txid = $request[0];
+    $query = "SELECT id FROM allenamenti WHERE user=? ORDER BY id DESC LIMIT 1";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, 'i', $user);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+
+    $id_allenamento = $row['id'];
+    try {
+        $query = "INSERT INTO allenamenti_blocks (`id_allenamento`, `txid`) VALUES (?,?)";
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "is", $id_allenamento, $txid);
+        mysqli_stmt_execute($stmt);
+        echo "ok";
+    } catch (mysqli_sql_exception $e) {
+        echo "error";
+    }
+}*/
 
 ?>
