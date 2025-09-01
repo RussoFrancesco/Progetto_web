@@ -253,25 +253,4 @@ elseif ($method == 'GET' && $table == 'user_wallets'){
     }
 }
 
-/*elseif ($method == 'POST' && $table == 'allenamenti_blocks' && isset($request[0])){
-    $txid = $request[0];
-    $query = "SELECT id FROM allenamenti WHERE user=? ORDER BY id DESC LIMIT 1";
-    $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, 'i', $user);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    $row = mysqli_fetch_assoc($result);
-
-    $id_allenamento = $row['id'];
-    try {
-        $query = "INSERT INTO allenamenti_blocks (`id_allenamento`, `txid`) VALUES (?,?)";
-        $stmt = mysqli_prepare($conn, $query);
-        mysqli_stmt_bind_param($stmt, "is", $id_allenamento, $txid);
-        mysqli_stmt_execute($stmt);
-        echo "ok";
-    } catch (mysqli_sql_exception $e) {
-        echo "error";
-    }
-}*/
-
 ?>

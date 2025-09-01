@@ -435,11 +435,11 @@ async function richiesta_certificato(payload) {
             const circular = CircularProtocolAPI;
 
             // ✅ CHIEDI LA CHIAVE PRIVATA
-            const privateKey = prompt("Inserisci la tua chiave privata per certificare l'allenamento:");
+            /*const privateKey = prompt("Inserisci la tua chiave privata per certificare l'allenamento:");
             if (!privateKey) {
                 reject("Chiave privata richiesta!");
                 return;
-            }
+            }*/
 
             // ✅ OTTIENI INDIRIZZO WALLET
             const response = await fetch('php/logicaAllenamento.php/user_wallets', {
@@ -457,7 +457,7 @@ async function richiesta_certificato(payload) {
             const blockchainFixed = circular.hexFix(blockchain);
             const from = circular.hexFix(address);
             const to = circular.hexFix(address); // Stesso indirizzo per certificati
-            const pk = circular.hexFix(privateKey.replace('0x', ''));
+            //const pk = circular.hexFix(privateKey.replace('0x', ''));
 
             // ✅ TIMESTAMP E NONCE (seguendo la documentazione)
             const timestamp = circular.getFormattedTimestamp();
@@ -477,10 +477,16 @@ async function richiesta_certificato(payload) {
             const hashedID = sha256(idString);
 
             // ✅ FIRMA (seguendo la documentazione)
-            const signature = circular.signMessage(hashedID, pk);
+            //const signature = circular.signMessage(hashedID, pk);
 
             // ✅ TIPO TRANSAZIONE
             const type = "C_TYPE_CERTIFICATE";
+
+            const signature = prompt(`Inserisci la firma del messaggio ${hashedID} generata esternamente da https://circularlabs.io/nero_testnet:`);
+            if (!signature) {
+                reject("Firma del messaggio richiesta!");
+                return;
+            }
 
             // ✅ INVIA TRANSAZIONE (metodo della documentazione JavaScript)
             const result = await circular.sendTransaction(
