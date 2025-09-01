@@ -98,19 +98,23 @@ async function generateWalletKeys() {
     try {
         showProgress('Generazione chiavi crittografiche...', 20);
         
-        // ✅ Genera chiave pubblica con elliptic.js
-        const publicKey = await generatePublicKeyFromSeed(selectedWords);
+        // ✅ IDENTICO AL CODICE DEL COLLEGA
+        const EC = elliptic.ec;
+        const ec = new EC('secp256k1');
+        const hash = sha256.sha256.array(selectedWords.join(' '));
+        const keyPair = ec.keyFromPrivate(hash);
         
-        // ✅ Genera chiave privata con elliptic.js  
-        const privateKey = await generatePrivateKeyFromPublic(publicKey);
+        // ✅ ESATTAMENTE COME IL COLLEGA
+        const publicKey = keyPair.getPublic(false, 'hex');
+        const privateKey = keyPair.getPrivate('hex');
         
-        // ✅ Calcola indirizzo con SHA256 della chiave pubblica
-        const address = calculateAddressFromPublicKey(publicKey);
+        // ✅ CALCOLA INDIRIZZO ESATTAMENTE COME IL COLLEGA (SOLO SHA256)
+        const address = sha256.sha256(publicKey);
         
-        console.log('✅ Chiavi generate:');
+        console.log('✅ Chiavi generate (identiche al collega):');
         console.log('- Public Key:', publicKey);
         console.log('- Private Key:', privateKey);
-        console.log('- Address:', address);
+        console.log('- Address (SHA256 semplice):', address);
         
         return {
             publicKey: publicKey,
@@ -123,6 +127,8 @@ async function generateWalletKeys() {
         throw error;
     }
 }
+
+
 
 
 // =============================================================================
@@ -306,20 +312,22 @@ function downloadWalletFile(seedWords, publicKey, privateKey, walletAddress, txi
   
   const seedPhrase = seedWords.join(' ');
   const walletContent = `BLOCKCHAIN WALLET INFO
-                          ========================
+========================
 
-                          Blockchain: Circular Protocol
-                          Network: 0x8a20baa40c45dc5055aeb26197c203e576ef389d9acb171bd62da11dc5ad72b2
-                          Seed Phrase: ${seedPhrase}
-                          Public Key: ${publicKey}
-                          Private Key: ${privateKey}
-                          Wallet Address: ${walletAddress}
+Blockchain: Circular Protocol
+Network: 0x8a20baa40c45dc5055aeb26197c203e576ef389d9acb171bd62da11dc5ad72b2
+Seed Phrase: ${seedPhrase}
+Public Key: ${publicKey}
+Private Key: ${privateKey}
+Wallet Address: ${walletAddress}
 
-                          ========================
-                          IMPORTANTE: Conserva questo file in un luogo sicuro!
-                          Non condividere mai la tua chiave privata o seed phrase.
-                          Data creazione: ${new Date().toLocaleString('it-IT')}
-                          `;
+========================
+IMPORTANTE: Conserva questo file in un luogo sicuro!
+Non condividere mai la tua chiave privata o seed phrase.
+Data creazione: ${new Date().toLocaleString('it-IT')}
+Vai su https://circularlabs.io/nero_testnet# per gestire il tuo wallet.
+Vai su https://circularprotocol.io/faucet per ottenere fondi di test.
+`;
 
   const blob = new Blob([walletContent], { type: 'text/plain;charset=utf-8' });
   const url = window.URL.createObjectURL(blob);
@@ -460,9 +468,9 @@ async function validateForm() {
       });
       
       // Redirect dopo successo
-      setTimeout(() => {
+      /*setTimeout(() => {
           window.location.href = "login.html";
-      }, 3000);
+      }, 3000);*/
 
   } catch (error) {
       // ✅ ERROR HANDLING
