@@ -283,20 +283,21 @@ elseif ($method == 'GET' && $table == 'allenamenti_blocks' && isset($request[0])
             $blockchain = "8a20baa40c45dc5055aeb26197c203e576ef389d9acb171bd62da11dc5ad72b2";
             $txid = $row['txid'];
             
-            $blockData = $circular->getTransactionOutcome($blockchain, $txid, 10);
+            $blockData = $circular->getTransactionOutcome($blockchain, $txid, 10000);
             error_log("BlockData ricevuto: " . json_encode($blockData));
             
             if ($blockData && isset($blockData->Status)) {
                 
-                // ✅ CONTROLLO STATUS E AGGIORNAMENTO BLOCK ID
+                // ✅ CASO: Transazione Eseguita con successo
                 if ($blockData->Status === "Executed" && isset($blockData->BlockID)) {
                     error_log("Transazione Executed - Aggiornamento BlockID: " . $blockData->BlockID);
                     
-                    $updateQuery = "UPDATE allenamenti_blocks SET block = ? WHERE id_allenamento = ?";
+                    $updateQuery = "UPDATE allenamenti_blocks SET block = ?, outcome=? WHERE id_allenamento = ?";
                     $updateStmt = mysqli_prepare($conn, $updateQuery);
+                    $outcome_value = 1; // Successo
                     
                     if ($updateStmt) {
-                        mysqli_stmt_bind_param($updateStmt, 'si', $blockData->BlockID, $id_allenamento);
+                        mysqli_stmt_bind_param($updateStmt, 'sii', $blockData->BlockID, $outcome_value, $id_allenamento);
                         
                         if (mysqli_stmt_execute($updateStmt)) {
                             error_log("✅ BlockID aggiornato con successo per ID allenamento: " . $id_allenamento);
@@ -308,26 +309,66 @@ elseif ($method == 'GET' && $table == 'allenamenti_blocks' && isset($request[0])
                     } else {
                         error_log("❌ Errore prepare update query: " . mysqli_error($conn));
                     }
+                    
+                    // Ritorna successo per generare certificato
+                    echo json_encode([
+                        'success' => true, 
+                        'blockData' => $blockData
+                    ]);
+                    exit;
                 }
                 
-                echo json_encode([
-                    'success' => true, 
-                    'blockData' => $blockData
-                ]);
-                exit;
+                // ❌ CASO: Transazione Rifiutata - CERTIFICATO NON SCARICABILE
+                elseif (strpos($blockData->Status, "Rejected") !== false) {
+                    error_log("Transazione Rejected - Status: " . $blockData->Status);
+                    
+                    // Aggiorna outcome a 0 (fallimento)
+                    $updateQuery2 = "UPDATE allenamenti_blocks SET outcome=? WHERE id_allenamento = ?";
+                    $outcome_value = 0;
+                    $updateStmt2 = mysqli_prepare($conn, $updateQuery2);
+                    
+                    if ($updateStmt2) {
+                        mysqli_stmt_bind_param($updateStmt2, 'ii', $outcome_value, $id_allenamento);
+                        
+                        if (!mysqli_stmt_execute($updateStmt2)) {
+                            error_log("❌ Errore update outcome: " . mysqli_stmt_error($updateStmt2));
+                        }
+                        
+                        mysqli_stmt_close($updateStmt2);
+                    }
+                    
+                    // Ritorna errore: certificato non scaricabile
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'Il certificato non è possibile scaricarlo. Transazione rifiutata per saldo insufficiente.',
+                        'status' => 'rejected'
+                    ]);
+                    exit;
+                }
+                
+                // ⏳ CASO: Transazione Pending o altri stati
+                else {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'Transazione ancora in elaborazione. Riprova più tardi.',
+                        'status' => 'pending',
+                        'blockData' => $blockData
+                    ]);
+                    exit;
+                }
                 
             } else {
                 error_log("Risposta blockchain non valida - Status mancante");
                 echo json_encode([
                     'success' => false, 
-                    'message' => 'Invalid blockchain response - no Status'
+                    'message' => 'Errore nella verifica della transazione blockchain'
                 ]);
                 exit;
             }
         } else {
             echo json_encode([
                 'success' => false, 
-                'message' => 'No blockchain record for this workout'
+                'message' => 'Nessun record blockchain trovato per questo allenamento'
             ]);
             exit;
         }
@@ -335,9 +376,10 @@ elseif ($method == 'GET' && $table == 'allenamenti_blocks' && isset($request[0])
         error_log("Eccezione getTransactionOutcome: " . $e->getMessage());
         echo json_encode([
             'success' => false, 
-            'message' => 'Error checking transaction status: ' . $e->getMessage()
+            'message' => 'Errore nella verifica dello stato della transazione: ' . $e->getMessage()
         ]);
         exit;
     }
 }
+
 ?>

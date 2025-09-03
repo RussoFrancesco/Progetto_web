@@ -29,7 +29,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <?php include'sidebar.php';?>
+        <?php include 'sidebar.php';?>
         <!-- End of Sidebar -->
         
 

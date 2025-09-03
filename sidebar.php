@@ -48,4 +48,10 @@
                 <span>Esercizi</span>
                 </a>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="traguardi.php">
+                <i class="fa-regular fa-gem"></i>
+                <span>NFT</span>
+                </a>
         </ul>
