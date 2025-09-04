@@ -4,22 +4,15 @@ require "../vendor/autoload.php";
 
 use CircularProtocol\Api\CircularProtocolAPI;
 
-// Gestione CORS e errori
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit(0);
-}
-
-// Abilita errori per debug
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 
-// Parsing PATH_INFO
 function getPathInfo(): string {
     $pi = $_SERVER['PATH_INFO'] ?? '';
     if ($pi !== '' && $pi !== '/') return $pi;
@@ -59,23 +52,11 @@ if (!is_array($input)) {
     exit(json_encode(['error' => 'Invalid or missing JSON input']));
 }
 
-// Inizializza Circular API
-$circular = null;
+$circular = new CircularProtocolAPI();
 $blockchain = "0x8a20baa40c45dc5055aeb26197c203e576ef389d9acb171bd62da11dc5ad72b2";
 
-if ($table === 'users') {
-    try {
-        $circular = new CircularProtocolAPI();
-    } catch (Throwable $e) {
-        error_log("Circular API initialization failed: " . $e->getMessage());
-        $circular = null;
-    }
-}
-
-// ✅ ESTRAI DATI WALLET GENERATI DAL JAVASCRIPT
 $userPublicKey = null;
 $userAddress = null;
-$userPrivateKey = null; // Solo per debug/log, non salvare!
 
 $publicKeyIndex = array_search('public_key', array_keys($input));
 $addressIndex = array_search('address', array_keys($input));
@@ -93,13 +74,6 @@ if ($addressIndex !== false) {
     error_log("User address received: " . $userAddress);
 }
 
-if ($privateKeyIndex !== false) {
-    $userPrivateKey = $input['private_key'];
-    unset($input['private_key']);
-    error_log("User private key received: " . substr($userPrivateKey, 0, 10) . "... (length: " . strlen($userPrivateKey) . ")");
-}
-
-// Processa input per query utente
 $columns = array_map(function($key) {
     return preg_replace('/[^a-z0-9_]+/i','', $key);
 }, array_keys($input));
@@ -109,7 +83,6 @@ $values = array_map(function ($value) use ($conn) {
     return mysqli_real_escape_string($conn, (string)$value);
 }, array_values($input));
 
-// Costruisci SET clause
 $set = '';
 for ($i = 0; $i < count($columns); $i++) {
     $set .= ($i > 0 ? ',' : '') . '`' . $columns[$i] . '`=';
@@ -122,10 +95,8 @@ if (empty($set)) {
 }
 
 try {
-    // INIZIO TRANSAZIONE
     mysqli_begin_transaction($conn);
     
-    // Inserimento utente
     $sql = "INSERT INTO `$table` SET $set";
     $result = mysqli_query($conn, $sql);
     
@@ -140,12 +111,11 @@ try {
     }
     
     $insertId = mysqli_insert_id($conn);
-    $response = ['success' => true, 'user_id' => $insertId]; // ✅ Cambiato da 'id' a 'user_id'
+    $response = ['success' => true, 'user_id' => $insertId];
     
     error_log("User inserted with ID: $insertId");
     
-    // ✅ GESTIONE WALLET CON ADDRESS GENERATO DAL JAVASCRIPT
-    if ($table === 'users' && $circular !== null) {
+    if ($table === 'users') {
         try {
             if (!$userPublicKey || !$userAddress) {
                 error_log("ERROR: User public key or address missing");
@@ -156,13 +126,11 @@ try {
                 error_log("- Public Key: " . substr($userPublicKey, 0, 30) . "...");
                 error_log("- Address: " . $userAddress);
                 
-                // ✅ REGISTRA IL WALLET CON LA CHIAVE PUBBLICA
                 $walletResult = $circular->registerWallet($blockchain, $userPublicKey);
                 error_log("Wallet registration response: " . json_encode($walletResult));
                 
-                // ✅ VERIFICA SUCCESSO REGISTRAZIONE
                 if (isset($walletResult->Result) && $walletResult->Result == 200) {
-                    // Estrai TXID dalla registrazione
+
                     $txid = null;
                     if (isset($walletResult->Response->TxID)) {
                         $txid = $walletResult->Response->TxID;
@@ -172,11 +140,10 @@ try {
                     
                     $timestamp = $walletResult->Response->Timestamp ?? date('Y-m-d H:i:s');
                     
-                    error_log("✅ Wallet registered successfully on blockchain");
+                    error_log("Wallet registered successfully on blockchain");
                     error_log("- TxID: " . $txid);
                     error_log("- Timestamp: " . $timestamp);
                     
-                    // ✅ SALVA NEL DATABASE CON L'ADDRESS GENERATO DAL JAVASCRIPT
                     $walletSql = "INSERT INTO user_wallets (user_id, address, txid, created_at) VALUES (?, ?, ?, ?)";
                     $stmt = mysqli_prepare($conn, $walletSql);
                     
@@ -187,12 +154,12 @@ try {
                             $walletId = mysqli_insert_id($conn);
                             $response['wallet'] = [
                                 'id' => $walletId,
-                                'address' => $userAddress, // ✅ USA L'ADDRESS GENERATO DAL JAVASCRIPT
+                                'address' => $userAddress,
                                 'txid' => $txid,
                                 'created_at' => $timestamp
                             ];
-                            error_log("✅ Wallet saved successfully with ID: $walletId");
-                            error_log("✅ Using JavaScript-generated address: " . $userAddress);
+                            error_log("Wallet saved successfully with ID: $walletId");
+                            error_log("Using JavaScript-generated address: " . $userAddress);
                         } else {
                             error_log("Failed to save wallet: " . mysqli_stmt_error($stmt));
                             $response['wallet_error'] = 'Failed to save wallet to database';
@@ -227,7 +194,6 @@ try {
         $response['wallet_error'] = 'Circular Protocol API not available';
     }
     
-    // COMMIT TRANSAZIONE
     mysqli_commit($conn);
     
 } catch (Exception $e) {

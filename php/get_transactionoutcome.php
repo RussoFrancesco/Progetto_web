@@ -16,12 +16,11 @@ try {
         $found = true;
         $txid = $row['txid'];
         
-        // Usa getTransactionOutcome come nell'altro script
         $blockData = $circular->getTransactionOutcome($blockchain, $txid, 10000);
         
         if ($blockData && isset($blockData->Status)) {
             
-            // ✅ CASO: Transazione Eseguita con successo
+            //Transazione Eseguita con successo
             if ($blockData->Status === "Executed" && isset($blockData->BlockID)) {
                 $transaction_outcome = 1;
                 $updateQuery = "UPDATE allenamenti_blocks SET outcome = ?, block = ? WHERE txid = ?";
@@ -33,7 +32,7 @@ try {
                 error_log("Updated txid: " . $txid . " with status: Executed, BlockID: " . $blockData->BlockID);
             }
             
-            // ❌ CASO: Transazione Rifiutata
+            //Transazione Rifiutata
             elseif (strpos($blockData->Status, "Rejected") !== false) {
                 $transaction_outcome = 0;
                 $updateQuery = "UPDATE allenamenti_blocks SET outcome = ? WHERE txid = ?";
@@ -45,7 +44,7 @@ try {
                 error_log("Updated txid: " . $txid . " with status: Rejected - " . $blockData->Status);
             }
             
-            // ⏳ CASO: Transazione Pending o altri stati - NON aggiornare
+            //Transazione Pending o altri stati - NON aggiornare
             else {
                 error_log("⏳ Txid: " . $txid . " still pending - Status: " . $blockData->Status);
             }

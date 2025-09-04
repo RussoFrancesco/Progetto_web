@@ -25,7 +25,6 @@ try {
         $txid = $row['txid'];
         $txDetails = $circular->getTransactionOutcome($blockchain, $txid, 20);
 
-        // ✅ Nuova struttura JSON: dati direttamente nella root
         if ($txDetails && isset($txDetails->Status) && $txDetails->Status === 'Executed') {
             $payloadHex = $txDetails->Payload ?? null;
             

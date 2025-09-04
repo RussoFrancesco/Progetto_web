@@ -430,18 +430,9 @@ function update_timer(timerData, totalSeconds) {
 async function richiesta_certificato(payload) {
     return new Promise(async (resolve, reject) => {
         try {
-            // ✅ PARAMETRI INIZIALI (seguendo la documentazione)
             const blockchain = "8a20baa40c45dc5055aeb26197c203e576ef389d9acb171bd62da11dc5ad72b2";
             const circular = CircularProtocolAPI;
 
-            // ✅ CHIEDI LA CHIAVE PRIVATA
-            /*const privateKey = prompt("Inserisci la tua chiave privata per certificare l'allenamento:");
-            if (!privateKey) {
-                reject("Chiave privata richiesta!");
-                return;
-            }*/
-
-            // ✅ OTTIENI INDIRIZZO WALLET
             const response = await fetch('php/logicaAllenamento.php/user_wallets', {
                 headers: { 'Token': token }
             });
@@ -453,13 +444,10 @@ async function richiesta_certificato(payload) {
             
             const address = walletData.wallet.address;
 
-            // ✅ APPLICA hexFix COME NELLA DOCUMENTAZIONE
             const blockchainFixed = circular.hexFix(blockchain);
             const from = circular.hexFix(address);
-            const to = circular.hexFix(address); // Stesso indirizzo per certificati
-            //const pk = circular.hexFix(privateKey.replace('0x', ''));
+            const to = circular.hexFix(address); 
 
-            // ✅ TIMESTAMP E NONCE (seguendo la documentazione)
             const timestamp = circular.getFormattedTimestamp();
             const nonceResult = await circular.getWalletNonce(blockchainFixed, from);
             
@@ -469,17 +457,11 @@ async function richiesta_certificato(payload) {
             
             const nonce = nonceResult.Response.Nonce + 1;
 
-            // ✅ PAYLOAD HEX
             const hexPayload = circular.stringToHex(JSON.stringify(payload));
 
-            // ✅ CALCOLA ID ESATTAMENTE COME NELLA DOCUMENTAZIONE
             const idString = blockchainFixed + from + to + hexPayload + nonce + timestamp;
             const hashedID = sha256(idString);
 
-            // ✅ FIRMA (seguendo la documentazione)
-            //const signature = circular.signMessage(hashedID, pk);
-
-            // ✅ TIPO TRANSAZIONE
             const type = "C_TYPE_CERTIFICATE";
 
             const signature = prompt(`Inserisci la firma del messaggio ${hashedID} generata esternamente da https://circularlabs.io/nero_testnet:`);
@@ -488,9 +470,8 @@ async function richiesta_certificato(payload) {
                 return;
             }
 
-            // ✅ INVIA TRANSAZIONE (metodo della documentazione JavaScript)
             const result = await circular.sendTransaction(
-                hashedID,        // ID con hash
+                hashedID,       // ID con hash
                 from,           // From address (dopo hexFix)
                 to,             // To address (dopo hexFix)
                 timestamp,      // Timestamp formato CircularProtocol
@@ -506,7 +487,6 @@ async function richiesta_certificato(payload) {
             if (result.Result == 200) {
                 const txid = result.Response.TxID;
 
-                // ✅ SALVA ALLENAMENTO + TXID IN UNA SOLA RICHIESTA
                 const combinedData = {
                     allenamento: payload,
                     txid: txid,

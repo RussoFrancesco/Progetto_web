@@ -1,44 +1,32 @@
-// Variabili globali
+
 let allNFTs = [];
 let filteredNFTs = [];
 let currentView = 'grid';
 let currentSort = 'date';
 let sortDirection = 'desc';
 
-// Inizializzazione pagina
 $(document).ready(function() {
-    home(); // Per la topbar
+    home();
     initializePage();
     setupEventHandlers();
     loadNFTs();
 });
 
-/**
- * Inizializza la pagina con le configurazioni base
- */
+
 function initializePage() {
-    // Nasconde gli stati di errore all'avvio
     $('#emptyState').addClass('d-none');
     $('#noResultsState').addClass('d-none');
     
-    // Imposta la vista di default
     updateViewButtons();
 }
 
-/**
- * Configura tutti gli event handlers
- */
 function setupEventHandlers() {
-    // Click su card NFT per mostrare dettagli
     $(document).on('click', '.nft-card', function() {
         const nftId = $(this).data('nft-id');
         showNFTDetails(nftId);
     });
 }
 
-/**
- * Carica gli NFT dal database
- */
 function loadNFTs() {
     showLoadingState();
     
@@ -47,7 +35,7 @@ function loadNFTs() {
         method: 'GET',
         dataType: 'json',
         xhrFields: { 
-            withCredentials: true  // 🚩 IMPORTANTE: Invia i cookie di sessione
+            withCredentials: true
         },
         success: function(response) {
             console.log('Risposta NFT:', response);
@@ -69,9 +57,6 @@ function loadNFTs() {
     });
 }
 
-/**
- * Visualizza gli NFT nella griglia
- */
 function displayNFTs() {
     const container = $('#nftContainer');
     container.empty();
@@ -88,15 +73,11 @@ function displayNFTs() {
         container.append(nftCard);
     });
 
-    // Anima le card quando vengono aggiunte
     container.children().addClass('animate__animated animate__fadeInUp');
 }
 
-/**
- * Crea una singola card NFT
- */
 function createNFTCard(nft) {
-    // ✅ Ora usa sempre il nome dell'asset dal payload decodificato
+
     const nftName = nft.asset || 'NFT Senza Nome';
     const nftImage = nft.url;
     const amount = nft.amount || '1';
@@ -153,10 +134,6 @@ function createNFTCard(nft) {
 }
 
 
-
-/**
- * Aggiorna le statistiche NFT
- */
 function updateStats() {
     const totalNFTs = allNFTs.length;
     const totalAmount = allNFTs.reduce((sum, nft) => sum + parseInt(nft.amount || 1), 0);
@@ -169,9 +146,6 @@ function updateStats() {
     $('#workoutMilestones').text(workoutMilestones);
 }
 
-/**
- * Mostra dettagli NFT completi
- */
 function showNFTDetails(txid) {
     const nft = allNFTs.find(n => n.txid === txid);
     if (nft) {
@@ -187,9 +161,6 @@ function showNFTDetails(txid) {
     }
 }
 
-/**
- * Helper: formatta la data nel formato DD/MM/YYYY
- */
 function formatDate(dateString) {
     const date = new Date(dateString);
     if (isNaN(date)) return 'Data non disponibile';
@@ -197,51 +168,19 @@ function formatDate(dateString) {
     return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth()+1).toString().padStart(2, '0')}/${date.getFullYear()}`;
 }
 
-/**
- * Mostra lo stato di caricamento
- */
 function showLoadingState() {
     $('#loadingState').removeClass('d-none');
     $('#emptyState').addClass('d-none');
     $('#noResultsState').addClass('d-none');
 }
 
-/**
- * Nasconde lo stato di caricamento
- */
 function hideLoadingState() {
     $('#loadingState').addClass('d-none');
 }
 
-/**
- * Mostra lo stato vuoto (nessun NFT)
- */
 function showEmptyState() {
     $('#loadingState').addClass('d-none');
     $('#emptyState').removeClass('d-none');
     $('#noResultsState').addClass('d-none');
 }
 
-/**
- * Aggiorna le statistiche NFT
- */
-
-/**
- * Visualizza NFT su blockchain explorer
- */
-function viewOnBlockchain(txid) {
-    // Sostituisci con l'URL del tuo blockchain explorer
-    const explorerUrl = `https://your-blockchain-explorer.com/tx/${txid}`;
-    window.open(explorerUrl, '_blank');
-}
-
-/**
- * Mostra dettagli NFT (placeholder)
- */
-
-/**
- * Aggiorna i bottoni di vista (placeholder)
- */
-function updateViewButtons() {
-    // Implementa se hai bottoni per cambiare vista
-}

@@ -17,7 +17,6 @@ if (!$userId || !is_numeric($userId)) {
 }
 
 try {
-    // ✅ INCLUDI TXID NELLA QUERY
     $sql = "SELECT id, address, txid, created_at FROM user_wallets WHERE user_id = ? LIMIT 1";
     $stmt = mysqli_prepare($conn, $sql);
     
@@ -34,20 +33,17 @@ try {
     $result = mysqli_stmt_get_result($stmt);
     
     if ($row = mysqli_fetch_assoc($result)) {
-        // ✅ WALLET TROVATO CON TXID
         echo json_encode([
             'success' => true,
             'wallet' => [
                 'id' => (int)$row['id'],
                 'address' => $row['address'],
-                'txid' => $row['txid'], // ✅ INCLUDI TXID
+                'txid' => $row['txid'],
                 'created_at' => $row['created_at'],
-                'blockchain_verified' => !empty($row['txid']) // ✅ FLAG VERIFICA BLOCKCHAIN
             ],
             'timestamp' => date('Y-m-d H:i:s')
         ]);
     } else {
-        // Wallet non ancora creato
         http_response_code(404);
         echo json_encode([
             'success' => false,

@@ -9,10 +9,6 @@ let italianWords = [];
 let selectedWords = [];
 let selectionOrder = [];
 
-// =============================================================================
-// FUNZIONI CRITTOGRAFICHE
-// =============================================================================
-
 function bytesToHex(bytes) {
     return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
 }
@@ -25,71 +21,57 @@ function hexToBytes(hex) {
     return new Uint8Array(bytes);
 }
 
-// ============================================================================= 
-// FUNZIONI CRITTOGRAFICHE CORRETTE (compatibili con elliptic.js)
-// =============================================================================
-
-// ✅ GENERA CHIAVE PUBBLICA USANDO ELLIPTIC.JS (come il tuo collega)
 async function generatePublicKeyFromSeed(selectedWords) {
     const seedPhrase = selectedWords.join(' ');
     console.log('Seed phrase:', seedPhrase);
     
     try {
-        // ✅ USA ELLIPTIC.JS come nel codice del tuo collega
         const EC = elliptic.ec;
         const ec = new EC('secp256k1');
         
-        // ✅ STESSO PROCESSO del tuo collega
         const hash = sha256.sha256.array(seedPhrase);
         const keyPair = ec.keyFromPrivate(hash);
         
-        // ✅ CHIAVE PUBBLICA (formato uncompressed, senza 0x)
         const publicKey = keyPair.getPublic(false, 'hex');
         
-        console.log('✅ Chiave pubblica elliptic.js:', publicKey);
-        return publicKey; // SENZA 0x prefix
+        console.log('Chiave pubblica elliptic.js:', publicKey);
+        return publicKey;
         
     } catch (error) {
-        console.error('❌ Errore generazione chiave pubblica:', error);
+        console.error('Errore generazione chiave pubblica:', error);
         throw error;
     }
 }
 
-// ✅ GENERA CHIAVE PRIVATA USANDO ELLIPTIC.JS (come il tuo collega)
 async function generatePrivateKeyFromPublic(publicKey) {
     const seedPhrase = selectedWords.join(' ');
     
     try {
-        // ✅ USA ELLIPTIC.JS come nel codice del tuo collega
         const EC = elliptic.ec;
         const ec = new EC('secp256k1');
         
-        // ✅ STESSO PROCESSO del tuo collega
         const hash = sha256.sha256.array(seedPhrase);
         const keyPair = ec.keyFromPrivate(hash);
         
-        // ✅ CHIAVE PRIVATA (formato hex, senza 0x)
         const privateKey = keyPair.getPrivate('hex');
         
-        console.log('✅ Chiave privata elliptic.js:', privateKey);
-        return privateKey; // SENZA 0x prefix
+        console.log('Chiave privata elliptic.js:', privateKey);
+        return privateKey;
         
     } catch (error) {
-        console.error('❌ Errore generazione chiave privata:', error);
+        console.error('Errore generazione chiave privata:', error);
         throw error;
     }
 }
 
-// ✅ CALCOLA INDIRIZZO COME IL TUO COLLEGA
 function calculateAddressFromPublicKey(publicKey) {
     try {
-        // ✅ STESSO METODO del tuo collega: SHA256 della chiave pubblica
         const address = sha256.sha256(publicKey);
-        console.log('✅ Indirizzo calcolato:', address);
-        return address; // SENZA 0x prefix
+        console.log('Indirizzo calcolato:', address);
+        return address;
         
     } catch (error) {
-        console.error('❌ Errore calcolo indirizzo:', error);
+        console.error('Errore calcolo indirizzo:', error);
         throw error;
     }
 }
@@ -98,20 +80,16 @@ async function generateWalletKeys() {
     try {
         showProgress('Generazione chiavi crittografiche...', 20);
         
-        // ✅ IDENTICO AL CODICE DEL COLLEGA
         const EC = elliptic.ec;
         const ec = new EC('secp256k1');
         const hash = sha256.sha256.array(selectedWords.join(' '));
         const keyPair = ec.keyFromPrivate(hash);
-        
-        // ✅ ESATTAMENTE COME IL COLLEGA
+
         const publicKey = keyPair.getPublic(false, 'hex');
         const privateKey = keyPair.getPrivate('hex');
         
-        // ✅ CALCOLA INDIRIZZO ESATTAMENTE COME IL COLLEGA (SOLO SHA256)
         const address = sha256.sha256(publicKey);
         
-        console.log('✅ Chiavi generate (identiche al collega):');
         console.log('- Public Key:', publicKey);
         console.log('- Private Key:', privateKey);
         console.log('- Address (SHA256 semplice):', address);
@@ -123,20 +101,11 @@ async function generateWalletKeys() {
         };
         
     } catch (error) {
-        console.error('❌ Errore generazione chiavi:', error);
+        console.error('Errore generazione chiavi:', error);
         throw error;
     }
 }
 
-
-
-
-// =============================================================================
-// FUNZIONI ASYNC/AWAIT PER WALLET
-// =============================================================================
-
-// ✅ Registrazione utente con async/await
-// Sostituisci temporaneamente la funzione registerUser con questa versione debug:
 async function registerUser(userData) {
   try {
       console.log('📤 Invio dati:', userData);
@@ -152,36 +121,27 @@ async function registerUser(userData) {
       console.log('📥 Status risposta:', response.status);
       console.log('📥 Headers:', response.headers);
       
-      // ✅ Leggi SEMPRE come testo prima
       const responseText = await response.text();
-      console.log('📥 Risposta completa (testo):', responseText);
-      console.log('📥 Lunghezza risposta:', responseText.length);
+      console.log('Risposta completa (testo):', responseText);
+      console.log('Lunghezza risposta:', responseText.length);
       
-      // ✅ Controlla se la risposta è vuota
       if (!responseText || responseText.trim() === '') {
-          console.error('❌ Risposta vuota dal server!');
+          console.error('Risposta vuota dal server!');
           throw new Error('Empty response from server');
       }
       
-      // ✅ Controlla se inizia con HTML (errore PHP)
-      if (responseText.trim().startsWith('<')) {
-          console.error('❌ Server ha restituito HTML invece di JSON:', responseText);
-          throw new Error('Server returned HTML instead of JSON - check PHP errors');
-      }
-      
-      // ✅ Prova il parsing JSON con gestione errore specifica
       try {
           const data = JSON.parse(responseText);
-          console.log('✅ JSON parsato correttamente:', data);
+          console.log('JSON parsato correttamente:', data);
           return data;
       } catch (jsonError) {
-          console.error('❌ Errore parsing JSON:', jsonError);
-          console.error('❌ Testo che ha causato errore:', responseText);
+          console.error('Errore parsing JSON:', jsonError);
+          console.error('Testo che ha causato errore:', responseText);
           throw new Error(`JSON parse failed: ${jsonError.message}`);
       }
 
   } catch (error) {
-      console.error('❌ Errore registrazione completo:', error);
+      console.error('Errore registrazione completo:', error);
       throw error;
   }
 }
@@ -189,7 +149,7 @@ async function registerUser(userData) {
 
 
 
-// ✅ Verifica wallet con async/await
+// Verifica wallet con async/await
 async function checkWallet(userId) {
     try {
         const response = await fetch(`php/get_wallet.php?user_id=${userId}`, {
@@ -202,25 +162,25 @@ async function checkWallet(userId) {
         if (response.ok) {
             const data = await response.json();
             if (data.success && data.wallet && data.wallet.address) {
-                console.log('✅ Wallet trovato:', data.wallet.address);
+                console.log('Wallet trovato:', data.wallet.address);
                 return data.wallet;
             }
         } else if (response.status === 404) {
-            console.log('⏳ Wallet non ancora pronto');
+            console.log('Wallet non ancora pronto');
             return null;
         }
         
         throw new Error(`Wallet check failed: ${response.status}`);
 
     } catch (error) {
-        console.warn('⚠️ Errore verifica wallet:', error);
+        console.warn('Errore verifica wallet:', error);
         return null;
     }
 }
 
-// ✅ Attesa wallet con async/await e retry
+// Attesa wallet con async/await e retry
 async function waitForWallet(userId, submitButton) {
-  // ✅ Verifica che userId sia valido
+  // Verifica che userId sia valido
   if (!userId || userId === undefined || userId === null) {
       console.error('❌ User ID non valido:', userId);
       throw new Error('User ID is required for wallet creation');
@@ -231,10 +191,9 @@ async function waitForWallet(userId, submitButton) {
   const retryDelay = 5000; // 5 secondi
   let attempt = 0;
 
-  while (true) { // ✅ LOOP INFINITO
+  while (true) {
       attempt++;
       
-      // Aggiorna UI
       submitButton.value = `Creazione wallet Circular... (${attempt})`;
       
       console.log(`🔍 Tentativo ${attempt} - Verifica wallet per user ID: ${userId}`);
@@ -242,26 +201,15 @@ async function waitForWallet(userId, submitButton) {
       // Verifica wallet
       const wallet = await checkWallet(userId);
       if (wallet) {
-          console.log(`✅ Wallet Circular Protocol trovato dopo ${attempt} tentativi!`);
+          console.log(`Wallet Circular Protocol trovato dopo ${attempt} tentativi!`);
           return wallet; // Ritorna l'oggetto wallet completo (con txid)
       }
 
-      // Aspetta prima del prossimo tentativo
-      console.log(`⏳ Attesa ${retryDelay/1000} secondi prima del prossimo tentativo...`);
+      console.log(`Attesa ${retryDelay/1000} secondi prima del prossimo tentativo...`);
       await new Promise(resolve => setTimeout(resolve, retryDelay));
-
-      // Status ogni 10 tentativi
-      if (attempt % 10 === 0) {
-          console.log(`📊 Tentativo ${attempt} - Circular Protocol sta ancora processando per user ${userId}...`);
-      }
   }
 }
 
-
-
-// =============================================================================
-// FUNZIONI UI E FEEDBACK
-// =============================================================================
 
 function showProgress(message, percentage = 0) {
     const container = document.getElementById('messaggio_errore');
@@ -299,12 +247,7 @@ function mostraErrore(messaggio, tipo = 'danger') {
     }, 5000);
 }
 
-// =============================================================================
-// FUNZIONE DOWNLOAD WALLET
-// =============================================================================
-
 function downloadWalletFile(seedWords, publicKey, privateKey, walletAddress, txid = null) {
-  // ❌ RIMOSSO il fallback locale - walletAddress DEVE essere fornito
   if (!walletAddress) {
       console.error('❌ Wallet address è obbligatorio!');
       throw new Error('Wallet address from Circular Protocol is required');
@@ -342,15 +285,9 @@ Vai su https://circularprotocol.io/faucet per ottenere fondi di test.
   document.body.removeChild(downloadLink);
   window.URL.revokeObjectURL(url);
   
-  console.log('✅ File wallet Circular Protocol scaricato:', downloadLink.download);
+  console.log('File wallet Circular Protocol scaricato:', downloadLink.download);
 }
 
-
-// =============================================================================
-// FUNZIONE PRINCIPALE CON ASYNC/AWAIT
-// =============================================================================
-
-// ✅ FUNZIONE PRINCIPALE DI VALIDAZIONE CON ASYNC/AWAIT
 async function validateForm() {
   const email = emailInput.value.trim();
   const password = passwordInput.value;
@@ -390,61 +327,53 @@ async function validateForm() {
       return;
   }
 
-  console.log(`✅ Inizio processo registrazione per: ${email}`);
+  console.log(`Inizio processo registrazione per: ${email}`);
 
   const submitButton = document.getElementById('form_invio');
   const originalButtonText = submitButton.value;
   
     try {
-      // STEP 1: Generazione chiavi
-      console.log('🔐 Generazione chiavi in corso...');
+      console.log('Generazione chiavi in corso...');
       const walletKeys = await generateWalletKeys();
       const publicKey = walletKeys.publicKey;
       const privateKey = walletKeys.privateKey;
       
-      // STEP 2: Registrazione utente CON LA SUA CHIAVE PUBBLICA
       const userData = {
           nome: nome,
           cognome: cognome,
           telefono: telefono,
           email: email,
           pswrd: sha256(email.substring(0, 5) + password),
-          public_key: walletKeys.publicKey,   // ✅ AGGIUNGI
-          address: walletKeys.address,        // ✅ AGGIUNGI
+          public_key: walletKeys.publicKey,
+          address: walletKeys.address,
       };
 
-      console.log('📤 Invio dati con chiave pubblica utente:', publicKey.substring(0, 20) + '...');
+      console.log('Invio dati con chiave pubblica utente:', publicKey.substring(0, 20) + '...');
       
       const serverResponse = await registerUser(userData);
       
-      // ✅ CORREZIONE: userId dichiarato DOPO aver ricevuto la risposta
       const userId = serverResponse.user_id;
-      console.log('✅ User ID ricevuto:', userId);
+      console.log('User ID ricevuto:', userId);
       
       let wallet;
 
-      // ✅ STEP 3: Gestione wallet SOLO CIRCULAR PROTOCOL
       if (serverResponse.wallet && serverResponse.wallet.address) {
           // Wallet già disponibile
-          console.log('✅ Wallet Circular Protocol disponibile immediatamente');
+          console.log(' Wallet Circular Protocol disponibile immediatamente');
           wallet = serverResponse.wallet;
           showProgress('Wallet Circular ricevuto, preparazione download...', 90);
           
       } else {
-          // ✅ STEP 4: Attesa wallet INFINITA da Circular Protocol
-          console.log('⏳ Wallet non pronto, inizio attesa infinita per user ID:', userId);
+          console.log('Wallet non pronto, inizio attesa per user ID:', userId);
           showProgress('Creazione wallet Circular Protocol in corso...', 60);
           
-          // Aspettiamo SEMPRE il wallet da Circular Protocol
           wallet = await waitForWallet(userId, submitButton);
           showProgress('Wallet Circular Protocol creato con successo!', 90);
       }
 
-      // ✅ STEP 5: Download file wallet SOLO SE ABBIAMO IL WALLET CIRCULAR
       showProgress('Preparazione file wallet Circular...', 95);
       await new Promise(resolve => setTimeout(resolve, 500)); // Pausa per UI
       
-      // ✅ Scarica con wallet address E txid da Circular Protocol
       downloadWalletFile(
           selectedGoals, 
           publicKey, 
@@ -452,8 +381,7 @@ async function validateForm() {
           walletKeys.address,
           wallet.txid
       );
-      
-      // ✅ SUCCESS
+
       hideProgress();
       submitButton.disabled = false;
       submitButton.value = originalButtonText;
@@ -468,12 +396,11 @@ async function validateForm() {
       });
       
       // Redirect dopo successo
-      /*setTimeout(() => {
+      setTimeout(() => {
           window.location.href = "login.html";
-      }, 3000);*/
+      }, 3000);
 
   } catch (error) {
-      // ✅ ERROR HANDLING
       console.error('❌ Errore durante la registrazione:', error);
       
       hideProgress();
@@ -494,11 +421,6 @@ async function validateForm() {
   }
 }
 
-
-// =============================================================================
-// FUNZIONI GESTIONE PAROLE SEED (invariate)
-// =============================================================================
-
 async function loadItalianWords() {
     try {
         const response = await fetch('italian.txt');
@@ -512,18 +434,6 @@ async function loadItalianWords() {
         
     } catch (error) {
         console.error('Errore nel caricamento del file italian.txt:', error);
-        italianWords = [
-            'casa', 'sole', 'mare', 'luna', 'fiore', 'montagna',
-            'libro', 'musica', 'amore', 'famiglia', 'strada', 'cielo',
-            'tempo', 'vita', 'gioia', 'pace', 'stella', 'acqua',
-            'fuoco', 'terra', 'vento', 'bosco', 'giardino', 'porta',
-            'finestra', 'ponte', 'fiume', 'lago', 'valle', 'collina',
-            'albero', 'foglia', 'radice', 'ramo', 'seme', 'frutto',
-            'uccello', 'pesce', 'gatto', 'cane', 'cavallo', 'leone',
-            'aquila', 'farfalla', 'ape', 'rosa', 'tulipano', 'girasole'
-        ];
-        console.log('Utilizzando parole predefinite fallback');
-        generateRandomWords();
     }
 }
 
@@ -679,10 +589,6 @@ function clearAllSelections() {
     console.log('✅ Deselezionate tutte le parole');
 }
 
-// =============================================================================
-// VALIDAZIONE FORM (invariate)
-// =============================================================================
-
 emailInput.addEventListener('input', function(event) {
     const email = event.target.value;
     if (validateEmail(email)) {
@@ -736,56 +642,7 @@ function evidenziaSeedWords() {
     }, 3000);
 }
 
-// =============================================================================
-// INIZIALIZZAZIONE
-// =============================================================================
-
 document.addEventListener('DOMContentLoaded', function() {
     loadItalianWords();
     initializeSelectableButtons();
 });
-
-// =============================================================================
-// FUNZIONI DEBUG (OPZIONALI)
-// =============================================================================
-
-async function testRegistrationFlow() {
-    console.log('🧪 Test flusso registrazione...');
-    
-    try {
-        // Simula dati test
-        document.getElementById("FirstName").value = "Test";
-        document.getElementById("LastName").value = "User";
-        document.getElementById("Phone").value = "1234567890";
-        emailInput.value = "test@example.com";
-        passwordInput.value = "password123";
-        repeatPassword.value = "password123";
-        
-        // Seleziona tutte le parole
-        selectAllWords();
-        
-        console.log('✅ Dati test impostati, avvio registrazione...');
-        await validateForm();
-        
-    } catch (error) {
-        console.error('❌ Errore test:', error);
-    }
-}
-
-async function testWalletFlow() {
-    console.log('🧪 Test flusso wallet...');
-    
-    try {
-        showProgress('Test in corso...', 50);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        const testWallet = await checkWallet(999); // ID inesistente
-        console.log('Test wallet result:', testWallet);
-        
-        hideProgress();
-        
-    } catch (error) {
-        console.log('✅ Test completato:', error);
-        hideProgress();
-    }
-}
